@@ -1,0 +1,175 @@
+<?php
+    include_once('db_fns.php');
+	header("Content-Type: text/html; charset=utf-8");
+	$conn = db_connect();
+	$filtervalue="";
+    $noconnect ="<p>对不起，没有查找到您要查找的内容！</p>";
+// $num=$_POST['num'];
+	
+	$pagesize=30;//每页显示数
+	
+	/*if($_GET['type']==1)*/
+	//{
+		/*$areavalue =$_POST['areaselect'];
+		$kindvalue =$_POST['kindselect'];
+		$stuffvalue =$_POST['stuffselect'];
+		*/
+		
+		/*if($areavalue != 0){
+			$areafilter =" and p.portid =".$areavalue;
+			$filtervalue =$areafilter;
+		}
+		if($kindvalue !=0){
+			$kindfilter =" and p.kindid =".$kindvalue;
+			if (strlen(($filtervalue))>0){
+				$filtervalue =$filtervalue.$kindfilter;
+			}
+			else {
+			 $filtervalue =$kindfilter;	
+			}
+		
+		}
+		if($stuffvalue !=0){
+			$stufffilter =" and p.stuffid =".$stuffvalue;
+			if (strlen(($filtervalue))>0){
+				$filtervalue =$filtervalue.$stufffilter;
+			}
+			else {
+				$filtervalue =$stufffilter;
+			}
+			
+		}*/
+	//} else {
+		
+	//	$carnumvalue=$_GET['carnum'];
+	//	$filtervalue =" and (carnum ='".$carnumvalue."' or u.phone ='".$carnumvalue."')";
+		
+	//}
+	
+	//************分页获取参数 *******************
+    /*$query = "select count(*) as total   "
+           ." from t_product p,t_kind k,t_stuff s,t_port r,t_user u "
+          ." where p.userid = u.userid and p.kindid = k.kindid and p.stuffid = s.stuffid and p.portid =r.portid";
+		
+	if (strlen(trim($filtervalue))>0){
+		$query =$query . $filtervalue;
+	}
+  
+    $result = @$conn->query($query);
+	$num =$result->fetch_row();
+ 
+	$total=$num[0];
+	
+    if ($total == 0) {
+         echo $noconnect;
+		 return;
+    }else {
+		
+		if(!isset($_GET["page"])|| !is_numeric($_GET["page"])) {
+			$page = 1;
+		}else {
+			$page =intval($_GET["page"]);
+		}
+		$pagesize=20;//每页显示数
+		if($total % $pagesize ==0) { //获取总页数
+			$pagecount = intval($total/$pagesize);
+		}else {
+			$pagecount = ceil($total / $pagesize);
+		}
+	}*/
+	//*********************************
+	/*
+	 $query = "select productid,carnum,kindname,stuffname,phone,portname,updatetime,productlen,goodstatusid   "
+           ." from t_product p,t_kind k,t_stuff s,t_port r,t_user u "
+          ." where p.userid = u.userid and p.kindid = k.kindid and p.stuffid = s.stuffid and p.portid =r.portid";
+		  */
+	 $query = "select productid,carnum,kindname,stuffname,phone,portname,updatetime,productlen,diameterlen,wide,thinckness   "
+           ." from t_product p,t_kind k,t_stuff s,t_port r,t_user u "
+          ." where p.userid = u.userid and p.kindid = k.kindid and "
+		  ." p.stuffid = s.stuffid and p.portid =r.portid ";	  
+		
+	if (strlen(trim($filtervalue))>0){
+		$query =$query . $filtervalue;
+	}
+  /*  if ($type ==1){*/
+		$page = $_POST['num'];
+		$query =$query ." order by updatetime desc limit ".($page -1)*$pagesize.",$pagesize";
+	/*}*/
+    $result = @$conn->query($query);
+    if (!$result) {
+		echo "<meta http-equiv='Content-Type'' content='text/html; charset=utf-8'>";
+        echo $noconnect;
+		return;
+    }
+    $result = db_result_to_array($result);
+
+	/*这里是史航写的*/
+	$json_arr = array();
+	 foreach($result as $k=>$v){
+		 $json_arr[]  = (object)$v;
+	 }
+	 //print_r($json_arr);
+	 echo json_encode( $json_arr );
+
+
+
+	/*$outputstr ="<ul class='list' >";*/
+   // foreach ($result as $row)
+   // {
+		
+		/*
+		"<li class='list-item'>".
+		   "<a href='detail.php?productid=".$row['productid']."' class='clearfix'>".
+			"<div class='list-img'><img src='/statics/images/list0.jpg' /></div>".
+			"<div class='list-text'>".
+				"<h2 class='list-tit'>". " ".$row['carnum']."  ".$row['stuffname']."  ".$row['kindname']."</h2>".
+                "<p class='list-des'>" . $row['productlen']." ".$row['portname']." 12道22号"."</p>	".
+               " <div><span class='list-phone'>" .$row['phone']."</span><button class='button button-warning'>收藏</button></div>".	
+               " <div class='list-bottom'><span class='list-time'>". $row['updatetime']."</span><span class='icon-heart level-star'>&#xf004;&#xf004;</span></div>".
+			"</div>".
+		   "</a>".
+	    "</li>";				
+		*/
+   //    if($row['kindname']=='原木'){
+	//	   $tempout = "径级:".$row['diameterlen'] ; 
+	//   }else {
+	//	   $tempout= "宽度:".$row['wide']." 厚度:".$row['thinckness'];
+							   
+	 //  }
+	 //  $outputstr =$outputstr .
+     //   " <li class='list-item'> ".
+	//		"	<a href= 'detail.php?productid=".$row['productid']."'  class='clearfix'>".
+	//			"	<div class='list-l'> ".
+	//				"	<div class='display-tit'><span>". $row['carnum']." ".$row['kindname']." ".$row['stuffname']." "."</span> ".
+	//                   "  <span> 长度:".$row['productlen']." ".$tempout.
+	//					" </span> ".
+	//					" </div> " .
+	//					"<div class=''><span class='f-12'>".$row['portname']."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;". $row['phone'].
+	//					"</span><span class='list-time fr'>". $row['updatetime']."</span></div>".
+	//				"</div>".
+	//				"<div class='list-right'><i class='icon-chevron-right'></i></div>".
+	//			"</a>".
+	//		"</li>";		
+    //    }
+	//	$outputstr=$outputstr."</ul>";
+	//if($type == 1)	{
+	//**************页码导航栏**************
+	/*    if($page >1)
+	//		$prepage = $page -1;
+	//	else
+			$prepage = 1;
+		if($page <$pagecount)
+			$nextpage=$page+1;
+		else 
+			$nextpage=$pagecount;
+		
+	    $outputstr=$outputstr."<ul class='paging'>";
+		$outputstr=$outputstr."<li class='prev' onclick='start(1,".$prepage.")'>上一页</li>";
+		$outputstr=$outputstr."<li class='prev'>第&nbsp;".$page."&nbsp页/共&nbsp".$pagecount."&nbsp页</li>";
+		$outputstr=$outputstr."<li class='next' onclick='start(1,".$nextpage.")'>下一页</li>";
+		$outputstr=$outputstr."</ul>";
+    //	
+	}
+	echo $outputstr;*/
+
+?>

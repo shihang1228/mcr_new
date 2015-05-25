@@ -1,0 +1,49 @@
+<HTML>
+<META http-equiv=Content-Type content="text/html; charset=utf-8">
+<HEAD>
+<TITLE> Test Page </TITLE>
+
+</HEAD>
+
+<BODY>
+<script>
+function preview(imgFile,num)
+{
+    //预览代码，支持 IE6、IE7。
+    var newPreview = document.getElementById("preview1");
+  
+    var t ;
+    if(document.all) //IE
+    t = imgFile.value;
+    else
+    t = imgFile.files[0].getAsDataURL(); //FF
+    newPreview.style.backgroundImage = "url(" + t + ")";//imgFile.value;
+    newPreview.style.width = "108px";
+    newPreview.style.height = "130px";
+    newPreview.style.display = "block";
+}
+
+</script>
+<input type="file" onchange='ShowImg(this)' />
+
+<div id="preview1" style="border:1px solid #FFCC00; width:108px; height:130px;display:block" >
+
+</div>
+<script>function ShowImg(o)
+{  
+//var Browser_Agent=navigator.userAgent;
+//if(Browser_Agent.indexOf("Firefox")!=-1)
+//{
+//火狐使用
+  //  document.getElementById("idImg").src=o.files[0].getAsDataURL();
+  //  document.getElementById("idImg").style.display = "block";
+  // }
+//else
+//{
+      preview(o,1);
+    //}
+} </script>
+
+
+</BODY>
+</HTML>
