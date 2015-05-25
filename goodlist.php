@@ -46,7 +46,7 @@
 		<a href="release.php" class="icon-bullhorn"> 发布</a>
 	</form> -->
 	<form action="" method="get" class="flex">
-		<ul class="selectBanner clearfix">
+		<ul class="selectBanner clearfix w80">
 			<li>
 				<select name = "areaselect" id = "areaselect" onchange="start(1,1)">
 					<option value=0>区域</option>
@@ -226,6 +226,19 @@ function start(type,page){
 					for(var i=0;i<json.length;i++){
                      neirou = json[i];    //当前层数据
 					  $row =$("#showdata1 ul");
+					// alert(neirou[0]);
+					 //alert(neirou[1]);
+					// alert(neirou[2]);
+
+                     /*$("#stage li").each(function(){
+                         //得到当前li的高度
+                         temp_h = Number($(this).height());
+                         if(iheight == -1 || iheight >temp_h){
+                             iheight = temp_h;
+                             $row = $(this); //此时$row是li对象了
+                         }
+                     });*/
+					//alert(json[0]);
                      $item = $(
 						"<li class='list-item'>"+
 							"<a href='detail.php?productid="+neirou.productid+"' class='clearfix'>"+
