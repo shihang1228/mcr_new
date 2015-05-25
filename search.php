@@ -70,6 +70,23 @@
 			   $outstr =$outstr." ".$portname." ".$updatetime;
 
 	 ?>
+	
+	if(neirou.kindname == "原木"){
+		if(neirou.diameterlen == 0) {
+			$bianhua = neirou.kindname;
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
 		<li class="list-item">
 			<a href="detail.php?productid=<?php echo  $productid;?>" class="clearfix">
 			<div class="list-left"><span><?php echo $outstr;?></span></div>
