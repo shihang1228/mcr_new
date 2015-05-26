@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
@@ -7,10 +7,16 @@
 <title>板材待售</title>
 <meta name="description" content="">
 <meta name="keywords" content="">
+<script type="text/javascript" src="./boardlist.js"></script>
+
 <link rel="stylesheet" type="text/css" href="/statics/css/yumReset.css" />
 <link rel="stylesheet" type="text/css" href="/statics/css/yumPage.css" />
 <link rel="stylesheet" type="text/css" href="/com/icomoon/style.css" />
 </head>
+<?php
+    include_once('mcr_sc_fns.php');
+	$stuff_array=get_stuffarray();	
+	?>
 <body>
 <nav class="navFix">
 	<ul>
@@ -29,18 +35,26 @@
 	<form action="" method="get">
 		<ul class="selectBanner col4 clearfix">
 			<li>
-				<select name = "areaselect">
-					<option>材种</option>
+				<select name = "stuffselect" id="stuffselect">
+					<option value="0">材种</option>
+						<?php
+                        foreach ($stuff_array as $row)
+                        {
+                           $stuffid = $row['stuffid'];
+                           $stuffname = $row['stuffname'];
+                          echo "<option value =".$stuffid.">".$stuffname."</option>";
+						}
+					    ?>
 				</select>
 				<i class="icon-caret-down"></i>
 			</li>
-			<li><input type="tel" placeholder="宽度"></li>
-			<li><input type="tel" placeholder="厚度"></li>
+			<li><input type="tel" placeholder="宽度" id="productwide"></li>
+			<li><input type="tel" placeholder="厚度" id="thinckness"></li>
 			<li><button class="button">查询</button></li>
 		</ul>
 	</form>
 </section>
-<table class="goodslist">
+<table class="goodslist" id="goodslist">
 	<tr><th>5678</th><th>樟子松</th><th>4米</th><th>厚度*宽度</th><th>港口</th><th>2015-5-25 15:55</th></tr>
 	<tr><th>5678</th><th>樟子松</th><th>4米</th><th>板材</th><th>满洲里</th><th>2015-5-25 15:55</th></tr>
 	<tr><th>5678</th><th>樟子松</th><th>4米</th><th>厚度*宽度</th><th>港口</th><th>2015-5-25 15:55</th></tr>

@@ -23,9 +23,27 @@
     $port_array = get_port($portnum);
 	$stuffnum=0;
 	$stuff_array=get_stuff($stuffnum);
+	//
+	if  (isset($_POST['submit']))
+    {
+      $inputnumber=$_POST["numberInput"];
+	  $portid=$_POST["areaselect"];
+	  $kindid=$_POST["kindselect"];
+	  $stuffid=$_POST["stuffselect"];
+	  $productlen=$_POST["productlen"];
+	  $wide=$_POST["wide"];
+	  $thinckness=$_POST["thinckness"];
+	  $diameterlen=$_POST["diameterlen"];
+	  $timber=$_POST["timber"];
+	  $data_array=get_datafromnum($inputnumber);
+	  
 ?>
-
-
+<div>
+</div>    
+ <?php
+	} 
+	else {
+?>
 <form class="push pushInput" action="" method="post">
 	<dl class="panel-body">
 		<dt>查找</dt>
@@ -103,6 +121,9 @@
 	</dl>
 	<input type="submit" name ="submit" value="查找" />
 </form>
+<?php
+	}
+?>
 
 </body>
 <script src="http://lib.sinaapp.com/js/jquery/1.8.3/jquery.min.js"></script>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<title>求购信息列表</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<link rel="stylesheet" type="text/css" href="/statics/css/yumReset.css" />
+<link rel="stylesheet" type="text/css" href="/statics/css/yumPage.css" />
+<link rel="stylesheet" type="text/css" href="/com/icomoon/style.css" />
+<link rel="stylesheet" type="text/css" href="/com/swiper/swiper.min.css" />
+</head>
+<body>
+<header class="header">
+	<a href="javascript:history.back();"><i class="icon-arrow-back"></i></a>
+	<h2>求购详细信息</h2>
+	<a href="index.php"><i class="icon-home"></i></a>
+</header>
+<form class="push" action="" method ="post">
+	<ul class="companyDetail">
+		<li>企业名称:<input type="text" /></li>
+		<li>
+			<div class="swiper-container">
+				<ul class="swiper-wrapper" id="auto-loop">
+					<li class="swiper-slide"><img src="/statics/images/img1.jpg"></li>
+					<li class="swiper-slide"><img src="/statics/images/img2.jpg"></li>
+					<li class="swiper-slide"><img src="/statics/images/img3.jpg"></li>
+				</ul>
+			</div>
+		</li>
+		<li class="flex">主要产品:<input type="text" /></li>
+		<li class="flex"><div>联系人:<input type="text" /></div><div>手机:<input type="text" /></div></li>
+		<li class="flex"><div>联系电话:<input type="text" /></div><div>邮箱:<input type="text" /></div></li>
+		<li>地址:<input type="text" /></li>
+		<li>网址:<input type="text" /></li>
+		<li>关键字:
+			<div class="flex">
+				<label><input class="checkbox" type="checkbox" />木材加工</label>
+				<label><input class="checkbox" type="checkbox" />木材加工</label>
+				<label><input class="checkbox" type="checkbox" />木材加工</label>
+			</div>
+			<div class="flex">
+				<label><input class="checkbox" type="checkbox" />木材加工</label>
+				<label><input class="checkbox" type="checkbox" />木材加工</label>
+				<label><input class="checkbox" type="checkbox" />木材加工</label>
+			</div>
+		</li>
+		<li>公司简介:
+			<textarea rows="5" cols="35"></textarea>
+		</li>
+	</ul>
+	<ul class="fixed">
+		<li class="borker">
+			<span class="borkerName">张经理</span>
+			<p>13696458698</p>
+		</li>
+		<li><a href="tel:13099000654">
+			<span class="icon-phone borkerTel"></span>
+		</a></li>
+	</ul>
+	<input type="submit" value="发布" />
+</form>
+</body>
+<script type="text/javascript" src="/com/swiper/swiper.min.js"></script>
+<script> 
+var mySwiper = new Swiper('.swiper-container',{
+autoplay : 5000,//可选选项，自动滑动
+})
+</script>
+</html>

@@ -2,13 +2,6 @@
  *  Javascript文件：waterfall.js
  */
 $(function(){
-	
-	/*alert("jareaselect:" + jareaselect);
-	alert("jstuffselect:" + jstuffselect);
-	alert("productlen:" + productlen);
-	alert("productwide:" + productwide);
-	alert("thinckness:" + thinckness);
-	alert("timber:" + timber);*/
      jsonajax();
  });
  
@@ -16,7 +9,6 @@ $(function(){
  $(window).scroll(function(){    
      //此方法是在滚动条滚动时发生的函数
      // 当滚动到最底部以上100像素时，加载新内容
-	 //alert("执行滚动事件");
      var $doc_height,$s_top,$now_height;
      $doc_height = $(document).height();        //这里是document的整个高度
      $s_top = $(this).scrollTop();            //当前滚动条离最顶上多少高度
@@ -26,7 +18,7 @@ $(function(){
  
  
  //做一个ajax方法来请求data.php不断的获取数据
- var $num = 0;
+ var $num = -1;
  var $pagecount = 0;
 
 function start(type,page){	
@@ -147,6 +139,7 @@ function start(type,page){
 
 
  function jsonajax(){
+
 	var jareaselect=0,jstuffselect=0,productlen=0,productwide=0,thinckness=0,diameterlen=0,timber=0,jkindselect=0;
 
     jareaselect =document.getElementById("areaselect").value;
@@ -177,11 +170,12 @@ function start(type,page){
 	}else{
 		diameterlen=document.getElementById("diameterlen").value;
 	}
-	if($pagecount >= $num){
+
+	if($pagecount > $num){
 		 $.ajax({
 			 url:'getdatalist.php',
 			 type:'POST',
-			 data:"num="+($num++)+"&areaselect="+jareaselect+"&kindselect="+jkindselect+"&stuffselect="+jstuffselect
+			 data:"num="+($num=($num+1))+"&areaselect="+jareaselect+"&kindselect="+jkindselect+"&stuffselect="+jstuffselect
 		  +"&productlen="+productlen+"&productwide="+productwide+"&thinckness="+thinckness+"&diameterlen="+diameterlen
 		  +"&timber="+timber,
 			/*"num="+$num+"&type=1&areaselect="+jareaselect+"&kindselect="+jkindselect+"&stuffselect="+jstuffselect
@@ -192,6 +186,7 @@ function start(type,page){
 			 success:function(json){
 				 if(typeof json == 'object'){
 					 var neirou,$row,iheight,$item,$bianhua;
+					 
 					 $pagecount = json[0].pagecount;
 					 for(var i=1;i<json.length;i++){
 						 neirou = json[i];    //当前层数据

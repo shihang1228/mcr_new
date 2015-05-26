@@ -11,6 +11,10 @@
 <link rel="stylesheet" type="text/css" href="/statics/css/yumPage.css" />
 <link rel="stylesheet" type="text/css" href="/com/icomoon/style.css" />
 </head>
+<?php
+    include_once('mcr_sc_fns.php');
+	$stuff_array=get_stuffarray();	
+	?>
 <body>
 <nav class="navFix">
 	<ul>
@@ -30,7 +34,15 @@
 		<ul class="selectBanner col4 clearfix">
 			<li>
 				<select name = "areaselect">
-					<option>材种</option>
+				<option value="0">材种</option>
+						<?php
+                        foreach ($stuff_array as $row)
+                        {
+                           $stuffid = $row['stuffid'];
+                           $stuffname = $row['stuffname'];
+                          echo "<option value =".$stuffid.">".$stuffname."</option>";
+						}
+					    ?>
 				</select>
 				<i class="icon-caret-down"></i>
 			</li>
@@ -42,7 +54,11 @@
 			</li>
 			<li>
 				<select name = "areaselect">
-					<option>选材</option>
+					<option value=0>材质</option>
+					<option value="选材">选材</option>
+					<option value="一级材">一级材</option>
+					<option value="二级材">二级材</option>
+					<option value="加工材">加工材</option>
 				</select>
 				<i class="icon-caret-down"></i>
 			</li>

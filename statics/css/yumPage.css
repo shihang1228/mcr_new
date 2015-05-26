@@ -1138,3 +1138,9 @@ ul.companyDetail>li {
 	border-bottom: 1px solid #000;
 	padding: 5px 8px;
 }
+.w3>* {
+	width: 33.3%;
+}
+.checkbox {
+	-webkit-appearance: checkbox;
+}
