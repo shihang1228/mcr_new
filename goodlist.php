@@ -24,7 +24,7 @@
 	$stuffnum=0;
 	$stuff_array=get_stuff($stuffnum);
 ?>
-<body onload ="start(1,1)">
+<body>
 <nav class="navFix">
 	<ul>
 		<li><a href="index.html"><i class="icon-home"></i>首页</a></li>
@@ -45,10 +45,10 @@
 		<div class="searchBox-label" id="carnumselect" name="carnumselect"  onclick ="start(2,1)">搜索</div>
 		<a href="release.php" class="icon-bullhorn"> 发布</a>
 	</form> -->
-	<form action="" method="get" class="flex">
+	<form class="flex">
 		<ul class="selectBanner clearfix w80">
 			<li>
-				<select name = "areaselect" id = "areaselect" onchange="start(1,1)">
+				<select name = "areaselect" id = "areaselect">
 					<option value=0>区域</option>
 					<?php
 							for($i=0;$i<$portnum;$i++) {
@@ -64,7 +64,7 @@
 				<i class="icon-caret-down"></i>
 			</li>
 			<li>
-				<select class="selectItem"  name ="kindselect" id="kindselect" onchange="start(1,1)">
+				<select class="selectItem"  name ="kindselect" id="kindselect">
 					<option value = 0>货种</option>
 					<option value = 1>原木</option>
 					<option value = 2>条子</option>
@@ -76,7 +76,7 @@
 				<i class="icon-caret-down"></i>
 			</li>
 			<li>
-				<select class="selectItem" name ="stuffselect" id="stuffselect" onchange="start(1,1)">
+				<select class="selectItem" name ="stuffselect" id="stuffselect" >
 					<option value = 0>材种</option>
 					 <?php
 		                   for($i=0;$i<$stuffnum;$i++) {
@@ -91,19 +91,19 @@
 				<i class="icon-caret-down"></i>
 			</li>
 			<li>
-				<input class="selectItem" type="tel" placeholder="长度" id="productlen" name="producelen" onchange="start(1,1)" />
+				<input class="selectItem" type="tel" placeholder="长度" id="productlen" name="producelen"/>
 			</li>
 			<li id="kindselect_1">
-				<input class="selectItem" type="tel" placeholder="宽度" id="productwide" name="productwide" onchange="start(1,1)"/>
+				<input class="selectItem" type="tel" placeholder="宽度" id="productwide" name="productwide"/>
 			</li>
 			<li id="kindselect_2">
-				<input class="selectItem" type="tel" placeholder="厚度" id="thinckness" name="thinckness" onchange="start(1,1)"/>
+				<input class="selectItem" type="tel" placeholder="厚度" id="thinckness" name="thinckness"/>
 			</li>
 			<li id="kindselect_3">
-				<input class="selectItem" type="tel" placeholder="径级" id="diameterlen" name="diameterlen" onchange="start(1,1)"/>
+				<input class="selectItem" type="tel" placeholder="径级" id="diameterlen" name="diameterlen"/>
 			</li>
 			<li id="kindselect_4">
-				<select class="selectItem" id="timber" name="timber" onchange="start(1,1)">
+				<select class="selectItem" id="timber" name="timber">
 					<option value=0>材质</option>
 					<option value="选材">选材</option>
 					<option value="一级材">一级材</option>
@@ -113,7 +113,7 @@
 				<i class="icon-caret-down"></i>
 			</li>
 		</ul>
-		<button class="button sousuo">sousuo</button>
+		<input type="button"  class="button sousuo" onclick="start(1,1)" value="搜索">
 	</form>
 </section>
 </div>
@@ -146,40 +146,36 @@ function createXMLHttpRequest(){
  }
 } */
 	
-function start(type,page){
-// createXMLHttpRequest();
-
-	
- var url=""
- var jkindselect =document.getElementById("kindselect").value;
- var productlen=0 ,productwide=0,thinckness=0,diameterlen=0;
- var timber="";
- //type = 1;
- 	var kindselect_1 = $("#kindselect_1");
- 		kindselect_2 = $("#kindselect_2");
- 		kindselect_3 = $("#kindselect_3");
- 		kindselect_4 = $("#kindselect_4");
- 	if (jkindselect == 1){
- 		kindselect_1.hide();
- 		kindselect_2.hide();
- 		kindselect_3.show();
- 		kindselect_4.show();
- 	} else{
- 		kindselect_1.show();
- 		kindselect_2.show();
- 		kindselect_3.hide();
- 		kindselect_4.hide();
- 	}
-
+function start(type,page){	
+	var url=""
+	var jkindselect =document.getElementById("kindselect").value;
+	var productlen=0 ,productwide=0,thinckness=0,diameterlen=0;
+	var timber="";
+	var kindselect_1 = $("#kindselect_1"),
+		kindselect_2 = $("#kindselect_2"),
+		kindselect_3 = $("#kindselect_3"),
+		kindselect_4 = $("#kindselect_4");
+	if (jkindselect == 1){
+		kindselect_1.hide();
+		kindselect_2.hide();
+		kindselect_3.show();
+		kindselect_4.show();
+	} else{
+		kindselect_1.show();
+		kindselect_2.show();
+		kindselect_3.hide();
+		kindselect_4.hide();
+	}
 
 	var $num = 0;
+	var $pagecount=0;
 	var jareaselect=0,jstuffselect=0,productlen=0,productwide=0,thinckness=0,diameterlen=0,timber=0,jkindselect=0;
 
-    jareaselect =document.getElementById("areaselect").value;
-    jstuffselect = document.getElementById("stuffselect").value;
+	jareaselect =document.getElementById("areaselect").value;
+	jstuffselect = document.getElementById("stuffselect").value;
 	jkindselect =document.getElementById("kindselect").value;
 	timber=document.getElementById("timber").value;
-	
+
 	if(document.getElementById("productlen").value.length == 0){
 		productlen=0;
 	}else{
@@ -203,83 +199,66 @@ function start(type,page){
 	}else{
 		diameterlen=document.getElementById("diameterlen").value;
 	}
-	
-     $.ajax({
-         url:'getdatalist.php',
-         type:'POST',
-         data:"num="+($num++)+"&areaselect="+jareaselect+"&kindselect="+jkindselect+"&stuffselect="+jstuffselect
-	  +"&productlen="+productlen+"&productwide="+productwide+"&thinckness="+thinckness+"&diameterlen="+diameterlen
-	  +"&timber="+timber,
-		/*"num="+$num+"&type=1&areaselect="+jareaselect+"&kindselect="+jkindselect+"&stuffselect="+jstuffselect
-	  +"&productlen="+productlen+"&productwide="+productwide+"&thinckness="+thinckness+"&diameterlen="+diameterlen
-	  +"&timber="+timber*/
 
-         dataType:'json',
-         success:function(json){
-             if(typeof json == 'object'){
-                 var neirou,$row,iheight,$item;
-				 
-				 if(json.length == 0){
-					$("#showdata1 ul").empty().append("<p>没有查询到您所要的内容</p>");
-				 }else{
-					
-					for(var i=0;i<json.length;i++){
-                     neirou = json[i];    //当前层数据
-					  $row =$("#showdata1 ul");
-					// alert(neirou[0]);
-					 //alert(neirou[1]);
-					// alert(neirou[2]);
+	if($pagecount >= $num){
 
-                     /*$("#stage li").each(function(){
-                         //得到当前li的高度
-                         temp_h = Number($(this).height());
-                         if(iheight == -1 || iheight >temp_h){
-                             iheight = temp_h;
-                             $row = $(this); //此时$row是li对象了
-                         }
-                     });*/
-					//alert(json[0]);
-                     $item = $(
-						"<li class='list-item'>"+
-							"<a href='detail.php?productid="+neirou.productid+"' class='clearfix'>"+
-								"<div class='list-left'><span>"+neirou.carnum+"  "+neirou.productlen+"米"+neirou.stuffname+"   "+neirou.wide+"*"+neirou.thinckness+"   "+neirou.portname+"   "+neirou.updatetime+"</span></div>"+
-								"<div class='list-right'><i class='icon-chevron-right'></i></div>"+
-							"</a>"+
-						"</li>"
-					 
-					 );	
-                     $row.append($item);
-                     $item.fadeIn();
-                 }
+		 $.ajax({
+			 url:'getdatalist.php',
+			 type:'POST',
+			 data:"num="+($num++)+"&areaselect="+jareaselect+"&kindselect="+jkindselect+"&stuffselect="+jstuffselect
+		  +"&productlen="+productlen+"&productwide="+productwide+"&thinckness="+thinckness+"&diameterlen="+diameterlen
+		  +"&timber="+timber,
+			/*"num="+$num+"&type=1&areaselect="+jareaselect+"&kindselect="+jkindselect+"&stuffselect="+jstuffselect
+		  +"&productlen="+productlen+"&productwide="+productwide+"&thinckness="+thinckness+"&diameterlen="+diameterlen
+		  +"&timber="+timber*/
 
+			 dataType:'json',
+			 success:function(json){
+				 if(typeof json == 'object'){
 
-				 }
-                 
+					 var neirou,$row,iheight,$item;
+					 $row =$("#showdata1 ul").empty();
+					 if(json.length == 0){
+						 
+						$("#showdata1 ul").empty().append("<p class='no_result'>没有查询到您所要的内容</p>");
+					 }else{
+						 
+						$pagecount = json[0].pagecount;
+						for(var i=1;i<json.length;i++){
+							neirou = json[i];    //当前层数据
 
-            }
-         }
-     });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+							 if(neirou.kindname == "原木"){
+								if(neirou.diameterlen == 0) {
+									$bianhua = neirou.kindname;
+								}else{
+									$bianhua = neirou.diameterlen + "φ " + neirou.timber;
+								}
+							}else{
+								
+								if(neirou.wide == 0 || neirou.thinckness == 0 ){
+									
+									$bianhua = neirou.kindname;
+								}else{	
+									$bianhua = neirou.wide + "*" + neirou.thinckness;
+								}
+							}
+							 $item = $(
+								"<li class='list-item'>"+
+									"<a href='detail.php?productid="+neirou.productid+"' class='clearfix'>"+
+										"<div class='list-left'><span>"+neirou.carnum+"  "+neirou.productlen+"米"+neirou.stuffname+"   "+$bianhua+"   "+neirou.portname+"   "+neirou.updatetime+"</span></div>"+
+										"<div class='list-right'><i class='icon-chevron-right'></i></div>"+
+									"</a>"+
+								"</li>"						 
+							 );	
+							 $(".no_result").empty();
+							 $row.append($item);
+							 $item.fadeIn();
+						}
+					 }
+				}
+			 }
+		 });
+	}
 }
 
 </script>

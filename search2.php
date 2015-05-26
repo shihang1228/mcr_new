@@ -24,13 +24,15 @@
 	$stuffnum=0;
 	$stuff_array=get_stuff($stuffnum);
 ?>
-<form class="push pushInput">
+
+
+<form class="push pushInput" action="" method="post">
 	<dl class="panel-body">
 		<dt>查找</dt>
 		<dd>
 			<ul class="">
 				<li>区域:
-					<select id = "areaselect">
+					<select id = "areaselect" name="areaselect">
 					   <option value=0>区域</option>
 					   <?php
 							for($i=0;$i<$portnum;$i++) {
@@ -63,22 +65,21 @@
 					    <?php
 		                   for($i=0;$i<$stuffnum;$i++) {
 								$row =$stuff_array->fetch_assoc();
-								 $stuffid = $row['stuffid'];
+								$stuffid = $row['stuffid'];
 		                        $stuffname = $row['stuffname'];
-		                         // echo "<li><a href=''>".$portname."</a></li>";
-		                          echo "<option value =".$stuffid.">".$stuffname."</option>";
+		                        echo "<option value =".$stuffid.">".$stuffname."</option>";
 							}
 		                    ?>
 					</select>
 					<i class="icon-caret-down"></i>
 				</li>
-				<li>长度:<input type="text" name="title" /></li>
-				<li id="kindselect_1">宽度:<input type="text" /></li>
-				<li id="kindselect_2">厚度:<input type="text" /></li>
-				<li id="kindselect_3">径级:<input type="text" /></li>
+				<li>长度:<input type="text" name="productlen" id="productlen" /></li>
+				<li id="kindselect_1">宽度:<input type="text" name="wide" id="wide" /></li>
+				<li id="kindselect_2">厚度:<input type="text" name="thinckness" id="thinckness" /></li>
+				<li id="kindselect_3">径级:<input type="text" name="diameterlen" id="diameterlen"/></li>
 				<li id="kindselect_4">材质:
-					<select class="selectItem">
-						<option value="">材质</option>
+					<select class="selectItem" id="timber" name="timber">
+						<option value="0">材质</option>
 						<option value="选材">选材</option>
 						<option value="一级材">一级材</option>
 						<option value="二级材">二级材</option>
@@ -87,16 +88,22 @@
 					<i class="icon-caret-down"></i>
 				</li>
 				<li>发布时间:
-					<select class="selectItem">
-						<option></option>
+					<select class="selectItem" name="publishtime" id="publishtime">
+						<option value="0">选择时间</option>
+						<option value="1">1天以内</option>
+						<option value="3">3天以内</option>
+						<option value="5">5天以内</option>
+						<option value="7">7天以内</option>
+						<option value="30">30天以内</option>
 					</select>
 					<i class="icon-caret-down"></i>
 				</li>
 			</ul>
 		</dd>
 	</dl>
-	<input type="submit" value="查找" />
+	<input type="submit" name ="submit" value="查找" />
 </form>
+
 </body>
 <script src="http://lib.sinaapp.com/js/jquery/1.8.3/jquery.min.js"></script>
 <script type="text/javascript">

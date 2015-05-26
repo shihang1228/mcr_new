@@ -4,7 +4,7 @@
 	$conn = db_connect();
 	$filtervalue="";
     $noconnect ="<p>对不起，没有查找到您要查找的内容！</p>";
-	$pagesize=30;
+	$pagesize=8;
 	//读取参数
     $num=$_POST['num'];
 	$areavalue =$_POST['areaselect'];
@@ -47,16 +47,32 @@
 	
 	
 	
-	 $query = "select productid,carnum,kindname,stuffname,phone,portname,updatetime,productlen,diameterlen,wide,thinckness   "
-           ." from t_product p,t_kind k,t_stuff s,t_port r,t_user u "
+	 $query1 = "select productid,carnum,kindname,stuffname,phone,portname,updatetime,productlen,diameterlen,wide,thinckness   ";
+           
+	  $query2= " from t_product p,t_kind k,t_stuff s,t_port r,t_user u "
           ." where p.userid = u.userid and p.kindid = k.kindid and "
 		  ." p.stuffid = s.stuffid and p.portid =r.portid ";	  
-		
+	
 	if (strlen(trim($filtervalue))>0){
-		$query =$query . $filtervalue;
+		$query2 =$query2 . $filtervalue;
 	}
-   
-	$query =$query ." order by updatetime desc limit ".($num)*$pagesize.",$pagesize";
+	 $query =$query1.$query2;
+    //查询页码
+	 $pagecount=0;
+	 
+	  $querypagenum="select count(*) as c ".$query2;
+	  $result = @$conn->query($querypagenum);
+	  $datanum =$result->fetch_row();
+      $total=$datanum[0];
+	  if($total % $pagesize ==0) { //获取总页数
+			$pagecount = intval($total/$pagesize);
+		} else {
+          $pagecount=ceil($total / $pagesize);
+		 
+	  }
+	//
+	 $pageid =($num*$pagesize);
+	 $query = $query ." order by updatetime desc limit "  .$pageid.",". $pagesize;;
 	
 	//echo $query;
 	//return;
@@ -75,12 +91,18 @@
 	 while($row = $result->fetch_assoc()){
 		 $temp_arr[] = $row;
 	 }
+     $page_arr =array(array('pagecount'=>$pagecount,'pagenum'=>$num));
+	 
+	  foreach($page_arr as $k=>$v){
+		 $json_arr[]  = $v;
 
-	
+	 }
+	// $json_arr[]= "{pagecount:50}";
 	 foreach($temp_arr as $k=>$v){
 		 $json_arr[]  = $v;
 
 	 }
+	
 	 echo json_encode( $json_arr );
 
 
