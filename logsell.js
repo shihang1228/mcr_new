@@ -24,28 +24,23 @@ function start(type,page){
 	$num = 0;
 	$pagecount = 0;
 
-	var jstuffselect=0,productwide=0,thinckness=0;
+	var stuffselect=0,productlen=0;
 
+	timber=document.getElementById("timber").value;
 	stuffselect = document.getElementById("stuffselect").value;
-		
-	if(document.getElementById("productwide").value.length == 0){
-		productwide=0;
+
+	if(document.getElementById("productlen").value.length == 0){
+		productlen=0;
 	}else{
-		productwide=document.getElementById("productwide").value;
+		productlen=document.getElementById("productlen").value;
 	}
-		
-	if(document.getElementById("thinckness").value.length == 0){
-		thinckness=0;
-	}else{
-		thinckness=document.getElementById("thinckness").value;
-	}	
 
 	if($pagecount >= $num){
 
 		 $.ajax({
-			 url:'getboardlist.php',
+			 url:'getloglist.php',
 			 type:'POST',
-			 data:"num="+($num++)+"&stuffselect="+stuffselect+"&productwide="+productwide+"&thinckness="+thinckness,
+			 data:"num="+($num++)+"&stuffselect="+stuffselect+"&productlen="+productlen+"&timber="+timber,
 
 			 dataType:'json',
 			 success:function(json){
@@ -62,12 +57,11 @@ function start(type,page){
 						for(var i=1;i<json.length;i++){
 							neirou = json[i];    //当前层数据
 
-							if(neirou.wide == 0 || neirou.thinckness == 0 ){
-								
+							if(neirou.diameterlen == 0) {
 								$bianhua = neirou.kindname;
-							}else{	
-								$bianhua = neirou.wide + "*" + neirou.thinckness;
-							}
+							}else{
+								$bianhua = neirou.diameterlen + "φ " + neirou.timber;
+							 }
 
 							 $item = $(
 								"<tr><th>"+neirou.carnum+"</th><th>"+neirou.stuffname+"</th><th>"+neirou.productlen+"米</th><th>"+$bianhua+"</th><th>"+neirou.portname+"</th><th>"+neirou.updatetime+"</th></tr>"				 
@@ -86,26 +80,23 @@ function start(type,page){
 
  function jsonajax1(){
 
-	var stuffselect=0,productwide=0,thinckness=0;
+	var stuffselect=0,productlen=0;
 
+	timber=document.getElementById("timber").value;
 	stuffselect = document.getElementById("stuffselect").value;
-		
-	if(document.getElementById("productwide").value.length == 0){
-		productwide=0;
+
+	if(document.getElementById("productlen").value.length == 0){
+		productlen=0;
 	}else{
-		productwide=document.getElementById("productwide").value;
+		productlen=document.getElementById("productlen").value;
 	}
 		
-	if(document.getElementById("thinckness").value.length == 0){
-		thinckness=0;
-	}else{
-		thinckness=document.getElementById("thinckness").value;
-	}	
+
 	if($pagecount > $num){
 		 $.ajax({
-			 url:'getboardlist.php',
+			 url:'getloglist.php',
 			 type:'POST',
-			 data:"num="+($num=($num+1))+"&stuffselect="+stuffselect+"&productwide="+productwide+"&thinckness="+thinckness,
+			 data:"num="+($num=($num+1))+"&stuffselect="+stuffselect+"&productlen="+productlen+"&timber="+timber,
 
 			 dataType:'json',
 			 success:function(json){
@@ -115,12 +106,11 @@ function start(type,page){
 					 for(var i=1;i<json.length;i++){
 						 neirou = json[i];    //当前层数据
 						
-						 if(neirou.wide == 0 || neirou.thinckness == 0 ){
-								
-								$bianhua = neirou.kindname;
-						}else{	
-							$bianhua = neirou.wide + "*" + neirou.thinckness;
-						}
+						 if(neirou.diameterlen == 0) {
+							$bianhua = neirou.kindname;
+						 }else{
+							$bianhua = neirou.diameterlen + "φ " + neirou.timber;
+						 }
 
 						 $row =$("#goodslist");
 						  $item = $(

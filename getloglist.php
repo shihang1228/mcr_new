@@ -4,7 +4,7 @@
 	$conn = db_connect();
 	$filtervalue="";
     $noconnect ="<p>对不起，没有查找到您要查找的内容！</p>";
-	$pagesize=0;
+	$pagesize=15;
 	//读取参数
     $num=$_POST['num'];
 	//$areavalue =$_POST['areaselect'];
@@ -17,6 +17,7 @@
 	
 	//$diameterlen=$_POST['diameterlen'];
 	$timber=$_POST['timber'];
+	
 	//判断条件
 	// if($areavalue != 0){
 		// $filtervalue =$filtervalue . " and p.portid =".$areavalue;
@@ -27,20 +28,20 @@
 	if($stuffvalue !=0){
 	    $filtervalue =$filtervalue ." and p.stuffid =".$stuffvalue;
 	}
-	// if($productlen !=0){
-	    // $filtervalue =$filtervalue ." and p.productlen =".$productlen;
-	// }
+	 if($productlen !=0){
+	     $filtervalue =$filtervalue ." and p.productlen =".$productlen;
+	 }
 	//依据是否是原木来增加条件
 	
 		//if($diameterlen !=0) {
 		//    $filtervalue =$filtervalue ." and p.diameterlen =".$diameterlen;
 	//	}
 		
-		if($timber !=0) {
-		    $filtervalue =$filtervalue ." and p.timber =".$timber;
+		if($timber !=="0") {
+		    $filtervalue =$filtervalue ." and p.timber ='".$timber ."' ";
 		}
 	//} else if( $kindvalue >1) {//其他类
-	 */	/* if (($productwide !=0) ) {
+	 	/* if (($productwide !=0) ) {
 		    $filtervalue =$filtervalue ." and p.productwide =".$productwide ; 
 		}
 		if ($thinckness !=0){
@@ -61,6 +62,9 @@
 		$query2 =$query2 . $filtervalue;
 	}
 	 $query =$query1.$query2;
+	 
+	// echo $query;
+	// return;
     //查询页码
 	 $pagecount=0;
 	 if ($num ==0) {

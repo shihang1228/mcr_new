@@ -40,7 +40,7 @@
 		}
 	} else if( $kindvalue >1) {//其他类
 		if (($productwide !=0) &&($thinckness !=0)) {
-		    $filtervalue =$filtervalue ." and p.productwide =".$productwide  
+		    $filtervalue =$filtervalue ." and p.wide =".$productwide  
 			." and p.thinckness = " .$thinckness ;
 		}
 	}

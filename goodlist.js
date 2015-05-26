@@ -81,7 +81,7 @@ function start(type,page){
 		 $.ajax({
 			 url:'getdatalist.php',
 			 type:'POST',
-			 data:"num="+($num++)+"&areaselect="+jareaselect+"&kindselect="+jkindselect+"&stuffselect="+jstuffselect
+			 data:"num="+($num=($num+1))+"&areaselect="+jareaselect+"&kindselect="+jkindselect+"&stuffselect="+jstuffselect
 		  +"&productlen="+productlen+"&productwide="+productwide+"&thinckness="+thinckness+"&diameterlen="+diameterlen
 		  +"&timber="+timber,
 			/*"num="+$num+"&type=1&areaselect="+jareaselect+"&kindselect="+jkindselect+"&stuffselect="+jstuffselect

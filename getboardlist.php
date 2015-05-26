@@ -4,7 +4,7 @@
 	$conn = db_connect();
 	$filtervalue="";
     $noconnect ="<p>对不起，没有查找到您要查找的内容！</p>";
-	$pagesize=8;
+	$pagesize=15;
 	//读取参数
     $num=$_POST['num'];
 	//$areavalue =$_POST['areaselect'];
@@ -40,7 +40,7 @@
 		}
 	} else if( $kindvalue >1) {//其他类
 	 */	if (($productwide !=0) ) {
-		    $filtervalue =$filtervalue ." and p.productwide =".$productwide ; 
+		    $filtervalue =$filtervalue ." and p.wide =".$productwide ; 
 		}
 		if ($thinckness !=0){
 			$filtervalue =$filtervalue." and p.thinckness = " .$thinckness ;
@@ -60,9 +60,11 @@
 		$query2 =$query2 . $filtervalue;
 	}
 	 $query =$query1.$query2;
+	 
+	 
     //查询页码
 	 $pagecount=0;
-	 if ($num ==0) {
+	// if ($num ==0) {
 	  $querypagenum="select count(*) as c ".$query2;
 	  $result = @$conn->query($querypagenum);
 	  $datanum =$result->fetch_row();
@@ -73,7 +75,7 @@
           $pagecount=ceil($total / $pagesize);
 		 
 	  } 
-	 }
+	// }
 	 
 	//
 	 $pageid =($num*$pagesize);

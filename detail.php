@@ -26,7 +26,7 @@
 <body>
 <header class="header">
 	<a href="javascript:history.back();"><i class="icon-arrow-back"></i></a>
-	<h2><a href="index.php">详细信息</a></h2>
+	<h2>详细信息</a></h2>
 	<!-- <ul class="nav">
 		<li><a href="">现货</a></li>
 		<li><a href="">2</a></li>

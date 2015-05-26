@@ -26,7 +26,7 @@
 	//
 	if  (isset($_POST['submit']))
     {
-      $inputnumber=$_POST["numberInput"];
+      //$inputnumber=$_POST["numberInput"];
 	  $portid=$_POST["areaselect"];
 	  $kindid=$_POST["kindselect"];
 	  $stuffid=$_POST["stuffselect"];
@@ -35,10 +35,68 @@
 	  $thinckness=$_POST["thinckness"];
 	  $diameterlen=$_POST["diameterlen"];
 	  $timber=$_POST["timber"];
-	  $data_array=get_datafromnum($inputnumber);
+	  $publishtime=$_POST["publishtime"];
+	  $data_array=get_datafromadvance($portid,$kindid,$stuffid,$productlen,
+       $wide,$thinckness,$diameterlen,$timber,$publishtime);
 	  
 ?>
 <div>
+    <dd class="panel-body">
+    <ul class="list">
+	 <?php
+	     $outstr=" ";
+	    if (!is_array($data_array)) {
+          // echo "<p>对不起，没有查找到您要查找的内容！e</p>";
+           return;
+        }
+		else {
+		    foreach ($data_array as $row)
+            {
+			   $carnum = $row['carnum'];
+			   $productlen = $row['productlen'];
+			   $kindname=$row['kindname'];
+			   $wide=$row['wide'];
+			   $thinckness=$row['thinckness'];
+			   $portname=$row['portname'];
+		       $timber=$row['timber'];
+			   $diameterlen=$row['diameterlen'];
+			   $productid=$row['productid'];
+			   $updatetime=$row['updatetime'];
+			   $stuffname=$row['stuffname'];
+			   
+			   $outstr=$carnum ." ".$productlen."米 ".$stuffname;
+			   if($kindname =="原木"){
+			     if ($diameterlen ==0){
+				   $outstr=$outstr." ".$kindname;
+				 }
+				 else {
+				    $outstr=$outstr." ".$diameterlen."φ ".$timber;
+				 }
+			   }
+			   else {
+			       if($wide ==0 or $thinckness ==0) {
+				     $outstr=$outstr." ".$kindname;
+				   }
+				   else {
+				      $outstr=$outstr." ".$wide."*".$thinckness;
+				   }
+			   }
+			   $outstr =$outstr." ".$portname." ".$updatetime;
+
+	 ?>
+
+		<li class="list-item">
+			<a href="detail.php?productid=<?php echo  $productid;?>" class="clearfix">
+			<div class="list-left"><span><?php echo $outstr;?></span></div>
+			<div class="list-right"><i class="icon-chevron-right"></i></div>
+			</a>
+		</li>
+    <?php
+	     }
+      }
+    ?>
+	 </ul>
+	</dd>
 </div>    
  <?php
 	} 

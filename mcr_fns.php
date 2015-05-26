@@ -1,4 +1,66 @@
 <?php
+//智能找货获取数据
+
+  function get_datafromadvance($portid,$kindid,$stuffid,$productlen,
+    $wide,$thinckness,$diameterlen,$timber,$publishtime){
+		
+	$noconnect ="<p>对不起，没有查找到您要查找的内容！</p>";
+    $filtervalue="";
+	$query="";
+    //判断条件	
+    if($portid != 0){
+		$filtervalue =$filtervalue . " and p.portid =".$portid;
+	}
+	if($kindid !=0){
+		$filtervalue =$filtervalue ." and p.kindid =".$kindid;
+	}
+	if($stuffid !=0){
+	    $filtervalue =$filtervalue ." and p.stuffid =".$stuffid;
+	}
+	if($productlen !=0){
+	    $filtervalue =$filtervalue ." and p.productlen =".$productlen;
+	}
+	//依据是否是原木来增加条件
+	if($kindid ==1){//原木
+		if($diameterlen !=0) {
+		    $filtervalue =$filtervalue ." and p.diameterlen =".$diameterlen;
+		}
+		if($timber !=0) {
+		    $filtervalue =$filtervalue ." and p.timber =".$timber;
+		}
+	} else if( $kindid >1) {//其他类
+		if (($wide !=0) &&($thinckness !=0)) {
+		    $filtervalue =$filtervalue ." and p.wide =".$wide  
+			." and p.thinckness = " .$thinckness ;
+		}
+	}	
+	if($publishtime !=0) {//更新时间
+		$filtervalue =$filtervalue ." and updatetime >= date_sub(now(), interval '".$publishtime."' day)";
+	}
+	$conn =db_connect();
+	$query = "select productid, right(rtrim(carnum),4) as carnum,kindname,stuffname,phone,portname,substring(updatetime,6,11) as updatetime,"
+	     ."productlen,diameterlen,wide,thinckness,timber "
+         . " from t_product p,t_kind k,t_stuff s,t_port r,t_user u "
+         ." where p.userid = u.userid and p.kindid = k.kindid and "
+		 ." p.stuffid = s.stuffid and p.portid =r.portid  ";
+	if (strlen(trim($filtervalue))>0){
+		$query =$query. $filtervalue;
+	}	
+    $query = $query ." order by updatetime desc	";
+	//echo $query;
+	//return;
+	$result = $conn->query($query);
+    if ((!$result) ||($result->num_rows ==0))
+	{
+		//echo "<meta http-equiv='Content-Type'' content='text/html; charset=utf-8'>";
+        echo  $noconnect;
+		return;
+    }
+    $result = db_result_to_array($result);
+	return $result;
+	
+  }
+
 //根据手机号或者车皮号获取数据
  function get_datafromnum($inputnumber) {
 	$conn =db_connect();
@@ -271,9 +333,7 @@ function get_kindarray(){//
 	$conn = db_connect();
     $query="select  carnum,portname,phone,kindname,stuffname,productlen,wide,thinckness,"
 		."tolerance,refnum,refwight,username,dry,newold,knob,blue,worm,decay,climb,ring,"
-		."slash,oil,black,position,device,(select fromname from t_from where fromid = p.fromid) as fromname,pausetime,trackid,dumptime,"
-		."(select dumpname from t_dump where dumpid=p.dumpid) as dumpname,"
-		."(select packname from t_pack where packid =p.packid) as packname,goodpositionid "
+		."slash,oil,black,position,device,(select fromname from t_from where fromid = p.fromid) as fromname,goodpositionid "
 		."from t_product p,t_user u,t_kind k,t_stuff s,t_port r "
 		."where p.userid = u.userid and p.kindid = k.kindid  and "
 		." p.stuffid = s.stuffid and r.portid= p.portid and  productid =".$productid;

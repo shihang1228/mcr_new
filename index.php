@@ -57,8 +57,8 @@
 	<li><a class="home3" href="search.php"></a></li>
 </ul>
 <ul class="home-div clearfix high">
-	<li><a class="home4" href="##"></a></div></li>
-	<li><a class="home5" href="##"></a></li>
+	<li><a class="home4" href="logsell.php"></a></div></li>
+	<li><a class="home5" href="boardsell.php"></a></li>
 	<li><a class="home9" href="##"></a></li>
 </ul>
 <ul class="home-div clearfix high">

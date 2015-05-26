@@ -7,11 +7,14 @@
 <title>板材待售</title>
 <meta name="description" content="">
 <meta name="keywords" content="">
-<script type="text/javascript" src="./boardlist.js"></script>
 
 <link rel="stylesheet" type="text/css" href="/statics/css/yumReset.css" />
 <link rel="stylesheet" type="text/css" href="/statics/css/yumPage.css" />
 <link rel="stylesheet" type="text/css" href="/com/icomoon/style.css" />
+
+<script type="text/javascript" src="http://libs.useso.com/js/jquery/1.8.2/jquery.min.js"></script>
+<script type="text/javascript" src="./boardlist.js"></script>
+
 </head>
 <?php
     include_once('mcr_sc_fns.php');
@@ -50,14 +53,12 @@
 			</li>
 			<li><input type="tel" placeholder="宽度" id="productwide"></li>
 			<li><input type="tel" placeholder="厚度" id="thinckness"></li>
-			<li><button class="button">查询</button></li>
+			<li><button class="button" type="button" onclick="start(1,1);">查询</button></li>
 		</ul>
 	</form>
 </section>
 <table class="goodslist" id="goodslist">
-	<tr><th>5678</th><th>樟子松</th><th>4米</th><th>厚度*宽度</th><th>港口</th><th>2015-5-25 15:55</th></tr>
-	<tr><th>5678</th><th>樟子松</th><th>4米</th><th>板材</th><th>满洲里</th><th>2015-5-25 15:55</th></tr>
-	<tr><th>5678</th><th>樟子松</th><th>4米</th><th>厚度*宽度</th><th>港口</th><th>2015-5-25 15:55</th></tr>
 </table>
+
 </body>
 </html>

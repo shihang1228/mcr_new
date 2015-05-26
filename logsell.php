@@ -7,6 +7,10 @@
 <title>原木待售</title>
 <meta name="description" content="">
 <meta name="keywords" content="">
+
+<script type="text/javascript" src="http://libs.useso.com/js/jquery/1.8.2/jquery.min.js"></script>
+<script type="text/javascript" src="./logsell.js"></script>
+
 <link rel="stylesheet" type="text/css" href="/statics/css/yumReset.css" />
 <link rel="stylesheet" type="text/css" href="/statics/css/yumPage.css" />
 <link rel="stylesheet" type="text/css" href="/com/icomoon/style.css" />
@@ -33,7 +37,7 @@
 	<form action="" method="get">
 		<ul class="selectBanner col4 clearfix">
 			<li>
-				<select name = "areaselect">
+				<select name = "areaselect" id="stuffselect">
 				<option value="0">材种</option>
 						<?php
                         foreach ($stuff_array as $row)
@@ -47,14 +51,26 @@
 				<i class="icon-caret-down"></i>
 			</li>
 			<li>
-				<select name = "areaselect">
-					<option>长度</option>
+				<select name = "areaselect" id="productlen">
+					<option value="0">长度</option>
+					<option value="1">1</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+					<option value="5">5</option>
+					<option value="6">6</option>
+					<option value="7">7</option>
+					<option value="8">8</option>
+					<option value="9">9</option>
+					<option value="10">10</option>
+					<option value="11">11</option>
+					<option value="12">12</option>
 				</select>
 				<i class="icon-caret-down"></i>
 			</li>
 			<li>
-				<select name = "areaselect">
-					<option value=0>材质</option>
+				<select name = "areaselect" id="timber">
+					<option value="0">材质</option>
 					<option value="选材">选材</option>
 					<option value="一级材">一级材</option>
 					<option value="二级材">二级材</option>
@@ -62,11 +78,11 @@
 				</select>
 				<i class="icon-caret-down"></i>
 			</li>
-			<li><button class="button">查询</button></li>
+			<li><input type="button" class="button" value="查询" onclick="start(1,1);"></li>
 		</ul>
 	</form>
 </section>
-<table class="goodslist">
+<table class="goodslist" id="goodslist">
 	<tr><th>5678</th><th>樟子松</th><th>4米</th><th>厚度*宽度</th><th>港口</th><th>2015-5-25 15:55</th></tr>
 	<tr><th>5678</th><th>樟子松</th><th>4米</th><th>板材</th><th>满洲里</th><th>2015-5-25 15:55</th></tr>
 	<tr><th>5678</th><th>樟子松</th><th>4米</th><th>厚度*宽度</th><th>港口</th><th>2015-5-25 15:55</th></tr>
