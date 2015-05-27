@@ -166,7 +166,7 @@ dl.panel dd {
     Form
    ========================================================================== */
  /*去掉苹果表单样式*/
-select,button,input {-webkit-appearance: none}
+button,input {-webkit-appearance: none}
 textarea {  -webkit-appearance: none}
 select,button,input {
     width: 100%;

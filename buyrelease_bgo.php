@@ -19,7 +19,7 @@
   if ($kindid ==1) {
 	
 	$timber =$_POST["timber"];
-	if ($_POST$_POST["diameterlen"]!=="" ) {
+	if ($_POST["diameterlen"]!=="" ) {
 		 $diameterlen =$_POST["diameterlen"];
 	}else {
 		$diameterlen =0;
@@ -30,13 +30,13 @@
 	$timber =0;
     $diameterlen =0; 
 	
-	if ($_POST$_POST["wide"]!=="" ) {
+	if ($_POST["wide"]!=="" ) {
 		 $wide =$_POST["wide"];
 	}else {
 		$wide =0;
 	}   
    
-   if ($_POST$_POST["thinckness"]!=="" ) {
+   if ($_POST["thinckness"]!=="" ) {
 		 $thinckness =$_POST["thinckness"];
 	}else {
 		$thinckness =0;
@@ -56,12 +56,12 @@
          .$userid.",".$portid.",'".trim($content)."','".$updatetime."',".$kindid.",".$stuffid.",".$price.","
 		 .$wide.",".$thinckness.",".$refnum.",".$refwight.",".$refcapacity.",'".$publishtime."',".$productlen.",".$diameterlen.",'"
          .$timber."',".$buystatus.")";
-  echo $query;
-  return;  
+  //echo $query;
+ // return;  
 	$result =$conn->query($query);
    if($result)
    {
-     echo "<script>alert('求购发布成功！');window.location.href='buyList.html'</script>";
+     echo "<script>alert('求购发布成功！');window.location.href='buyList.php'</script>";
    }else{
       echo "<script>alert('发布失败！');history.back();</script>";
 	  }

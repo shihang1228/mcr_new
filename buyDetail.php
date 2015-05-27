@@ -40,7 +40,7 @@
 		<?php
 		  if ($row['kindname']=="原木") {
 		?>
-			<li>径级: <?php echo $row['diameterlen'];?></li>
+			<li>径级: <?php echo $row['diameterlen'];?>φ </li>
 			<li>选材: <?php echo $row['timber'];?></li>
 		<?php
 		  } else {

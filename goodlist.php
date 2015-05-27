@@ -8,13 +8,10 @@
 <title>现货</title>
 <meta name="description" content="">
 <meta name="keywords" content="">
-<link rel="stylesheet" type="text/css" href="./statics/css/yumReset.css" />
-<link rel="stylesheet" type="text/css" href="./com/select/css/style.css" />
-<link rel="stylesheet" type="text/css" href="./statics/css/yumPage.css" />
+<link rel="stylesheet" type="text/css" href="./statics/css/yumleeM.css" />
 <link rel="stylesheet" type="text/css" href="./com/icomoon/style.css" />
 <script type="text/javascript" src="http://libs.useso.com/js/jquery/1.8.2/jquery.min.js"></script>
 <script type="text/javascript" src="./goodlist.js"></script>
-<script type="text/javascript" src="./com/select/js/modernizr.custom.79639.js"></script>
 </head>
 <?php
     session_start();
@@ -25,28 +22,20 @@
 	$stuff_array=get_stuff($stuffnum);
 ?>
 <body>
-<nav class="navFix">
-	<ul>
-		<li><a href="index.html"><i class="icon-home"></i>首页</a></li>
-		<li><a href="index.html"><i class="icon-home"></i>现货</a></li>
-		<li><a href="index.html"><i class="icon-home"></i>发布</a></li>
-		<li><a href="index.html"><i class="icon-home"></i>我</a></li>
-	</ul>
+<nav class="navFixed flex">
+	<a href="index.php"><i class="icon-home"></i><div>首页</div></a>
+	<a href="goodlist.php"><i class="icon-now-widgets"></i><div>现货</div></a>
+	<a href="release.php"><i class="icon-bullhorn"></i><div>发布</div></a>
+	<a href="user.php"><i class="icon-head"></i><div>我</div></a>
 </nav>
-<div class="fixedTop">
 <header class="header">
-	<a href="javascript:history.back();"><i class="icon-arrow-back"></i></a>
-	<h2>现货</h2>
-	<a href="index.php"><i class="icon-home"></i></a>
+	<div><a href="javascript:history.back();"><i class="icon-arrow-back"></i></a></div>
+	<h1>现货</h1>
+	<div><a href="index.php"><i class="icon-home"></i></a></div>
 </header>
 <section>
-	<!-- <form class="searchBox" name ="select" id="select1" method ="post" >
-		<div class="searchBox-wrap"><input type="tel" placeholder="车皮号/手机号" id="carnum" name="carnum" /></div>
-		<div class="searchBox-label" id="carnumselect" name="carnumselect"  onclick ="start(2,1)">搜索</div>
-		<a href="release.php" class="icon-bullhorn"> 发布</a>
-	</form> -->
-	<form class="flex">
-		<ul class="selectBanner clearfix w80">
+	<form>
+		<ul class="flex selectWrapper">
 			<li>
 				<select name = "areaselect" id = "areaselect">
 					<option value=0>区域</option>
@@ -61,7 +50,6 @@
 
 		                    ?>
 				</select>
-				<i class="icon-caret-down"></i>
 			</li>
 			<li>
 				<select class="selectItem"  name ="kindselect" id="kindselect">
@@ -73,7 +61,6 @@
 					<option value = 5>大板</option>
 					<option value = 6>防腐材</option>
 				</select>
-				<i class="icon-caret-down"></i>
 			</li>
 			<li>
 				<select class="selectItem" name ="stuffselect" id="stuffselect" >
@@ -88,8 +75,10 @@
 							}
 		                    ?>
 				</select>
-				<i class="icon-caret-down"></i>
 			</li>
+			<li><input type="button"  class="button sousuo" onclick="start(1,1)" value="搜索"></li>
+		</ul>
+		<ul class="flex selectWrapper">
 			<li>
 				<input class="selectItem" type="tel" placeholder="长度" id="productlen" name="producelen"/>
 			</li>
@@ -110,20 +99,40 @@
 					<option value="二级材">二级材</option>
 					<option value="加工材">加工材</option>
 				</select>
-				<i class="icon-caret-down"></i>
 			</li>
 		</ul>
-		<input type="button"  class="button sousuo" onclick="start(1,1)" value="搜索">
 	</form>
 </section>
-</div>
-<div class="panel-body">
+<dl class="panel">
+	<dt>现货</dt>
+	<dd>
+		<a href="##">
+			<ul class="flex table">
+				<li>3213</li><li>0米</li><li>樟子松</li><li>原木</li><li>满洲里</li><li><i class="icon-chevron-right"></i></li>
+			</ul>
+		</a>
+		<a href="##">
+			<ul class="flex table">
+				<li>3213</li><li>0米</li><li>樟子松</li><li>原木</li><li>满洲里</li><li><i class="icon-chevron-right"></i></li>
+			</ul>
+		</a>
+		<a href="##">
+			<ul class="flex table">
+				<li>3213</li><li>0米</li><li>樟子松</li><li>原木</li><li>满洲里</li><li><i class="icon-chevron-right"></i></li>
+			</ul>
+		</a>
+		<a href="##">
+			<ul class="flex table">
+				<li>3213</li><li>0米</li><li>樟子松</li><li>原木</li><li>满洲里</li><li><i class="icon-chevron-right"></i></li>
+			</ul>
+		</a>
+	</dd>
+</dl>
+<!-- <div class="panel-body">
 	<div name="showdata" id ="showdata1" style="margin:134px 0 0 14px;">
 		<ul>
 		</ul>
 	</div>
-</div>
-
+</div> -->
 </body>
-
 </html>

@@ -132,13 +132,42 @@
 $(function(){
 
 	$(".releaseForm").Validform({
+		tiptype:1, 
+		ignoreHidden:true,
 		datatype:{
-			"va_1" : /^(?:[1-7]\d|80)$/,   //10-80
+			/*"va_1" : /^(?:[1-7]\d|80)$/,   //10-80
 			"va_2" : /^(?:[1-9]\d|[1-4][0-9]{2}|500)$/,  //10-500
 			"va_3" : /^(?:[1-9]\d{2,3}|1[0-9]{4}|20000)$/,  //100-20000
 			"va_4" : /^(?:[4-8]\d|90)$/,  //40-90
-			"va_5" : /^(?:[5-9]\d|1[0-1]\d|120)$/  //50-120
-		}	
+			"va_5" : /^(?:[5-9]\d|1[0-1]\d|120)$/  //50-120*/
+			"va_1" : function(gets,obj,curform,regxp){
+					var va_1 = /^(?:[1-7]\d|80)$/;
+					if(va_1.test(gets)){return true;}
+					return "径级范围必须在10~80之间";
+			},
+			
+			"va_2" : function(gets,obj,curform,regxp){
+					var va_2 = /^(?:[1-9]\d|[1-4][0-9]{2}|500)$/;
+					if(va_2.test(gets)){return true;}
+					return "宽度和厚度范围必须在10~500之间";
+			},
+			"va_3" :  function(gets,obj,curform,regxp){
+					var va_3 =  /^(?:[1-9]\d{2,3}|1[0-9]{4}|20000)$/;
+					if(va_3.test(gets)){return true;}
+					return "参考根数范围必须在100～20000之间";
+			},
+			"va_4" :  function(gets,obj,curform,regxp){
+					  var va_4 =  /^(?:[4-8]\d|90)$/;
+					  if(va_4.test(gets)){return true;}
+					  return "参考重量范围必须在40～90t之间";
+			},
+			"va_5" : function(gets,obj,curform,regxp){
+					  var va_5 =  /^(?:[5-9]\d|1[0-1]\d|120)$/;
+					  if(va_5.test(gets)){return true;}
+					  return "参考载量范围必须在50～120m之间";
+			}
+		}
+		
 	});
 
 	$("#kindid").change(function(){

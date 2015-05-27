@@ -7,8 +7,6 @@
 <title>求购信息列表</title>
 <meta name="description" content="">
 <meta name="keywords" content="">
-<!-- <link rel="stylesheet" type="text/css" href="/statics/css/yumReset.css" /> -->
-<!-- <link rel="stylesheet" type="text/css" href="/statics/css/yumPage.css" /> -->
 <link rel="stylesheet" type="text/css" href="/statics/css/yumleeM.css" />
 <link rel="stylesheet" type="text/css" href="/com/icomoon/style.css" />
 </head>
@@ -20,12 +18,12 @@
 	$stuff_array=get_stuff($stuffnum);
 	?>
 <body>
-<nav class="navFixed flex">
+<!-- <nav class="navFixed flex">
 	<a href="index.php"><i class="icon-home"></i><div>首页</div></a>
 	<a href="goodlist.php"><i class="icon-now-widgets"></i><div>现货</div></a>
 	<a href="release.php"><i class="icon-bullhorn"></i><div>发布</div></a>
 	<a href="user.php"><i class="icon-head"></i><div>我</div></a>
-</nav>
+</nav> -->
 <header class="header">
 	<div><a href="javascript:history.back();"><i class="icon-arrow-back"></i></a></div>
 	<h1>求购信息</h1>
@@ -77,7 +75,7 @@
 	</form>
 </section>
 <dl class="panel">
-	<dt>现货</dt>
+	<dt>求购列表</dt>
 	<dd>
 		<a href="##">
 			<ul class="flex table">
@@ -102,4 +100,6 @@
 	</dd>
 </dl>
 </body>
+<script src="http://libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/statics/js/include.js"></script>
 </html>
