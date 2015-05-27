@@ -1121,9 +1121,9 @@ body {
 }
 table.goodslist {
 	width: 100%;
-	text-align: left;
+	text-align: center;
 }
-table.goodslist th {
+table.goodslist td {
 	height: 30px;
 }
 ul.companyDetail {
@@ -1162,4 +1162,7 @@ ul.companyDetail>li {
 	border-radius: 4px;
 	padding: 5px;
 	width: 60%;
+}
+.beother {
+	display: none;
 }

@@ -289,11 +289,10 @@ function get_kindarray(){//
  //根据buyid获取求购信息
      function get_buydetail($buyid){
 		$conn = db_connect();
-		$query="select buyid ,username,".
-	    " kindname,stuffname,phone,portname,updatetime,title,content,price ".
-        " from t_buy p,t_kind k,t_stuff s,t_port r,t_user u ".
-        " where p.userid = u.userid and p.kindid = k.kindid and ".
-		" p.stuffid = s.stuffid and p.portid =r.portid and buyid =".$buyid;
+		$query="select username,phone,portname,content,publishtime,kindname,stuffname,price,"
+		."productlen,timber,wide,thinckness,refnum,refwight,refcapacity,viewnum,diameterlen "
+        ." from t_buy b,t_user u,t_kind k,t_port r,t_stuff s where b.portid = r.portid "
+		." and u.userid = b.userid and k.kindid = b.kindid and s.stuffid = b.stuffid and  buyid = ".$buyid;
 		
 		
 		$result=@$conn->query($query);

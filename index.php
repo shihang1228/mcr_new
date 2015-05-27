@@ -8,19 +8,17 @@
 <title>木材人</title>
 <meta name="description" content="">
 <meta name="keywords" content="">
-<link rel="stylesheet" type="text/css" href="/statics/css/yumReset.css" />
-<link rel="stylesheet" type="text/css" href="/statics/css/yumPage.css" />
+<link rel="stylesheet" type="text/css" href="/statics/css/yumleeM.css" />
+<link rel="stylesheet" type="text/css" href="/statics/css/index.css" />
 <link rel="stylesheet" type="text/css" href="/com/icomoon/style.css" />
 <link rel="stylesheet" type="text/css" href="/com/swiper/swiper.min.css" />
 </head>
 <body class="home">
-<nav class="navFix">
-	<ul>
-		<li><a href="index.php"><i class="icon-home"></i>首页</a></li>
-		<li><a href="goodlist.php"><i class="icon-now-widgets"></i>现货</a></li>
-		<li><a href="release.php"><i class="icon-bullhorn"></i>发布</a></li>
-		<li><a href="user.php"><i class="icon-head"></i>我</a></li>
-	</ul>
+<nav class="navFixed flex">
+	<a href="index.php"><i class="icon-home"></i><div>首页</div></a>
+	<a href="goodlist.php"><i class="icon-now-widgets"></i><div>现货</div></a>
+	<a href="release.php"><i class="icon-bullhorn"></i><div>发布</div></a>
+	<a href="user.php"><i class="icon-head"></i><div>我</div></a>
 </nav>
 <header class="header">
 	<h1><a href="index.php">木材人</a></h1>
@@ -32,7 +30,7 @@
 <div class="swiper-holder">
 	<img src="/statics/images/swiper0.jpg" />
 </div>
-<div class="scroll clearfix">
+<div class="flex">
 	<div class="scroll-tit">现货信息</div>
 	<div class="swiper-container">
 		<ul class="swiper-wrapper">
@@ -48,32 +46,24 @@
 				}
 				?>
 		</ul>
-		
 	</div>
 </div>
-<ul class="home-div clearfix high">
+<ul class="flex menuIcon">
 	<li><a class="home1" href="goodlist.php"></a></li>
 	<li><a class="home2" href="search2.php"></a></li>
 	<li><a class="home3" href="search.php"></a></li>
 </ul>
-<ul class="home-div clearfix high">
+<ul class="flex menuIcon">
 	<li><a class="home4" href="logsell.php"></a></div></li>
 	<li><a class="home5" href="boardsell.php"></a></li>
 	<li><a class="home9" href="##"></a></li>
 </ul>
-<ul class="home-div clearfix high">
+<ul class="flex menuIcon">
 	<li><a class="home6" href="##"></a></li>
 	<li><a class="home7" href="##"></a></li>
 	<li><a class="home8" href="##"></a></li>
 </ul>
 </body>
 <script type="text/javascript" src="/com/swiper/swiper.min.js"></script>
-<script type="text/javascript">
-var mySwiper = new Swiper ('.swiper-container', {
-	direction: 'vertical',
-	loop: true,
-	autoplay: 2000,
-	speed: 300
-})
-</script>
+<script type="text/javascript" src="/statics/js/config.js"></script>
 </html>

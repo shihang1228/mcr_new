@@ -22,7 +22,7 @@ if($num==1){
 		echo "<script>alert('登录成功！');window.location.href='release.php';</script>"; 
 	}
 	else if($type==3) {
-		echo "<script>alert('登录成功！');window.location.href='buypush.php';</script>";
+		echo "<script>window.location.href='buyrelease.php';</script>";
 	}
 	else if($type==4) {
 		echo "<script>alert('登录成功！');window.location.href='salepush.php';</script>";

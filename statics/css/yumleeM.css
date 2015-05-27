@@ -1,0 +1,179 @@
+/* CSS yumlee V1.0 理念：清除和重置是紧密不可分的 特色：1.适应中文 2.基于最新主流浏览器 3.移动端*/
+* {
+    box-sizing: border-box
+}
+/* 清除内外边距 */
+body, h1, h2, h3, h4, h5, h6, hr, p, blockquote, /* structural elements 结构元素 */
+dl, dt, dd, ul, ol, li, /* list elements 列表元素 */
+pre, /* text formatting elements 文本格式元素 */
+fieldset, lengend, button, input, textarea, /* form elements 表单元素 */
+th, td { /* table elements 表格元素 */
+    margin: 0;
+    padding: 0
+}
+h1 { font-size: 18px }
+h2 { font-size: 16px }
+h3 { font-size: 14px }
+h4, h5, h6 { font-size: 100% }
+
+address, cite, dfn, em, var { font-style: normal } /* 将斜体扶正 */
+code, kbd, pre, samp, tt { font-family: "Courier New", Courier, monospace } /* 统一等宽字体 */
+small { font-size: 12px } /* 小于 12px 的中文很难阅读，让 small 正常化 */
+
+/* 重置列表元素 */
+ul, ol { list-style: none }
+
+/* 重置文本格式元素 */
+a { text-decoration: none;color: #000 }
+
+q:before, q:after { content: '' }
+
+/* 重置表单元素 */
+legend { color: #000 } /* for ie6 */
+fieldset, img { border: none } /* img 搭车：让链接里的 img 无边框 */
+/* 注：optgroup 无法扶正 */
+button, input, select, textarea {
+    font-size: 100%
+}/* 使得表单元素在 ie 下能继承字体大小 */
+
+/* 重置表格元素 */
+table {
+    border-collapse: collapse;
+    border-spacing: 0
+}
+
+/* 重置 hr */
+hr {
+    border: none;
+    height: 1px;
+}
+
+/* 让非ie浏览器默认也显示垂直滚动条，防止因滚动条引起的闪烁 */
+html { overflow-y: scroll }
+
+/* ==========================================================================
+    Global
+   ========================================================================== */
+/*clear float*/
+.clearfix:after{content:".";display:block;height: 0;clear:both;visibility:hidden}
+/* 设置默认字体 */
+body { /* for ie */
+    /*font: 12px/1 Tahoma, Helvetica, Arial, "宋体", sans-serif;*/
+    /*font: 12px/1 Tahoma, Helvetica, Arial, "\5b8b\4f53", sans-serif; /* 用 ascii 字符表示，使得在任何编码下都无问题 */
+    background-color: #e8e8e8;
+	font: 12px/1 "Segoe UI", "Lucida Grande", Helvetica, Arial, "Microsoft YaHei", FreeSans, Arimo, "Droid Sans", "wenquanyi micro hei", "Hiragino Sans GB", "Hiragino Sans GB W3", "FontAwesome", sans-serif;
+}
+/*超出省略*/
+.ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+/*flex*/
+.flex {
+    width: 100%;
+    display: flex;
+    display: -webkit-box;
+}
+.flex>* {
+    flex: 1;
+    -webkit-box-flex: 1;
+}
+/*图标样式*/
+i {
+    font-size: 150%;
+    line-height: 150%;
+}
+/* ==========================================================================
+    Header
+   ========================================================================== */
+.header {
+    width: 100%;
+    height: 35px;
+    line-height: 35px;
+    background-color: #053F39;
+    color: #fff;
+    text-align: center;
+    display: flex;
+    display: -webkit-box;
+}
+.header>div {
+    flex: 1;
+    -webkit-box-flex: 1;
+}
+.header>h1 {
+    flex: 6;
+    -webkit-box-flex: 6;
+}
+.header a {
+    color: #fff;
+}
+
+/* ==========================================================================
+    Nav/Fixed
+   ========================================================================== */
+nav.navFixed {
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    background-color: #053F39;
+}
+nav.navFixed>a {
+    display: block;
+    padding: 12px 0;
+    color: #fff;
+    text-align: center;
+}
+.fixedTop {
+    position: fixed;
+    top: 0;
+}
+/* ==========================================================================
+    Panel
+   ========================================================================== */
+dl.panel {
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+    margin-bottom: 20px;
+}
+dl.panel dt {
+    padding: 10px 8px;
+    background-color: #b6b6b4;
+    color: #fff;
+    font-weight: bold;
+}
+dl.panel dd {
+    padding: 5px 8px;
+    background-color: #fff;
+}
+/* ==========================================================================
+    List
+   ========================================================================== */
+/*table*/
+.table {
+    line-height: 26px;
+    position: relative;
+    padding-right: 12px;
+}
+.table>li:last-child {
+    width: 0;
+    position: absolute;
+    right: 12px;
+}
+.table i {
+    line-height: 26px;
+}
+/* ==========================================================================
+    Form
+   ========================================================================== */
+ /*去掉苹果表单样式*/
+select,button,input {-webkit-appearance: none}
+textarea {  -webkit-appearance: none}
+select,button,input {
+    width: 100%;
+    padding: 5px 8px;
+    border-radius: 4px;
+}
+.selectWrapper {
+    width: 95%;
+    margin: 10px auto;
+}

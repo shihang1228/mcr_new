@@ -48,8 +48,8 @@
 						<i class="icon-caret-down"></i>
 					</li>
 					<li>长度(m):<input type="tel" name="productlen" id="productlen"/></li>
-					<li>径级(cm):<input type="tel" placeholder="10~80" name="diameterlen" id="diameterlen"/></li>
-					<li class="select">材类:
+					<li class="beym">径级(cm):<input type="tel" placeholder="10~80" name="diameterlen" id="diameterlen"/></li>
+					<li class="select beym">材类:
 						<select name="timbertypeid" id="timbertypeid">
 							<option value="">材类</option>
 							<option value="选材">选材</option>
@@ -61,8 +61,9 @@
 						</select>
 						<i class="icon-caret-down"></i>
 					</li>
-					<li>宽度(cm):<input type="tel" placeholder="10~500" name="wide" id="wide" /></li>
-					<li>厚度(cm):<input type="tel" placeholder="10~500" name="thinckness" id="thinckness"/></li>
+					<li class="beother">宽度(cm):<input type="tel" placeholder="10~500" name="wide" id="wide" /></li>
+					<li class="beother">厚度(cm):<input type="tel" placeholder="10~500" name="thinckness" id="thinckness"/></li>
+					<li>价格:<input type="tel" /></li>
 					<li>参考根数:<input type="tel" name="refnum" id="refnum" /></li>
 					<li>参考重量(t):<input type="tel" name="refwight" id="refwight"/></li>
 					<li>参考载量(t):<input type="tel" name="refcapacity" id="refcapacity"/></li>
@@ -75,4 +76,17 @@
 </div>
 </body>
 <script type="text/javascript" src="http://lib.sinaapp.com/js/jquery/2.0.3/jquery-2.0.3.min.js"></script>
+<script type="text/javascript">
+(function(){
+	$("#kindid").change(function(){
+		if ($("#kindid").val()==1){
+			$(".beym").show();
+			$(".beother").hide();
+		} else{
+			$(".beym").hide();
+			$(".beother").show();
+		};
+	})
+})()
+</script>
 </html>
