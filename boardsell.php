@@ -8,35 +8,29 @@
 <meta name="description" content="">
 <meta name="keywords" content="">
 
-<link rel="stylesheet" type="text/css" href="/statics/css/yumReset.css" />
-<link rel="stylesheet" type="text/css" href="/statics/css/yumPage.css" />
+<link rel="stylesheet" type="text/css" href="/statics/css/yumleeM.css" />
+<link rel="stylesheet" type="text/css" href="/statics/css/mcr.css" />
 <link rel="stylesheet" type="text/css" href="/com/icomoon/style.css" />
-
-<script type="text/javascript" src="http://libs.useso.com/js/jquery/1.8.2/jquery.min.js"></script>
-<script type="text/javascript" src="./boardlist.js"></script>
-
 </head>
 <?php
     include_once('mcr_sc_fns.php');
 	$stuff_array=get_stuffarray();	
 	?>
 <body>
-<nav class="navFix">
-	<ul>
-		<li><a href="index.php"><i class="icon-home"></i>首页</a></li>
-		<li><a href="goodlist.php"><i class="icon-now-widgets"></i>现货</a></li>
-		<li><a href="release.php"><i class="icon-bullhorn"></i>发布</a></li>
-		<li><a href="user.php"><i class="icon-head"></i>我</a></li>
-	</ul>
+<nav class="navFixed flex">
+	<a href="index.php"><i class="icon-home"></i><div>首页</div></a>
+	<a href="goodlist.php"><i class="icon-now-widgets"></i><div>现货</div></a>
+	<a href="release.php"><i class="icon-bullhorn"></i><div>发布</div></a>
+	<a href="user.php"><i class="icon-head"></i><div>我</div></a>
 </nav>
 <header class="header">
-	<a href="javascript:history.back();"><i class="icon-arrow-back"></i></a>
-	<h2>板材待售</h2>
-	<a href="index.php"><i class="icon-home"></i></a>
+	<div><a href="javascript:history.back();"><i class="icon-arrow-back"></i></a></div>
+	<h1>板材待售</h1>
+	<div><a href="index.php"><i class="icon-home"></i></a></div>
 </header>
 <section>
 	<form action="" method="get">
-		<ul class="selectBanner col4 clearfix">
+		<ul class="flex selectWrapper col4">
 			<li>
 				<select name = "stuffselect" id="stuffselect">
 					<option value="0">材种</option>
@@ -49,16 +43,19 @@
 						}
 					    ?>
 				</select>
-				<i class="icon-caret-down"></i>
 			</li>
-			<li><input type="tel" placeholder="宽度" id="productwide"></li>
-			<li><input type="tel" placeholder="厚度" id="thinckness"></li>
-			<li><button class="button" type="button" onclick="start(1,1);">查询</button></li>
+			<li><input type="tel" placeholder="宽度" id="productwide" /></li>
+			<li><input type="tel" placeholder="厚度" id="thinckness" /></li>
+			<li><button type="button" onclick="start(1,1);">查询</button></li>
 		</ul>
 	</form>
 </section>
-<table class="goodslist" id="goodslist">
-</table>
-
+<dl class="panel">
+	<dt>待售</dt>
+	<dd id="goodslist">
+	</dd>
+</dl>
 </body>
+<script type="text/javascript" src="http://libs.useso.com/js/jquery/1.8.2/jquery.min.js"></script>
+<script type="text/javascript" src="./boardlist.js"></script>
 </html>

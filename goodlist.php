@@ -8,10 +8,9 @@
 <title>现货</title>
 <meta name="description" content="">
 <meta name="keywords" content="">
-<link rel="stylesheet" type="text/css" href="./statics/css/yumleeM.css" />
-<link rel="stylesheet" type="text/css" href="./com/icomoon/style.css" />
-<script type="text/javascript" src="http://libs.useso.com/js/jquery/1.8.2/jquery.min.js"></script>
-<script type="text/javascript" src="./goodlist.js"></script>
+<link rel="stylesheet" type="text/css" href="/statics/css/yumleeM.css" />
+<link rel="stylesheet" type="text/css" href="/statics/css/mcr.css" />
+<link rel="stylesheet" type="text/css" href="/com/icomoon/style.css" />
 </head>
 <?php
     session_start();
@@ -53,13 +52,13 @@
 			</li>
 			<li>
 				<select class="selectItem"  name ="kindselect" id="kindselect">
-					<option value = 0>货种</option>
-					<option value = 1>原木</option>
-					<option value = 2>条子</option>
-					<option value = 3>口料</option>
-					<option value = 4>大方</option>
-					<option value = 5>大板</option>
-					<option value = 6>防腐材</option>
+					<option value = '0'>货种</option>
+					<option value = '1'>原木</option>
+					<option value = '2'>条子</option>
+					<option value = '3'>口料</option>
+					<option value = '4'>大方</option>
+					<option value = '5'>大板</option>
+					<option value = '6'>防腐材</option>
 				</select>
 			</li>
 			<li>
@@ -78,22 +77,22 @@
 			</li>
 			<li><input type="button"  class="button sousuo" onclick="start(1,1)" value="搜索"></li>
 		</ul>
-		<ul class="flex selectWrapper">
+		<ul class="flex selectWrapper col3">
 			<li>
-				<input class="selectItem" type="tel" placeholder="长度" id="productlen" name="producelen"/>
+				<input type="tel" placeholder="长度" id="productlen" name="producelen"/>
 			</li>
 			<li id="kindselect_1">
-				<input class="selectItem" type="tel" placeholder="宽度" id="productwide" name="productwide"/>
+				<input type="tel" placeholder="宽度" id="productwide" name="productwide"/>
 			</li>
 			<li id="kindselect_2">
-				<input class="selectItem" type="tel" placeholder="厚度" id="thinckness" name="thinckness"/>
+				<input type="tel" placeholder="厚度" id="thinckness" name="thinckness"/>
 			</li>
 			<li id="kindselect_3">
-				<input class="selectItem" type="tel" placeholder="径级" id="diameterlen" name="diameterlen"/>
+				<input type="tel" placeholder="径级" id="diameterlen" name="diameterlen"/>
 			</li>
 			<li id="kindselect_4">
-				<select class="selectItem" id="timber" name="timber">
-					<option value=0>材质</option>
+				<select id="timber" name="timber">
+					<option value='0'>材质</option>
 					<option value="选材">选材</option>
 					<option value="一级材">一级材</option>
 					<option value="二级材">二级材</option>
@@ -135,4 +134,6 @@
 	</div>
 </div> -->
 </body>
+<script src="http://libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/goodlist.js"></script>
 </html>

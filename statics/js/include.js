@@ -9,4 +9,4 @@ var navFixed ='';
 	navFixed+='<a href="release.php"><i class="icon-bullhorn"></i><div>发布</div></a>',
 	navFixed+='<a href="user.php"><i class="icon-head"></i><div>我</div></a>',
 	navFixed+='</nav>';
-$("body").html(navFixed);
+$("body").prepend(navFixed);

@@ -9,7 +9,7 @@
 <meta name="description" content="">
 <meta name="keywords" content="">
 <link rel="stylesheet" type="text/css" href="/statics/css/yumleeM.css" />
-<link rel="stylesheet" type="text/css" href="/statics/css/index.css" />
+<link rel="stylesheet" type="text/css" href="/statics/css/mcr.css" />
 <link rel="stylesheet" type="text/css" href="/com/icomoon/style.css" />
 <link rel="stylesheet" type="text/css" href="/com/swiper/swiper.min.css" />
 </head>
@@ -30,8 +30,8 @@
 <div class="swiper-holder">
 	<img src="/statics/images/swiper0.jpg" />
 </div>
-<div class="flex">
-	<div class="scroll-tit">现货信息</div>
+<div class="flex subfield">
+	<div>现货信息</div>
 	<div class="swiper-container">
 		<ul class="swiper-wrapper">
 		  <?php
@@ -60,8 +60,8 @@
 </ul>
 <ul class="flex menuIcon">
 	<li><a class="home6" href="##"></a></li>
-	<li><a class="home7" href="##"></a></li>
-	<li><a class="home8" href="##"></a></li>
+	<li><a class="home7" href="buylist.php"></a></li>
+	<li><a class="home8" href=""></a></li>
 </ul>
 </body>
 <script type="text/javascript" src="/com/swiper/swiper.min.js"></script>

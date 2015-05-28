@@ -62,6 +62,7 @@ body { /* for ie */
     /*font: 12px/1 Tahoma, Helvetica, Arial, "\5b8b\4f53", sans-serif; /* 用 ascii 字符表示，使得在任何编码下都无问题 */
     background-color: #e8e8e8;
 	font: 12px/1 "Segoe UI", "Lucida Grande", Helvetica, Arial, "Microsoft YaHei", FreeSans, Arimo, "Droid Sans", "wenquanyi micro hei", "Hiragino Sans GB", "Hiragino Sans GB W3", "FontAwesome", sans-serif;
+    padding-bottom: 60px;
 }
 /*超出省略*/
 .ellipsis {
@@ -83,6 +84,15 @@ body { /* for ie */
 i {
     font-size: 150%;
     line-height: 150%;
+}
+.fullCol {
+    width: 100%;
+}
+.col3>* {
+    width: 33.3%;
+}
+.col4>* {
+    width: 25%;
 }
 /* ==========================================================================
     Header
@@ -128,6 +138,18 @@ nav.navFixed>a {
     position: fixed;
     top: 0;
 }
+.btnFixed {
+    width: 100%;
+    height: 50px;
+    background-color: #fd8000;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    border: 0;
+    border-radius: 0;
+    position: fixed;
+    bottom: 0;
+}
 /* ==========================================================================
     Panel
    ========================================================================== */
@@ -148,6 +170,14 @@ dl.panel dd {
 /* ==========================================================================
     List
    ========================================================================== */
+/*list*/
+.list {
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+    padding: 5px 8px;
+    background-color: #fff;
+    line-height: 32px;
+    margin-bottom: 20px;
+}
 /*table*/
 .table {
     line-height: 26px;
@@ -166,12 +196,16 @@ dl.panel dd {
     Form
    ========================================================================== */
  /*去掉苹果表单样式*/
-button,input {-webkit-appearance: none}
+select,button,input {-webkit-appearance: none}
 textarea {  -webkit-appearance: none}
 select,button,input {
     width: 100%;
     padding: 5px 8px;
     border-radius: 4px;
+}
+select {
+    -webkit-appearance: scrollbarbutton-down;
+    appearance: scrollbarbutton-down;
 }
 .selectWrapper {
     width: 95%;

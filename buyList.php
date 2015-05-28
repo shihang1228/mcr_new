@@ -18,12 +18,12 @@
 	$stuff_array=get_stuff($stuffnum);
 	?>
 <body>
-<!-- <nav class="navFixed flex">
+<nav class="navFixed flex">
 	<a href="index.php"><i class="icon-home"></i><div>首页</div></a>
 	<a href="goodlist.php"><i class="icon-now-widgets"></i><div>现货</div></a>
-	<a href="release.php"><i class="icon-bullhorn"></i><div>发布</div></a>
+	<a href="buyrelease.php"><i class="icon-bullhorn"></i><div>发布</div></a>
 	<a href="user.php"><i class="icon-head"></i><div>我</div></a>
-</nav> -->
+</nav>
 <header class="header">
 	<div><a href="javascript:history.back();"><i class="icon-arrow-back"></i></a></div>
 	<h1>求购信息</h1>
@@ -76,30 +76,10 @@
 </section>
 <dl class="panel">
 	<dt>求购列表</dt>
-	<dd>
-		<a href="##">
-			<ul class="flex table">
-				<li>满洲里</li><li>樟子松</li><li>4米</li><li>条子</li><li>面议</li><li>15-5-25 9:30</li><li><i class="icon-chevron-right"></i></li>
-			</ul>
-		</a>
-		<a href="##">
-			<ul class="flex table">
-				<li>满洲里</li><li>樟子松</li><li>4米</li><li>条子</li><li>1000元</li><li>15-5-25 9:30</li><li><i class="icon-chevron-right"></i></li>
-			</ul>
-		</a>
-		<a href="##">
-			<ul class="flex table">
-				<li>满洲里</li><li>樟子松</li><li>4米</li><li>条子</li><li>50000元</li><li>15-5-25 9:30</li><li><i class="icon-chevron-right"></i></li>
-			</ul>
-		</a>
-		<a href="##">
-			<ul class="flex table">
-				<li>满洲里</li><li>樟子松</li><li>4米</li><li>条子</li><li>面议</li><li>15-5-25 9:30</li><li><i class="icon-chevron-right"></i></li>
-			</ul>
-		</a>
+	<dd id="qiugou">
 	</dd>
 </dl>
 </body>
 <script src="http://libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
-<script src="/statics/js/include.js"></script>
+<script src="buylist.js"></script>
 </html>

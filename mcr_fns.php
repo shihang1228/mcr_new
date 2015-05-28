@@ -25,8 +25,8 @@
 		if($diameterlen !=0) {
 		    $filtervalue =$filtervalue ." and p.diameterlen =".$diameterlen;
 		}
-		if($timber !=0) {
-		    $filtervalue =$filtervalue ." and p.timber =".$timber;
+		if($timber !==0) {
+		    $filtervalue =$filtervalue ." and p.timber ='".$timber."'";
 		}
 	} else if( $kindid >1) {//其他类
 		if (($wide !=0) &&($thinckness !=0)) {

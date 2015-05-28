@@ -1,9 +1,13 @@
 @charset "UTF-8";
 /**
- * 
  * @authors Yumlee (543265835@qq.com)
  * @date    2015-05-27 09:32:57
  */
+#kindselect_1,#kindselect_2 {
+	display: none;
+}
+
+/*index*/
 .swiper-holder {
 	width: 100%;
 }
@@ -11,7 +15,7 @@
 	width: 100%;
 	height: 80px;
 }
-.flex>div:first-child {
+.subfield>div:first-child {
     flex: 2;
     -webkit-box-flex: 2;
     text-align: center;
@@ -19,7 +23,7 @@
     background-color: #053F39;
     color: #fff;
 }
-.flex>div:last-child {
+.subfield>div:last-child {
     flex: 3;
     -webkit-box-flex: 3;
    	height: 35px;
@@ -44,3 +48,14 @@
 .home7 {background: url(/statics/css/img/home7.png) no-repeat center}
 .home8 {background: url(/statics/css/img/home8.png) no-repeat center}
 .home9 {background: url(/statics/css/img/home9.png) no-repeat center}
+
+/*search1*/
+.form-vertical {
+	line-height: 28px;
+}
+.form-vertical>.flex>div {
+	width: 45%;
+}
+.form-vertical>.flex>div:last-child {
+	width: 10%
+}

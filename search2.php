@@ -7,15 +7,17 @@
 <title>智能找货</title>
 <meta name="description" content="">
 <meta name="keywords" content="">
-<link rel="stylesheet" type="text/css" href="/statics/css/yumReset.css" />
-<link rel="stylesheet" type="text/css" href="/statics/css/yumPage.css" />
+<link rel="stylesheet" type="text/css" href="/statics/css/yumleeM.css" />
+<link rel="stylesheet" type="text/css" href="/statics/css/mcr.css" />
 <link rel="stylesheet" type="text/css" href="/com/icomoon/style.css" />
+<style type="text/css">
+</style>
 </head>
 <body>
 <header class="header">
-	<a href="javascript:history.back();"><i class="icon-arrow-back"></i></a>
-	<h2>智能找货</h2>
-	<a href="index.php"><i class="icon-home"></i></a>
+	<div><a href="javascript:history.back();"><i class="icon-arrow-back"></i></a></div>
+	<h1>智能找货</h1>
+	<div><a href="index.php"><i class="icon-home"></i></a></div>
 </header>
 <?php
     include_once('mcr_sc_fns.php');
@@ -40,9 +42,9 @@
        $wide,$thinckness,$diameterlen,$timber,$publishtime);
 	  
 ?>
-<div>
-    <dd class="panel-body">
-    <ul class="list">
+   <dl class="panel">
+	<dt>智能找货</dt>
+    <dd>
 	 <?php
 	     $outstr=" ";
 	    if (!is_array($data_array)) {
@@ -64,50 +66,49 @@
 			   $updatetime=$row['updatetime'];
 			   $stuffname=$row['stuffname'];
 			   
-			   $outstr=$carnum ." ".$productlen."米 ".$stuffname;
+			   $outstr="";
 			   if($kindname =="原木"){
 			     if ($diameterlen ==0){
-				   $outstr=$outstr." ".$kindname;
+				   $outstr=" ".$kindname;
 				 }
 				 else {
-				    $outstr=$outstr." ".$diameterlen."φ ".$timber;
+				    $outstr=" ".$diameterlen."φ ".$timber;
 				 }
 			   }
 			   else {
 			       if($wide ==0 or $thinckness ==0) {
-				     $outstr=$outstr." ".$kindname;
+				     $outstr=" ".$kindname;
 				   }
 				   else {
-				      $outstr=$outstr." ".$wide."*".$thinckness;
+				      $outstr=" ".$wide."*".$thinckness;
 				   }
 			   }
-			   $outstr =$outstr." ".$portname." ".$updatetime;
+			 
 
 	 ?>
 
-		<li class="list-item">
-			<a href="detail.php?productid=<?php echo  $productid;?>" class="clearfix">
-			<div class="list-left"><span><?php echo $outstr;?></span></div>
-			<div class="list-right"><i class="icon-chevron-right"></i></div>
-			</a>
-		</li>
+		<a href="detail.php?productid=<?php echo  $productid;?>">
+			<ul class="flex table">
+				<li><?php echo  $carnum;?></li><li><?php echo $productlen;?>米</li><li><?php echo $stuffname;?></li><li><?php echo $outstr;?></li><li><?php echo $portname; ?></li><li><?php echo $updatetime;?></li><li><i class="icon-chevron-right"></i></li>
+			</ul>
+		</a>
     <?php
 	     }
       }
     ?>
-	 </ul>
-	</dd>
-</div>    
+	 </dd>
+    </dl>
  <?php
 	} 
 	else {
 ?>
-<form class="push pushInput" action="" method="post">
-	<dl class="panel-body">
+<form action="" method="post">
+	<dl class="panel">
 		<dt>查找</dt>
 		<dd>
-			<ul class="">
-				<li>区域:
+			<ul class="form-vertical">
+				<li class="flex">
+					<div>区域:</div><div>
 					<select id = "areaselect" name="areaselect">
 					   <option value=0>区域</option>
 					   <?php
@@ -120,10 +121,10 @@
 							}
 
 		                    ?>
-					</select>
-					<i class="icon-caret-down"></i>
+					</select></div><div></div>
 				</li>
-				<li class="select">货种:
+				<li class="flex">
+					<div>货种:</div><div>
 					<select id="kindselect" name ="kindselect">
 						<option value = 0>货种</option>
 						<option value = 1>原木</option>
@@ -132,10 +133,10 @@
 						<option value = 4>大方</option>
 						<option value = 5>大板</option>
 						<option value = 6>防腐材</option>
-					</select>
-					<i class="icon-caret-down"></i>
+					</select></div><div></div>
 				</li>
-				<li>材种:
+				<li class="flex">
+					<div>材种:</div><div>
 					<select name ="stuffselect" id="stuffselect">
 						<option value = 0>材种</option>
 					    <?php
@@ -146,24 +147,36 @@
 		                        echo "<option value =".$stuffid.">".$stuffname."</option>";
 							}
 		                    ?>
-					</select>
-					<i class="icon-caret-down"></i>
+					</select></div><div></div>
 				</li>
-				<li>长度:<input type="text" name="productlen" id="productlen" /></li>
-				<li id="kindselect_1">宽度:<input type="text" name="wide" id="wide" /></li>
-				<li id="kindselect_2">厚度:<input type="text" name="thinckness" id="thinckness" /></li>
-				<li id="kindselect_3">径级:<input type="text" name="diameterlen" id="diameterlen"/></li>
-				<li id="kindselect_4">材质:
+				<li class="flex">
+					<div>长度:</div>
+					<div><input type="text" name="productlen" id="productlen" /></div><div></div>
+				</li>
+				<li class="flex" id="kindselect_1">
+					<div>宽度:</div>
+					<div><input type="text" name="wide" id="wide" /></div><div></div>
+				</li>
+				<li class="flex" id="kindselect_2">
+					<div>厚度:</div>
+					<div><input type="text" name="thinckness" id="thinckness" /></div><div></div>
+				</li>
+				<li class="flex" id="kindselect_3">
+					<div>径级:</div>
+					<div><input type="text" name="diameterlen" id="diameterlen"/></div><div></div>
+				</li>
+				<li class="flex" id="kindselect_4">
+					<div>材质:</div><div>
 					<select class="selectItem" id="timber" name="timber">
-						<option value="0">材质</option>
+						<option value=0>材质</option>
 						<option value="选材">选材</option>
 						<option value="一级材">一级材</option>
 						<option value="二级材">二级材</option>
 						<option value="加工材">加工材</option>
-					</select>
-					<i class="icon-caret-down"></i>
+					</select></div><div></div>
 				</li>
-				<li>发布时间:
+				<li class="flex">
+					<div>发布时间:</div><div>
 					<select class="selectItem" name="publishtime" id="publishtime">
 						<option value="0">选择时间</option>
 						<option value="1">1天以内</option>
@@ -171,13 +184,12 @@
 						<option value="5">5天以内</option>
 						<option value="7">7天以内</option>
 						<option value="30">30天以内</option>
-					</select>
-					<i class="icon-caret-down"></i>
+					</select></div><div></div>
 				</li>
 			</ul>
 		</dd>
 	</dl>
-	<input type="submit" name ="submit" value="查找" />
+	<input class="btnFixed" type="submit" name ="submit" value="查找" />
 </form>
 <?php
 	}

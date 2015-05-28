@@ -21,13 +21,13 @@
 	*/
 	//判断条件
 	if($areavalue != 0){
-		$filtervalue =$filtervalue . " and p.portid =".$areavalue;
+		$filtervalue =$filtervalue . " and b.portid =".$areavalue;
 	}
 	if($kindvalue !=0){
-		$filtervalue =$filtervalue ." and p.kindid =".$kindvalue;
+		$filtervalue =$filtervalue ." and b.kindid =".$kindvalue;
 	}
 	if($stuffvalue !=0){
-	    $filtervalue =$filtervalue ." and p.stuffid =".$stuffvalue;
+	    $filtervalue =$filtervalue ." and b.stuffid =".$stuffvalue;
 	}
 	/*
 	if($productlen !=0){
@@ -50,7 +50,9 @@
 	
 	*/
 	
-	 $query1 = "select  buyid,portname,stuffname,productlen,kindname,price,updatetime ";
+	 $query1 = "select  buyid,portname,stuffname,productlen,kindname,"
+	 ."case when price is null then ''  when price =0 then '面议' else price end as price,"
+	 ."substring(updatetime,6,11) as updatetime ";
      $query2= " from t_buy b,t_port r,t_stuff s,t_kind k,t_user u where b.stuffid = s.stuffid AND "
              ." b.kindid = k.kindid and b.portid = r.portid and u.userid = b.userid and buystatus = 1 ";
            
@@ -63,6 +65,9 @@
 	 $pagecount=0;
 	 
 	  $querypagenum="select count(*) as c ".$query2;
+	 // echo $querypagenum;
+	//  return;
+	  
 	  $result = @$conn->query($querypagenum);
 	  $datanum =$result->fetch_row();
       $total=$datanum[0];

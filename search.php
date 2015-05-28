@@ -26,9 +26,10 @@
 	  $data_array=get_datafromnum($inputnumber);
 	  
  ?>
- <div>
-   <dd class="panel-body">
-   <ul class="list">
+
+   	<dl class="panel">
+	<dt></dt>
+    <dd>
      <?php
 	     $outstr=" ";
 	    if (!is_array($data_array)) {
@@ -50,40 +51,50 @@
 			   $updatetime=$row['updatetime'];
 			   $stuffname=$row['stuffname'];
 			   
-			   $outstr=$carnum ." ".$productlen."米 ".$stuffname;
+			   $outstr="";
 			   if($kindname =="原木"){
 			     if ($diameterlen ==0){
-				   $outstr=$outstr." ".$kindname;
+				   $outstr=$kindname;
 				 }
 				 else {
-				    $outstr=$outstr." ".$diameterlen."φ ".$timber;
+				    $outstr=$diameterlen."φ ".$timber;
 				 }
 			   }
 			   else {
 			       if($wide ==0 or $thinckness ==0) {
-				     $outstr=$outstr." ".$kindname;
+				     $outstr=$kindname;
 				   }
 				   else {
-				      $outstr=$outstr." ".$wide."*".$thinckness;
+				      $outstr=$wide."*".$thinckness;
 				   }
 			   }
-			   $outstr =$outstr." ".$portname." ".$updatetime;
+			   
 
 	 ?>
-
+   <!--
 		<li class="list-item">
 			<a href="detail.php?productid=<?php echo  $productid;?>" class="clearfix">
 			<div class="list-left"><span><?php echo $outstr;?></span></div>
 			<div class="list-right"><i class="icon-chevron-right"></i></div>
 			</a>
 		</li>
+		-->
+	
+	
+		<a href="detail.php?productid=<?php echo  $productid;?>">
+			<ul class="flex table">
+				<li><?php echo  $carnum;?></li><li><?php echo $productlen;?>米</li><li><?php echo $stuffname;?></li><li><?php echo $outstr;?></li><li><?php echo $portname; ?></li><li><?php echo $updatetime;?></li><li><i class="icon-chevron-right"></i></li>
+			</ul>
+		</a>
+	
+
     <?php
 	     }
       }
     ?>
-     </ul>
-	</dd>
-  </div>
+	 </dd>
+    </dl>
+
   <?php  
     }
    else {

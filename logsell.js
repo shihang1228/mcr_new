@@ -114,7 +114,11 @@ function start(type,page){
 
 						 $row =$("#goodslist");
 						  $item = $(
-								"<tr><th>"+neirou.carnum+"</th><th>"+neirou.stuffname+"</th><th>"+neirou.productlen+"米</th><th>"+$bianhua+"</th><th>"+neirou.portname+"</th><th>"+neirou.updatetime+"</th></tr>"		 
+								"<a href='detail.php?productid="+neirou.productid+"'>"+
+									"<ul class='flex table'>"+
+										"<li>"+neirou.carnum+"</li><li>"+neirou.stuffname+"</li><li>"+neirou.productlen+"米</li><li>"+$bianhua+"</li><li>"+neirou.portname+"</li><li>"+neirou.updatetime+"</li><li><i class='icon-chevron-right'></i></li>"+
+									"</ul>"+
+								"</a>"		 
 						  );	
 						 $(".no_result").empty();
 						 $row.append($item);
