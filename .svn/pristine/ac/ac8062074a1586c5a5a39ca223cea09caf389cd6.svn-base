@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<title>到货列表</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<link rel="stylesheet" type="text/css" href="statics/css/yumleeM.css" />
+<link rel="stylesheet" type="text/css" href="statics/css/mcr.css" />
+<link rel="stylesheet" type="text/css" href="com/icomoon/style.css" />
+<link rel="stylesheet" href="iconfont/iconfont.css">
+</head>
+<?php
+    session_start();
+    include_once('mcr_sc_fns.php');
+
+	include_once('system/model/wood.php');
+
+
+    if(isset($_SESSION['portid'])){
+			$portid=$_SESSION['portid'];
+	}
+	else {
+	   $portid=1;	
+	}
+	if((isset($_GET["train"])) && (isset($_GET["trainDate"])))
+	{
+	    $train =$_GET["train"];
+	    $trainDate =$_GET["trainDate"];
+	}
+	else {
+	    $train="-1";
+	    $trainDate="-1";
+	}
+
+	$new_array = getdata("call p_scroll_train('".$portid."','".$train."','".$trainDate."')");
+	?>
+<body>
+<?php
+	include('public.html');
+?>
+<!--scroll_top start-->
+<!-- <div class="scroll_top">
+	<span id="s_btn"><i class="iconfont">&#x9870;</i></span>
+</div> -->
+<!--end scroll_top-->
+<header class="header">
+	<div class="header_home"><a href="index.php"><i class="icon-arrow-back"></i></a></div>
+	<h1>到货列表</h1>
+	<div class="header_home"><a href="index.php"><i class="icon-home"></i></a></div>
+</header>
+
+
+<!--  -->
+  <div class="goods">
+	<dl class="panel">
+	      <?php
+			    if (!is_array($new_array)) {
+					echo "<p>对不起，没有查找到您要查找的内容！</p>";
+				   return;
+				}
+
+				foreach ($new_array as $row)
+				{
+					$carnum = $row['carnum'];
+			        $productlen = $row['productlen'];
+			        $kindname=$row['kindname'];
+			        $wide=$row['wide'];
+			        $thinckness=$row['thinckness'];
+		            $timber=$row['timber'];
+			        $diameterlen=$row['diameterlen'];
+			      //  $productid=$row['productid'];
+			        $contactphone=$row['contactphone'];
+			        $stuffname=$row['stuffname'];
+					$cdkey=$row['cdkey'];
+			        $widerange=$row['widerange'];
+					$thincknessrange=$row['thincknessrange'];
+					
+			   $outstr="";
+			   $showtimber="";
+			   if ($productlen ==0) {
+				   $productlen="";
+			   }
+			   else {
+				   $productlen = $productlen."米";
+			   }
+			   if($kindname =="原木"){
+			     if ($diameterlen ==0){
+				   $outstr=$kindname;
+				 }
+				 else {
+				    $outstr=$diameterlen."φ ";
+					if ($timber !='0'){
+						$showtimber=$timber;
+					}
+				 }
+			   }
+			   else {
+			       if($wide ==0 or $thinckness ==0) {
+				     $outstr=$kindname;
+				   }
+				   else {
+				      $outstr=$thinckness."*".$wide;
+					  if (($kindname=="大方") or ($kindname=="大板")or($kindname=="防腐材"))
+					  {
+						  if(($widerange !=0) or($thincknessrange !=0))
+						  {
+							   $outstr= $outstr."起";
+						  }
+					  }
+				   }
+			   }
+				
+				?>
+				
+		<dd id="goodslist">
+		  <?php
+			{
+				
+		  ?>
+			<a href='detail.php?cdkey=<?php echo $cdkey ?>'>
+			<ul class='flex table train_table5'>
+				<li><?php echo $carnum  ?></li><li><?php echo $productlen  ?></li><li><?php echo $stuffname  ?></li>
+				<li><?php echo $outstr  ?>&nbsp;&nbsp;<?php echo $showtimber  ?></li><li><?php echo $contactphone  ?></li>
+			</ul>
+		   <?php
+			}
+            ?>		
+			</a>
+		</dd>
+		<?php
+		  }
+		?>
+	</dl>
+</div>
+<!--  -->
+</body>
+<script src="http://libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="js/top.js"></script>
+</html>

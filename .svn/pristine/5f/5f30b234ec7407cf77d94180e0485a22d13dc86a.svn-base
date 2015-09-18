@@ -1,0 +1,29 @@
+<?php
+ session_start();		//启用session支持
+ header("Content-Type: text/html; charset=utf-8");
+ include_once('system/model/db_fns.php');		//包含系统功能文件
+ 
+  $conn = db_connect();
+
+  $publishtime=date("Y-m-d H:i:s");//发布时间
+  $cdkey = $_GET["cdkey"];  //用户id
+  //error_log(date('Y-m-d H:i:s') .'下架:'.$cdkey."\n",3,$_SERVER['DOCUMENT_ROOT']."/log/run.log");
+//  //下架(2交易成功3交易未成)
+  /* $select = $_GET["select"];  
+  if($select==1) $select=2;
+  else $select=3; */
+  $updatetime =$publishtime;
+ 
+	//$buystatus =1; //求购状态
+    $query ="update t_product set salestatusid=4,completetime='".$updatetime."' where cdkey='".$cdkey."'";  //更新求购状态及下架时间
+	//error_log(date('Y-m-d H:i:s') .'down:'.$query."\n",3,$_SERVER['DOCUMENT_ROOT']."/log/run.log");
+//  echo $query;
+//  return;  
+	$result =$conn->query($query);
+   if($result)
+   {
+     echo "<script>alert('下架成功！');history.back();</script>";
+   }else{
+      echo "<script>alert('下架失败！');history.back();</script>";
+	  }
+?>

@@ -1,0 +1,192 @@
+﻿
+$(function(){
+	$(".load_success").hide();
+     start();
+    //用js设置cookie
+    //SetCookie("localFlag","0");
+    if(getCookie("localFlagSearch") == null){
+    	SetCookie("localFlagSearch","0");
+    	//alert(getCookie("localFlagSearch"));
+    }
+ });
+ 
+ //这里就要进行计算滚动条当前所在的位置了。如果滚动条离最底部还有100px的时候就要进行调用ajax加载数据
+ $(window).scroll(function(){    
+     //此方法是在滚动条滚动时发生的函数
+     // 当滚动到最底部以上100像素时，加载新内容
+     var $doc_height,$s_top,$now_height;
+     $doc_height = $(document).height();        //这里是document的整个高度
+     $s_top = $(this).scrollTop();            //当前滚动条离最顶上多少高度
+     $now_height = $(this).height();            //这里的this 也是就是window对象
+     if(($doc_height - $s_top - $now_height) < 100) start();    
+ });
+ 
+ 
+ //做一个ajax方法来请求data.php不断的获取数据
+
+ var $num = 0;
+ var $page = 0;
+ var $pagecount = 1;
+function start(){
+
+	var kindselect =$("#kindselect").val();
+	var portid =$("#portid").val();
+	var stuffselect =$("#stuffselect").val();
+	var productlen =$("#productlen").val();
+	var wide =$("#wide").val();
+	var thinckness =$("#thinckness").val();
+	var diameterlen =$("#diameterlen").val();
+	var timber =$("#timber").val();
+	var publishtime =$("#publishtime").val();
+	var spotpositionid =$("#spotpositionid").val();
+
+	if(getCookie("localFlagSearch") == 0){
+		
+	}//session = 0;未点链接
+	else if(getCookie("localFlagSearch") == 1){ //localFlagSearch == 1 时，说明进过详细页
+		//alert("进入过链接");
+		var localSearchMes = localStorage.getItem("localSearchMes");
+		if(localSearchMes){
+			$("#goodslist").html(localSearchMes);
+		}
+		SetCookie("localFlagSearch","0");
+		$num = parseInt(getCookie("localSearchPage"));
+		$page = parseInt(getCookie("localSearchPage"));
+		$pagecount = getCookie("pageSearchcount");
+		return;
+	}//localFlagSearch == 1的结束
+
+
+	if(document.getElementById("wide").value.length == 0){                                                              
+		wide=0;
+	}else{
+		wide=document.getElementById("wide").value;
+	}	
+		
+	if(document.getElementById("thinckness").value.length == 0){
+		thinckness=0;
+	}else{
+		thinckness=document.getElementById("thinckness").value;
+	}	
+
+	if(document.getElementById("diameterlen").value.length == 0){
+		diameterlen=0;
+	}else{
+		diameterlen=document.getElementById("diameterlen").value;
+	}
+
+	if(document.getElementById("spotpositionid").value.length == 0){
+		spotpositionid=0;
+	}else{
+		spotpositionid=document.getElementById("spotpositionid").value;
+	}
+	
+	if($num == $pagecount){
+		$(".loading").hide();
+		$(".load_success").show();
+	}
+
+	if($pagecount > $num){
+		$(".load_success").hide();
+		//$(".loading").show();
+
+		//alert(1);
+
+		 $.ajax({
+			 url:'searchgood_bgo.php',
+			 type:'POST',
+			 data:"num="+$num+"&portid="+portid+"&kindselect="+kindselect+"&stuffselect="+stuffselect
+		  +"&productlen="+productlen+"&wide="+wide+"&thinckness="+thinckness+"&diameterlen="+diameterlen
+		  +"&timber="+timber+"&publishtime="+publishtime+"&spotpositionid="+spotpositionid,
+		  	beforeSend:function(){
+		  		$(".loading").show();
+		  	},
+			 dataType:'json',
+			 success:function(json){
+				 if(typeof json == 'object'){
+
+					 var neirou,$row,$item,$carnum,$spotposition,$a_href,$fontweight="";
+					 $row =$("#panel #goodslist");
+
+				    //设置默认隐藏
+				    $(".load_success").hide();
+				    $("#goodslist").siblings("#no-result").hide();
+
+					 if(json.length == 0){
+						$(".loading").hide();
+						$(".load_success").hide();
+						$("#goodslist").empty().siblings("#no-result").show();
+					 }else{
+						 
+						$pagecount = json[0].pagecount;
+						SetCookie("pageSearchcount",$pagecount);   //将总页数保存到kookie里
+
+						for(var i=1;i<json.length;i++){
+							neirou = json[i];    //当前层数据
+
+							 if(neirou.kindname == "原木"){
+								if(neirou.diameterlen == 0 || neirou.timber == 0) {
+									$bianhua = "<li>" + neirou.kindname + "</li>";
+								}else{
+									$bianhua ="<li>" + neirou.diameterlen + "φ &nbsp;&nbsp;" + neirou.timber+"</li>";
+								}
+							}else{
+								
+								if(neirou.wide == 0 || neirou.thinckness == 0 ){
+									
+									$bianhua ="<li>" + neirou.kindname + "</li>";
+								}else{	
+									$bianhua ="<li>" + neirou.thinckness + "*" + neirou.wide + "</li>";
+									if(neirou.kindname == "大方" || neirou.kindname == "大板"){
+										if(neirou.widerange !=0 || neirou.thincknessrange != 0){
+											$bianhua = "<li>" + neirou.thinckness + "*" + neirou.wide + "起</li>";
+										}
+									}
+								}
+							}
+							$carnum = neirou.carnum;
+							if(neirou.goodtype == 1){
+								$spotposition = neirou.spotposition;
+							}else{
+								$carnum = neirou.refcapacity;
+								$spotposition=neirou.dumpposition;
+							}
+							
+							if(neirou.goodtype == 1){
+								$a_href = "detail.php?cdkey=" + neirou.cdkey;
+								$fontweight = "";
+							}else{
+								$a_href = "dumpdetail.php?cdkey=" + neirou.cdkey;
+								$fontweight = " class='font_weight'";
+							}
+							  $item = $(
+								"<a href="+ $a_href+">"+
+									"<ul class='flex table table_list stable5'>"+
+										"<li "+$fontweight+">"+$carnum+"</li><li>"+neirou.productlen+"</li><li>"+neirou.stuffname+"</li>" + $bianhua +"<li class='ellipsis'>"+$spotposition+"</li>"+
+									"</ul>"+
+								"</a>"
+							 );	
+							 $row.append($item);
+							 $item.fadeIn();
+						}
+
+						if(json.length >= 2){
+							$page++;
+						}
+						//window.location.hash = "#page" + $page;
+						//记录页码值
+						//s$localPage.val($page);
+						SetCookie("localSearchPage",$page);  //将当前页保存到cookie里
+						localStorage.setItem("localSearchMes",$("#goodslist").html());
+						//alert(localStorage.getItem("localMes"));
+						if($pagecount == 1){
+							$(".loading").hide();
+							$(".load_success").show();
+						}
+					 }
+				}
+			 }
+		 });
+		$num=$num+1;
+	}
+}

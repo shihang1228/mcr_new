@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type"content="text/html; charset=utf-8">   
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+<title>现货轨迹</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<link rel="stylesheet" type="text/css" href="statics/css/yumleeM.css" />
+<link rel="stylesheet" type="text/css" href="statics/css/mcr.css" />
+<link rel="stylesheet" type="text/css" href="com/icomoon/style.css" />
+<style>
+	/* content */
+.content{position:relative;width:1000px;margin:0 auto;}
+.content{padding:50px 0;min-height:720px;background:#3a3c48 url("images/log/content-bg.png");width:100%;}
+.content .wrapper{position:relative;background:url("images/log/release-bg.png") no-repeat right top;width:960px;margin:0 auto;}
+.content .light{position:absolute;left:55px;top:-50px;width:152px;height:191px;background:url("images/log/light-top.png") no-repeat top center;}
+.content .light i{position:absolute;width:100%;height:100%;top:0;background:url("images/log/light.png") no-repeat top center;}
+.content .line-left{position:absolute;left:0;top:15px;width:70px;}
+.content .line-right{position:absolute;right:0;top:15px;width:460px;}
+.content .main{background:url("images/log/line-bg.png") repeat-y 249px 0;}
+.content .main .title{position:absolute;line-height:40px;padding-left:67px;left:230px;top:0;color:#58a6fb;font-size:24px;background:url("images/log/clock.png") no-repeat left top;}
+.content .main .year{position:relative;z-index:100;}
+.content .main .year h2{height:40px;width:170px;padding-right:30px;font-size:24px;line-height:40px;text-align:right;}
+.content .main .year h2 a{color:#58a6fb;}
+.content .main .year h2 i{display:block;position:relative;height:0;width:0;left:190px;top:-20px;border-width:6px;border-style:solid;border-color:#59a7fb transparent transparent transparent;-webkit-transition:.5s;-moz-transition:.5s;-ms-transition:.5s;-o-transition:.5s;transition:.5s;-webkit-transform-origin:6px 3px;-moz-transform-origin:6px 3px;-ms-transform-origin:6px 3px;-o-transform-origin:6px 3px;transform-origin:6px 3px}
+.content .main .year .list{margin:10px 0;position:relative;overflow:hidden;-webkit-transition:height 1s cubic-bezier(0.025,0.025,0.000,1.115),opacity 1s;-moz-transition:height 1s cubic-bezier(0.025,0.025,0.000,1.115),opacity 1s;-ms-transition:height 1s cubic-bezier(0.025,0.025,0.000,1.115),opacity 1s;-o-transition:height 1s cubic-bezier(0.025,0.025,0.000,1.115),opacity 1s;transition:height 1s cubic-bezier(0.025,0.025,0.000,1.115),opacity 1s}
+.content .main .year .list ul{bottom:0;}
+.content .main .year .list ul li{background:url("images/log/circle.png") no-repeat 235px 31px;padding:30px 0;color:#a1a4b8;}
+.content .main .year .list ul li.highlight{background-image:url(http://p4.qhimg.com/d/inn/05a63fc5/circle-h.png);}
+.cls{zoom:1;}
+.cls:after{content:".";display:block;height:0;clear:both;visibility:hidden;}
+.content .main .year .list ul li.highlight .date, .content .main .year .list ul li.highlight .intro{color:#ec6a13;}
+.content .main .year .list ul li .date,.content .main .year .list ul li .version{float:left;display:block;clear:left;width:200px;line-height:24px;text-align:right}
+.content .main .year .list ul li .date{font-size:18px;line-height:32px;color:#bec1d5}
+.content .main .year .list ul li .intro, .content .main .year .list ul li .more{float:left;display:block;width:400px;margin-left:100px;line-height:24px;}
+.content .main .year .list ul li .intro{font-size:18px;line-height:32px;color:#63d029;}
+.content .wrapper:first-child .main .year.close h2 i{transform:rotate(-90deg);-webkit-transform:rotate(-90deg);-moz-transform:rotate(-90deg);-ms-transform:rotate(-90deg);-o-transform:rotate(-90deg)}
+.content .wrapper:first-child .main .year.close .list{opacity:0;height:0!important;}
+
+</style>
+</head>
+<body>
+<header class="header">
+	<div><a href="javascript:history.back();"><i class="icon-arrow-back"></i></a></div>
+	<h1>现货轨迹</h1>
+	<div><a href="index.php"><i class="icon-home"></i></a></div>
+</header>
+	<ul class="list">
+		<li><span class="font_weight">货运方式：</span>货到付款</li>
+		<li><span class="font_weight">承运人：</span>京东快递</li>
+		<li><span class="font_weight">订单号：</span>9806704331</li>
+	</ul>
+	<ul class="list">
+		<div class="content">
+			<div class="wrapper">
+				<hr class="line-left">
+				<hr class="line-right">
+				<div class="main">
+					<h1 class="title">微俱聚更新日志</h1>
+					<div class="year">
+						<h2><a href="#">2014年<i></i></a></h2>
+						<div class="list">
+							<ul>
+								<li class="cls">
+									<p class="date">2月19日</p>
+									<p class="intro">微信墙(微信大屏幕)上线</p>
+									<p class="version">&nbsp;</p>
+									<div class="more">
+										<p>支持上墙、抽奖、投票等等功能的微信墙上线</p>
+										<p>修正一战到底等多个模块的13个Bug, 并提供7个新改进</p>
+									</div>
+								</li>
+								<li class="cls">
+									<p class="date">2月12日</p>
+									<p class="intro">微贺卡上线</p>
+									<p class="version"></p>
+								</li>
+								<li class="cls highlight">
+									<p class="date">1月</p>
+									<p class="intro">微俱聚V6.0上线</p>
+									<p class="version">&nbsp;</p>
+									<div class="more">
+										<p>确立每周迭代、周三发布，用户参与推动模块开发的小米模式</p>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</div>
+					
+					<div class="year">
+						<h2><a href="#">2013年<i></i></a></h2>
+						<div class="list">
+							<ul>
+								<li class="cls">
+									<p class="date">12月</p>
+									<p class="intro">微俱聚V5.4上线</p>
+									<p class="version">&nbsp;</p>
+									<div class="more">
+										<p>形成完整的基础服务+互动推广+业务管理+行业应用+应用商店的服务架构</p>
+										<p>注册用户突破10万，荣获“创业之星”大赛八强</p>
+									</div>
+								</li>
+								<li class="cls">
+									<p class="date">3月</p>
+									<p class="intro">微信加V1.0上线</p>
+									<p class="version">&nbsp;</p>
+									<div class="more">
+										<p>微信基础服务模块+微信互动推广模块上线</p>
+										<p>创造微信公众号一周涨5万粉的奇迹</p>
+									</div>
+								</li>
+								<li class="cls">
+									<p class="date">1月</p>
+									<p class="intro">全网第一个微信刮刮卡、大转盘上线</p>
+									<p class="version">&nbsp;</p>
+									<div class="more">
+										<p>微信互动推广模块上线，用实际行动证明微信鸡汤有毒</p>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</ul>
+</body>
+<script src="http://libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
+</html>

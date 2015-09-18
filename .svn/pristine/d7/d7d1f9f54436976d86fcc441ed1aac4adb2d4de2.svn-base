@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+<title>散货</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<link rel="stylesheet" type="text/css" href="statics/css/yumleeM.css" />
+<link rel="stylesheet" type="text/css" href="statics/css/mcr.css" />
+<link rel="stylesheet" type="text/css" href="com/icomoon/style.css" />
+</head>
+<?php
+    session_start();
+    include_once('mcr_sc_fns.php');
+	include_once('system/model/wood.php');
+	$portid=$_SESSION['portid'];
+	$_SESSION['localFlag'] = false;
+	$localFlag = $_SESSION['localFlag'];
+	$wood= new wood($portid);
+	$wood->release();
+	
+	$stuff_array =$wood->stuff ;  //树种
+//	$stuffnum=0;
+	//$stuff_array=get_stuff($stuffnum);
+?>
+<body>
+
+<?php
+	include('public.html');
+?>
+<header class="header">
+	<div><a href="javascript:history.back();"><i class="icon-arrow-back"></i></a></div>
+	<h1>散货</h1>
+	<div><a href="index.php"><i class="icon-home"></i></a></div>
+</header>
+<section>
+	<form class="selectWrapper">
+		<input type="hidden" value="<?php echo $_SESSION['localFlag']; ?>" id="localFlag">
+		<ul class="flex ">
+			<li>
+				<select name ="kindselect" id="kindselect">
+					<option value = 0>选货种</option>
+					<?php
+			         $kind_array = $wood->kind; //货种 lja
+				     foreach($kind_array as $row) {
+						echo "<option value =".$row["kindid"].">".$row["kindname"]."</option>";					
+					}
+				   ?>
+				</select>
+			</li>
+			<li>
+				<select name ="stuffselect" id="stuffselect" >
+					<option value = 0>树种</option>
+					 <?php
+		                  foreach ($stuff_array as $row){
+							 $stuffid = $row['stuffid'];
+		                     $stuffname = $row['stuffname'];
+		                     echo "<option value =".$stuffid.">".$stuffname."</option>";
+							}
+		                    ?>
+				</select>
+			</li>
+			<li>
+				<select id="productlen" name="producelen">
+					<option value="0">选长度</option>
+					<?php
+					$len_array = $wood->length;
+					foreach($len_array as $row)
+					{
+						echo "<option value = ".$row["lenid"].">".$row["lenname"]."</option>";
+					}
+					?>
+				</select>
+			</li>
+			<li><input type="button"  class="button sousuo" onclick="start(1)" value="搜索"></li>
+		</ul>
+		<ul class="flex col3">
+			<li class="op-2 hide">
+				<input type="tel" placeholder="宽度" id="productwide" name="productwide"/>
+			</li>
+			<li class="op-2 hide">
+				<input type="tel" placeholder="厚度" id="thinckness" name="thinckness"/>
+			</li>
+			<li class="op-1 hide">
+				<input type="tel" placeholder="径级" id="diameterlen" name="diameterlen"/>
+			</li>
+			<li class="op-1 hide">
+				<select id="timber" name="timber">
+					<option value='0'>选材质</option>
+					<?php
+			         $timber = $wood->timber; //货种 lja
+				     foreach($timber as $row) {
+						echo "<option value =".$row["timberid"].">".$row["timbername"]."</option>";					
+					}
+				   ?>
+				</select>
+			</li>
+		</ul>
+	</form>
+</section>
+<dl class="panel" id="panel">
+	<dt><h2>散货</h2></dt>
+	<dd id="goodslist" class="borTop">
+		
+	</dd>
+	<div class="loading hide"><i id='icon_loading'><img src='images/loading.gif'></i>正在加载，请稍等......</div>
+	<p class='no_result' id="no-result">没有查询到您所要的内容</p>
+</dl>
+</body>
+<script src="http://libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="js/jquery.history.js"></script>
+<script src="statics/js/config.js"></script>
+<script src="js/dumplist.js"></script>
+<script>
+kindselect();
+</script>
+</html>

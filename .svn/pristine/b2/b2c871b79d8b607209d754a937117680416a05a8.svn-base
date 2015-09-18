@@ -1,0 +1,125 @@
+﻿/*
+ *  Javascript文件：waterfall.js
+ */
+$(function(){
+ });
+ 
+ //这里就要进行计算滚动条当前所在的位置了。如果滚动条离最底部还有100px的时候就要进行调用ajax加载数据
+ $(window).scroll(function(){    
+     //此方法是在滚动条滚动时发生的函数
+     // 当滚动到最底部以上100像素时，加载新内容
+     var $doc_height,$s_top,$now_height;
+     $doc_height = $(document).height();        //这里是document的整个高度
+     $s_top = $(this).scrollTop();            //当前滚动条离最顶上多少高度
+     $now_height = $(this).height();            //这里的this 也是就是window对象
+     if(($doc_height - $s_top - $now_height) < 100) start();    
+ });
+ 
+ 
+ //做一个ajax方法来请求data.php不断的获取数据
+ var $num = 0;
+ var $pagecount = 1;
+
+function start(flag){	
+	if(flag == 1){
+		$num = 0;
+		$("#ul_list").empty();
+	}
+	var train=0,status=0,trainDate;
+	trainDate = document.getElementById("selectDate").value;  //到货日期
+	alert(trainDate);
+	train = document.getElementById("train").value;
+	status = document.getElementById("status").value;
+
+	if($num == $pagecount){
+		$(".loading").empty().text("加载完毕！");
+	}
+
+	if($pagecount > $num){
+		 $(".loading").show();
+		 $.ajax({
+			 url:'arrivalmanage_bgo.php',
+			 type:'POST',
+			data:"num="+$num+"&trainDate="+trainDate+"&train="+train+"&status="+status,
+
+			 dataType:'json',
+			 success:function(json){
+				 if(typeof json == 'object'){
+
+					 var neirou,$row,$item;
+					 $row =$("#ul_list");
+					 $("#ul_list").siblings("#no-result").hide();
+					 if(json.length == 0){
+						 
+						$("#ul_list").empty().siblings("#no-result").show();
+					 }else{
+						 
+						$pagecount = json[0].pagecount;
+
+						for(var i=1;i<json.length;i++){
+							neirou = json[i];    //当前层数据
+							/*判断原木*/
+							if(neirou.kindname == "原木"){
+								if ((neirou.diameterlen == 0) ||(neirou.timber ==0)) {
+									$bianhua = "<span>"+neirou.kindname + "</span>";
+								}else{
+									$bianhua = "<span>" + neirou.diameterlen + "φ</span><span>" + neirou.timber + "</span>";
+								}
+							}else{
+								
+								if(neirou.wide == 0 || neirou.thinckness == 0 ){
+									
+									$bianhua = "<span>"+neirou.kindname + "</span>";
+								}else{	
+									$bianhua = "<span" + neirou.thinckness + "*" + neirou.wide + "</span>";
+									if (neirou.kind_bj == 1){
+										  if(neirou.widerange !=0 || neirou.thincknessrange !=0){
+											   $bianhua = "<span>" + neirou.thinckness + "*" + neirou.wide + "起</span>";
+										  }
+									}
+								}
+							}
+							/*判断长度不为0时*/
+							if(neirou.productlen == 0){
+								$productlen = "";
+							}else{
+								$productlen = neirou.productlen;
+							}
+
+							$item = $(
+							"<li>"+
+								"<b class='select_btn'><img src='../images/img_2.png' alt='' width='40' height='40'/></b>"+
+								"<a href='../detail.php?cdkey="+neirou.cdkey+"' class='li_link'>"+
+									"<h3>"+
+										"<span>"+neirou.carnum+"</span>"+
+										"<span>"+neirou.stuffname+"</span>"+
+										"<span>"+$productlen+"</span>"+$bianhua+
+									"</h3>"+
+									"<p>"+
+										"<span>"+neirou.completestatus+"</span><span>"+neirou.username+"</span><span>浏览次数："+neirou.viewnum+"</span>"+"<span>"+neirou.dumpposition+"</span>"+
+									"</p>"+
+								"</a>"+
+								"<div class='tip'>"+
+									"<div class='triangle'></div>"+
+									"<div class='t_con'>"+
+										"<input type='hidden' name='mes_id' id='mes_id' value='"+neirou.cdkey+"' />"+
+										"<a href='#' class='down' id='down'><i class='icon-download'></i><br /><span>下架</span></a>"+
+										"<a href='../wxrelease.php?cdkey="+neirou.cdkey+"'><i class='icon-pencil'></i><br /><span>修改</span></a>"+
+									"</div>"+
+								"</div>"+
+							"</li>"
+							);
+							$row.append($item);
+							 $item.fadeIn();
+						}
+						
+						if($pagecount == 1){
+							$(".loading").empty().text("加载完毕！");
+						}
+					}
+				}
+			 }
+		 });
+		$num = $num + 1;
+	}
+}

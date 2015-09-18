@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type"content="text/html; charset=utf-8">   
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+<title>信息发布</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<link rel="stylesheet" type="text/css" href="/statics/css/yumleeM.css" />
+<link rel="stylesheet" type="text/css" href="/statics/css/mcr.css" />
+<link rel="stylesheet" type="text/css" href="css/valid.css" />
+<link rel="stylesheet" type="text/css" href="/com/icomoon/style.css" />
+</head>
+
+<header class="header">
+	<div><a href="javascript:history.back();"><i class="icon-arrow-back"></i></a></div>
+	<h1>信息发布</h1>
+	<div><a href="index.php"><i class="icon-home"></i></a></div>
+</header>
+<?php
+	session_start();
+	include_once("db_fns.php");
+	include_once('system/model/wood.php');
+
+	$portid=$_SESSION['portid'];
+	//$phone=$_SESSION['phone'];
+	//$username=$_SESSION['username'];
+	
+	$wood= new wood($portid);
+	$wood->release();
+?>
+<form class="releaseForm" method ="post" action ="goodspublish_bgo.php">
+	<ul class="list list2">
+		<li class="flex col1-3">
+			<div>车皮号:</div>
+			<div>
+				<input type="tel" maxLength="8" size="8" name ="carnum" id="carnum" class="selection" autofocus/>
+			</div>
+		</li>
+		<li class="flex col1-3">
+			<div>手机号:</div>
+			<div>
+				<input type="tel" maxLength="11" size="11" name ="contactphone" id="contactphone" class="selection"/>
+			</div>
+		</li>
+		<li class="flex col1-3">
+			<div>树种:</div>
+			<div>
+				<?php $stuff_array =$wood->stuff;?>
+				<select name="stuffid" id="stuffid" class="selection">
+				  <option value = '0'>选树种</option>
+					<?php
+					  if (!is_array($stuff_array)) {
+						echo "<p>No categories currently available</p>";
+					   return;
+					  }
+
+					foreach ($stuff_array as $row)
+					{
+					  echo "<option value =".$row['stuffid'].">".$row['stuffname']."</option>";
+					}
+					?>
+
+				</select>
+			</div>
+		</li>
+		<li class="flex col1-3">
+			<div>货种:</div>
+			<div>
+				<select name="kindid" id="kindid" class="selection">
+					<option value = '0'>选货种</option>
+					<?php
+					  $kind_array = $wood->kind; //货种 lja
+					  foreach($kind_array as $row) {
+							echo "<option value =".$row["kindid"].">".$row["kindname"]."</option>";					
+						}
+					?>
+				</select>
+			</div>
+		</li>
+		<li class="flex col1-3">
+			<div>长度(m):</div>
+			<div>
+				<select name="productlen" id="productlen" class="selection">
+	             	<option value="0">选长度</option>
+					<?php
+						$len_array = $wood->length;
+						foreach($len_array as $row)
+						{
+							echo "<option value = ".$row["lenid"].">".$row["lenname"]."</option>";
+						}
+					?>
+					</select>
+			</div>
+		</li>
+		<li class="flex col1-3">
+			<div>当前位置:</div>
+			<div>
+				<select id="spotpositionid" name="spotpositionid" class="selection">
+					<option value="0">选择位置</option>
+					<?php
+					$spot_array=$wood->spotposition;  //现货位置
+					foreach ($spot_array as $row)
+					{
+					   $spotpositionid = $row['spotpositionid'];
+					   $position = $row['position'];
+					  echo "<option value =".$spotpositionid.">".$position."</option>";
+					}
+					?>
+				</select>
+			</div>
+		</li>
+	</ul>
+
+	<input class="btnFixed" type="submit" id="sendmessage" value="发布" />
+</form>
+
+</body>
+
+<script src="http://libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
+<script>
+	
+	$("#carnum").keyup(function() {
+	   var length = $(this).val().length;
+	   if (length == "8") {
+	       $("#contactphone").focus();
+	   }
+	})
+
+	$("#contactphone").keyup(function() {
+	   var length = $(this).val().length;
+	   if (length == "11") {
+	       $("#stuffid").focus();
+	   }
+	})
+
+$('#sendmessage').click(function (){
+	var re_refcapacity = /^(?:[1-9]{1}[0-9]{0,3}|10000)$/;
+	var re_phone = /^[1][3578][0-9]{9}$/;
+	if($("#carnum").val() == 0){
+		alert("请输入车皮号");
+		$("#carnum").focus();
+		return false;
+	}else if($("#carnum").val().length != 8){
+		alert("请输入正确的车皮号");
+		$("#carnum").focus();
+		return false;
+	}
+	else if($("#spotpositionid").val() == '0'){
+		alert("请选择位置！");
+		$("#spotpositionid").focus();
+		return false;
+	}
+
+	if(!$("#contactphone").val()){} 
+	else if(!re_phone.test($("#contactphone").val())){
+		alert("请输入正确的手机号");
+		$("#contactphone").focus();
+		return false;
+	}
+})
+//ios fixed修复
+$('input').focus(function (){
+	$('.header').css('position','relative');
+	$('.btnFixed').css('position','relative');
+	$('body').css({'padding-top':'0','width':'100%'});
+})
+$('input').blur(function(){
+	$('.header').css('position','relative');
+	$('.btnFixed').css('position','relative');
+})
+</script>
+</html>

@@ -1,0 +1,86 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<title>企业介绍</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<link rel="stylesheet" type="text/css" href="statics/css/yumleeM.css" />
+<link rel="stylesheet" type="text/css" href="statics/css/mcr.css" />
+<link rel="stylesheet" type="text/css" href="com/icomoon/style.css" />
+<link rel="stylesheet" type="text/css" href="com/swiper/swiper.min.css" />
+</head>
+<?php
+    session_start();
+    include_once('mcr_sc_fns.php');
+	$companyid=$_GET['companyid'];
+	$company_array = get_mydata("call p_mycompany(".$companyid.")");
+	$companypic_array =get_companypic($companyid);
+?>
+<body>
+
+
+<?php
+if (!is_array($company_array)) {
+  $noconnect ="<p>对不起，没有查找到您要查找的内容！</p>";
+  echo  $noconnect;
+					   
+}
+else {
+$row =$company_array[0];
+?>
+
+<header class="header">
+	<div><a href="javascript:history.back();"><i class="icon-arrow-back"></i></a></div>
+	<h1><?php echo $row['companyname'] ?></h1>
+	<div><a href="index.php"><i class="icon-home"></i></a></div>
+</header>
+<ul class="list company">
+	<li><div>公司简介：<p><?php echo $row['content'];?></p></div></li>
+	<li class="flex"><div>主要产品：<?php echo $row['product'];?></div></li>
+</ul>
+<?php
+	 if (is_array($companypic_array)) {
+?>
+<div class="company-bg">
+	<div class="swiper-container company">
+		<ul class="swiper-wrapper" id="auto-loop">
+			<?php
+				foreach($companypic_array as $rowpic){
+					echo "<li class='swiper-slide'><img src='".$rowpic['companypic']."'></li>";
+				}
+			?>
+		</ul>
+	</div>
+</div>
+<?php
+	}
+?>
+<ul class="list company">
+	<li class="flex"><div>联系人：<?php echo $row['contact'];?></div><div>手机：<?php echo $row['phone'];?></div></li>
+	<li class="flex"><div>联系电话：<br><?php echo $row['contactphone'];?></div><div>邮箱：<br><?php echo $row['email'];?></div></li>
+	<li><div>网址：<a href="http://<?php echo $row['website'];?>"><?php echo $row['website'];?></a></div></li>
+	<li><div>地址：<?php echo $row['address'];?></div></li>
+</ul>
+<!-- <ul class="flex contact">
+	<li>
+		<div><?php echo $row['contact'];?></div>
+		<div><?php echo $row['phone'];?></div>
+	</li>
+	<li>
+		<a href="tel:<?php  echo $row['phone'];?>"><i class="icon-phone borkerTel"></i></a>
+	</li>
+</ul> -->
+<?php
+   }
+  ?>
+</body>
+<script type="text/javascript" src="com/swiper/swiper.min.js"></script>
+<script> 
+var mySwiper = new Swiper('.swiper-container',{
+autoplay : 3000,//可选选项，自动滑动
+})
+</script>
+</html>

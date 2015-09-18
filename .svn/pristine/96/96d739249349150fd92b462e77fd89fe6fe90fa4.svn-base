@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html"; charset="UTF-8">
+		<title>首页</title>
+		<meta name="Keywords" content="淘中国">
+		<meta name="description" content="">
+
+		<style>
+			*{margin:0;padding:0;}
+			body{font-size:14px;font-family:"微软雅黑"}
+			.clear{clear:both;}
+			
+		</style>
+	 </head>
+ <body>
+	
+	<a href="weixin://profile/kugounet">关注</a>
+
+ </body>
+</html>

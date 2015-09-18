@@ -1,0 +1,129 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<title>查找</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<link rel="stylesheet" type="text/css" href="/statics/css/yumleeM.css" />
+<link rel="stylesheet" type="text/css" href="/statics/css/mcr.css" />
+<link rel="stylesheet" type="text/css" href="/com/icomoon/style.css" />
+</head>
+<body>
+<?php
+	include('public.html');
+?>
+<header class="header">
+	<div><a href="javascript:history.back();"><i class="icon-arrow-back"></i></a></div>
+	<h1>精确查找</h1>
+	<div><a href="index.php"><i class="icon-home"></i></a></div>
+</header>
+<?php
+   
+     include_once('mcr_sc_fns.php');
+	 session_start();
+	 $portid=$_SESSION['portid'];
+     $inputnumber=$_POST["numberInput"];
+	 $data_array=get_datafromnum($inputnumber,$portid);
+	  
+ ?>
+
+   	<dl class="panel">
+	<dt><h2>精确查找</h2></dt>
+    <dd id="goodslist" class="borTop">
+     <?php
+	     $outstr=" ";
+	    if (!is_array($data_array)) {
+           echo "<p>对不起，没有查找到您要查找的内容！</p>";
+           return;
+        }
+		else {
+		    foreach ($data_array as $row)
+            {
+			   $carnum = $row['carnum'];
+			   $productlen = $row['productlen'];
+			   $kindname=$row['kindname'];
+			   $wide=$row['wide'];
+			   $thinckness=$row['thinckness'];
+			   $dumpposition=$row['dumpposition'];
+		       $timber=$row['timber'];
+			   $diameterlen=$row['diameterlen'];
+			   $cdkey=$row['cdkey'];
+			   $stuffname=$row['stuffname'];
+			   $thincknessrange=$row['thincknessrange'];
+			   $widerange=$row['widerange'];
+			   $goodtype=$row['goodtype'];
+			   $dumpposition=$row['dumpposition'];
+			   $goodposition=$row['goodposition'];
+			   $outstr="";
+			   if($kindname =="原木"){
+			     if (($diameterlen ==0) or($timber==0)){
+				    $outstr="<li>".$kindname."</li>";
+				 }
+				 else {
+				     $outstr="<li>".$diameterlen."φ &nbsp;&nbsp;".$timber."</li>";
+				 }
+			   }
+			   else {
+				     if($wide ==0 or $thinckness ==0) {
+				     $outstr="<li>".$kindname."</li>";
+				   }
+				   else {
+					  $outstr="<li>".$thinckness."*".$wide."</li>";
+					  if (($kindname=="大方") or ($kindname=="大板"))
+					  {
+						  if(($widerange !=0) or($thincknessrange !=0))
+						  {
+							   $outstr="<li>".$thinckness."*".$wide."起</li>";
+						  }
+					  }
+			  	  }
+			   }
+			    if($dumpposition=='0')
+			 {
+				 $dumpposition="";
+			 } 
+
+			   if($goodtype == 1){
+			   
+
+	 ?>
+
+		<a href="detail.php?cdkey=<?php echo  $cdkey;?>">
+			<ul class="flex table stable5">
+				<li><?php echo  $carnum;?></li><li><?php echo $productlen;?></li><li><?php echo $stuffname;?></li><?php echo $outstr;?><li><?php echo $goodposition;?></li>
+			</ul>
+		</a>
+	<?php 
+		}else{
+	?>
+		<a href="dumpdetail.php?cdkey=<?php echo  $cdkey;?>">
+			<ul class="flex table stable5">
+				<li><?php echo  $carnum;?></li><li><?php echo $productlen;?></li><li><?php echo $stuffname;?></li><?php echo $outstr;?><li><?php echo $dumpposition;?></li>
+			</ul>
+		</a>
+	<?php 
+		}
+	?>
+
+    <?php
+	     }
+      }
+    ?>
+	 </dd>
+    </dl>
+
+ 
+</body>
+<script src="http://lib.sinaapp.com/js/jquery/1.8.3/jquery.min.js"></script>
+<script type="text/javascript">
+$('#numberInput').blur(function (){
+	var numberVal = $('#numberInput').val();
+	if (numberVal.length < 4 || numberVal.length > 11){
+		alert('请输入正确的车皮号或手机号！');
+	}
+})
+</script>
+</html>

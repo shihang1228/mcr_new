@@ -1,0 +1,103 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=no">
+	<meta http-equiv="refresh" content="60"> 
+<title>自动发送微信信息</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<link rel="stylesheet" type="text/css" href="statics/css/yumleeM.css" />
+<link rel="stylesheet" type="text/css" href="statics/css/mcr.css" />
+<link rel="stylesheet" type="text/css" href="com/icomoon/style.css" />
+<style>
+	.borderBottom{border-bottom: 1px dashed #5b5b5b;}
+</style>
+</head>
+<body>
+
+<header class="header">
+		<div>
+			<a href="javascript:history.back();"><i class="icon-arrow-back"></i></a>
+		</div>
+		<h1>自动发送微信信息</h1>
+		<div>
+			<a href="index.php"><i class="icon-home"></i></a>
+		</div>
+	</header>
+<?php
+   
+     include_once('mcr_sc_fns.php');
+     include_once('system/model/weixin.class.php');
+     //先走模板发送
+     $date=date("Y-m-d H:i:s");
+     
+     $sqlstr=" select wxid,carnum,cdkey,spotpositionname,kindname,arrivetime,username " 
+       ." from t_wxsendtemplate where ifnull(sendstatus,'') <>'ok' and sendcount < 3 order by instime ";
+     $datatemp_array = get_mydata($sqlstr); 
+     if (!is_array($datatemp_array)) { //没有查到需要发送的模板，则发送群发消息
+         $sqlstr="select portname,arriveposition,arrivetime from t_wxsendmsg where sign =0 order by updatetime desc";
+         $data_array = get_mydata($sqlstr);  //2015.06.25 ljm
+        
+         //
+         if (!is_array($data_array)) {
+             echo "<p>对不起，没有查找到您要发送的内容！---</p>".$date;
+             return;
+         }
+         else {
+             echo "<p>正在发送群消息！---</p>".$date;
+             $weixin = new class_weixin();
+             foreach ($data_array as $row)
+             {
+                 $portname = $row['portname'];
+                 $arriveposition = $row['arriveposition'];
+                 $arrivetime=$row['arrivetime'];
+                  
+                 $sql= "update t_wxsendmsg set sign = 1";
+                 sqlexec($sql);
+                 break;
+             }
+              
+             $result= $weixin->sendServiceMsg($portname,$arriveposition,$arrivetime);
+         }
+         
+     }
+     else {
+         echo "<p>正在发送模板消息！---</p>".$date;;
+         $weixin = new class_weixin();
+         foreach ($datatemp_array as $row)
+         {
+             $wxid = $row['wxid'];
+             $cdkey = $row['cdkey'];
+             $username=$row['username'];
+             $carnum = $row['carnum'];
+             $arrivetime = $row['arrivetime'];
+             $kindname=$row['kindname'];
+             $arriveposition=$row['spotpositionname'];
+             $sendtime=date("Y-m-d H:i:s");
+             //
+             $result= $weixin->sendtemplatemsg($wxid,$cdkey,$username,$carnum,$arrivetime,$kindname,$arriveposition);
+             if ($result ==0){
+                 $sql= "update t_wxsendtemplate set sendcount = sendcount +1,sendstatus ='ok',sendtime ='".$sendtime."' where cdkey ='".$cdkey."'";
+                 sqlexec($sql);
+             }
+             else {
+                 $sql= "update t_wxsendtemplate set sendcount = sendcount +1,sendstatus ='".$result."',sendtime ='".$sendtime."' where cdkey ='".$cdkey."'";
+                 sqlexec($sql);
+             }
+             usleep(50000);
+             
+          
+         }
+         
+         
+     }
+    
+     
+ ?>
+
+   	
+</html>

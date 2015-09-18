@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type"content="text/html; charset=utf-8">   
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+<title>现货轨迹</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<link rel="stylesheet" type="text/css" href="statics/css/yumleeM.css" />
+<link rel="stylesheet" type="text/css" href="statics/css/mcr.css" />
+<link rel="stylesheet" type="text/css" href="com/icomoon/style.css" />
+<style>
+	.list_li{border-bottom:1px dashed #7D6D6D;}
+	.list .div_left img{margin:11px;}
+	.date{color:#B49999;}
+	.list .div_right{margin-left: -15%;}
+	b{width: 12px;height: 12px;background: #000;display: block;border-radius: 6px;margin: 11px;}
+</style>
+</head>
+<body>
+<header class="header">
+	<div><a href="javascript:history.back();"><i class="icon-arrow-back"></i></a></div>
+	<h1>现货轨迹</h1>
+	<div><a href="index.php"><i class="icon-home"></i></a></div>
+</header>
+<?php
+	if(!isset($_GET['cdkey'])){
+		echo '参数无效';
+		return;
+	}
+	$cdkey = $_GET['cdkey'];
+	include_once('system/model/db_fns.php');
+	$contact_arr = getdata("select carnum,if(contact=0,'',contact) as contact,if(contactphone=0,'',contactphone) as contactphone from t_product where cdkey='".$cdkey."'");
+	if(is_array($contact_arr)) $contactinfo = $contact_arr[0];
+	else{
+		echo '货物信息不存在。';
+		return;
+	}
+	$trace_arr = getdata("call mcr.p_train_trace('".$cdkey."')");
+	if(!is_array($trace_arr)){
+		echo '没有要查找的数据.';
+		return;
+	}
+?>
+	<ul class="list">
+		<li>车皮号：<?php echo $contactinfo['carnum'];?></li>
+		<li>货主：<?php echo $contactinfo['contact'];?></li>
+		<li>联系电话：<?php echo $contactinfo['contactphone'];?></li>
+	</ul>
+	<ul class="list">	
+	<?php
+		foreach($trace_arr as $row){
+			echo '<li class="flex col1-3 list_li">';
+			echo '	<div class="div_left">';
+			echo '		<b></b>';
+			echo '	</div>';
+			echo '	<div class="div_right">';
+			echo '<p>'.$row["position"].'<br>'.$row["updatetime"].'</p>';
+			echo '		<!--p>2015-08-05</p-->';
+			echo '	</div>';
+			echo '</li>';
+		}
+	?>
+	</ul>
+</body>
+<script src="http://libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
+
+</html>

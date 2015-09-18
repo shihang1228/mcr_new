@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html"; charset="UTF-8">
+		<title>首页</title>
+		<meta name="Keywords" content="淘中国">
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width,initial-scale=1">
+		<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" />
+		<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+		<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+		<style>
+			*{margin:0;padding:0;}
+			body{font-size:14px;font-family:"微软雅黑"}
+			.clear{clear:both;}
+			.content{margin-top:20px;}
+			.name2{margin:0 5px;}
+			.name4{margin:0 5px;}
+			.date{margin:0 5px;}
+
+		</style>
+
+		
+
+	 </head>
+ <body>
+	<div data-role="page">
+		<div data-role="header"  data-fullscreen="true" data-theme="b">
+			<h1>木材人</h1>
+		</div>
+
+		
+		<form method="post" action="#">
+		  <div data-role="fieldcontain">
+			<fieldset data-role="controlgroup" data-type="horizontal">
+				<select name="day" id="day">
+					 <option value="quyu">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+				</select>
+
+				<select name="day" id="day">
+					 <option value="quyu">货种</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+				</select>
+
+				<select name="day" id="day">
+					 <option value="quyu">材种</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+				</select>
+
+				<select name="day" id="day">
+					 <option value="quyu">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+				</select>
+			</fieldset>
+
+			<fieldset data-role="controlgroup" data-type="horizontal">
+				<select name="day" id="day">
+					 <option value="quyu">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+				</select>
+
+				<select name="day" id="day">
+					 <option value="quyu">货种</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+				</select>
+
+				<select name="day" id="day">
+					 <option value="quyu">材种</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+				</select>
+
+				<select name="day" id="day">
+					 <option value="quyu">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+					 <option value="mon">区域</option>
+				</select>
+			</fieldset>
+		  </div>
+		</form>
+	  <ul data-role="listview">
+			<li>
+				<a href="#">
+					<span class="name1">4035</span>
+					<span class="name2">28米</span>
+					<span class="name3">樟子松</span>
+					<span class="name4">25x58</span>
+					<span class="name5">满洲里</span>
+					<span class="date">5月20日&nbsp;&nbsp;15:30</span>
+				</a>
+			</li>
+			<li>
+				<a href="#">
+					<span class="name1">4035</span>
+					<span class="name2">28米</span>
+					<span class="name3">樟子松</span>
+					<span class="name4">25x58</span>
+					<span class="name5">满洲里</span>
+					<span class="date">5月20日&nbsp;&nbsp;15:30</span>
+				</a>
+			</li>
+			<li>
+				<a href="#">
+					<span class="name1">4035</span>
+					<span class="name2">28米</span>
+					<span class="name3">樟子松</span>
+					<span class="name4">25x58</span>
+					<span class="name5">满洲里</span>
+					<span class="date">5月20日&nbsp;&nbsp;15:30</span>
+				</a>
+			</li>
+			
+			<li>
+				<a href="#">
+					<span class="name1">4035</span>
+					<span class="name2">28米</span>
+					<span class="name3">樟子松</span>
+					<span class="name4">25x58</span>
+					<span class="name5">满洲里</span>
+					<span class="date">5月20日&nbsp;&nbsp;15:30</span>
+				</a>
+			</li>
+			<li>
+				<a href="#">
+					<span class="name1">4035</span>
+					<span class="name2">28米</span>
+					<span class="name3">樟子松</span>
+					<span class="name4">25x58</span>
+					<span class="name5">满洲里</span>
+					<span class="date">5月20日&nbsp;&nbsp;15:30</span>
+				</a>
+			</li>
+			<li>
+				<a href="#">
+					<span class="name1">4035</span>
+					<span class="name2">28米</span>
+					<span class="name3">樟子松</span>
+					<span class="name4">25x58</span>
+					<span class="name5">满洲里</span>
+					<span class="date">5月20日&nbsp;&nbsp;15:30</span>
+				</a>
+			</li>
+			<li>
+				<a href="#">
+					<span class="name1">4035</span>
+					<span class="name2">28米</span>
+					<span class="name3">樟子松</span>
+					<span class="name4">25x58</span>
+					<span class="name5">满洲里</span>
+					<span class="date">5月20日&nbsp;&nbsp;15:30</span>
+				</a>
+			</li>
+			<li>
+				<a href="#">
+					<span class="name1">4035</span>
+					<span class="name2">28米</span>
+					<span class="name3">樟子松</span>
+					<span class="name4">25x58</span>
+					<span class="name5">满洲里</span>
+					<span class="date">5月20日&nbsp;&nbsp;15:30</span>
+				</a>
+			</li>
+			<li>
+				<a href="#">
+					<span class="name1">4035</span>
+					<span class="name2">28米</span>
+					<span class="name3">樟子松</span>
+					<span class="name4">25x58</span>
+					<span class="name5">满洲里</span>
+					<span class="date">5月20日&nbsp;&nbsp;15:30</span>
+				</a>
+			</li>
+		</ul>
+			
+		
+
+		<div data-role="footer" data-position="fixed" data-fullscreen="true" data-theme="b">
+			<div data-role="navbar">
+				<ul>
+					<li><a href="#" data-icon="home">首页</a></li>
+					<li><a href="#" data-icon="info">现货</a></li>
+					<li><a href="#" data-icon="refresh">发布</a></li>
+					<li><a href="#" data-icon="star">我</a></li>
+				</ul>
+			</div>
+		</div>
+
+	</div>
+
+
+ </body>
+</html>

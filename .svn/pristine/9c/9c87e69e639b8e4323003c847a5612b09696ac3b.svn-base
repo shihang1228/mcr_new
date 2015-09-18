@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<?php
+   // error_reporting(E_ALL || ~E_NOTICE);
+    header("Content-type:text/html; charset=utf-8");
+	include_once("system/model/db_fns.php");
+	require_once('system/model/weixin.class.php');
+    $weixin = new class_weixin();
+	$signPackage = $weixin->GetSignPackage();
+	
+  ?>
+<html>
+<head>
+<meta http-equiv="Content-Type"content="text/html; charset=utf-8">   
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+<title>现货发布
+	<?php
+		session_start();
+		$userid = 0;
+		if(isset($_SESSION['userid'])) $userid=$_SESSION['userid'];
+		$ismgr=0;//初始化为普通用户
+		if(isset($_SESSION['ismgr']))  //根据用户权限动态设置台头
+		{
+			$ismgr=$_SESSION['ismgr'];//取管理员权限标记
+			//if($ismgr==1) echo '现货修改';//管理员
+			//else echo '现货--完善信息';//普通用户
+		}
+		else
+		{
+			//echo '现货--完善信息';
+		}
+	?>
+</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<link rel="stylesheet" type="text/css" href="statics/css/yumleeM.css" />
+<link rel="stylesheet" type="text/css" href="statics/css/mcr.css" />
+<link rel="stylesheet" type="text/css" href="com/icomoon/style.css" />
+<link rel="stylesheet" type="text/css" href="css/reminder.css" />
+<link rel="stylesheet" type="text/css" href="css/upload.css" />
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+
+<script type="text/javascript">
+  wx.config({
+        debug: false,
+		appId: '<?php echo $signPackage["appId"];?>',
+		timestamp: <?php echo $signPackage["timestamp"];?>,
+		nonceStr: '<?php echo $signPackage["nonceStr"];?>',
+		signature: '<?php echo $signPackage["signature"];?>',
+        jsApiList: [
+           /*
+            * 所有要调用的 API 都要加到这个列表中
+            * 这里以图像接口为例
+            */
+          'chooseImage',
+          'uploadImage'
+    ]
+  });
+  
+
+	
+</script>
+
+</head>
+<body>
+<header class="header">
+	<div><a href="javascript:history.back();"><i class="icon-arrow-back"></i></a></div>
+	<h1><?php if($ismgr==1) echo '现货发布';else echo '现货发布';?></h1>
+	<div><a href="index.php"><i class="icon-home"></i></a></div>
+</header>
+<?php
+  
+	//echo  $weixin->msg;
+	
+    //session_start();  //提前ljs
+	include_once('system/model/wood.php');
+	$portid=$_SESSION['portid'];
+	$phone=$_SESSION['phone'];
+	$username=$_SESSION['username'];
+	
+	$wood= new wood($portid);
+	$wood->realrelease();
+	
+	$stuff_array =$wood->stuff ;  //树种
+    $from_array =$wood->from;  //产地
+    $spot_array=$wood->spotposition;  //现货位置
+	$sale_array=$wood->salestatus;  //销售状态
+	$device_array=$wood->device;
+	if(isset($_SESSION['user']) ){	//用户或管理员登录后才可以发表信息	
+	$cdkey = $_GET["cdkey"];  //现/散货查询主键,若为空(""),表示新发布,否则修改.
+	if(isset($_GET["iomode"])) $iomode = $_GET["iomode"];
+	else $iomode = 1;
+		
+	$product = array();
+	//$cdkey='1393454493115062712540066791';
+
+	$isowner = 0;//默认非货主
+	$modifyright = 0;  //默认修改权限(//$ismgr==1 or $isowner==1 or $isnew==1)
+	
+	if($cdkey!=""){//修改
+		$isnew = 0;
+		$prec = getdata("call p_productrec('".$cdkey."')");
+		if(!is_array($prec))
+		{
+			echo "<p>对不起，没有查找到您要查找的内容！</p>";
+			return;
+		}
+		else
+		{
+			$product = $prec[0];
+			//此处判断是否货主
+			$productown = getdata("call p_isowner(".$userid.",'".$product["contactphone"]."')");
+			if(is_array($productown))
+			{
+				$owndata = $productown[0];
+				if($owndata["bj"]>0) $isowner=1;
+			}
+		}
+	}
+	else  //新发布
+	{
+		$isnew = 1;
+		$product = array("refcapacity"=>"","refnum"=>"","refwight"=>"","contact"=>"","contactphone"=>"","diameterlen"=>"0","thinckness"=>"","price"=>"","wide"=>"","device"=>"","worm"=>"","decay"=>"","widerange"=>"","thincknessrange"=>"","xielie"=>"","huanlie"=>"","chouyou"=>"","heixin"=>"","content"=>"","display"=>"0");
+	}
+	
+	//判断修改权限
+	if($ismgr==1 or $isowner==1 or $isnew==1) $modifyright=1;
+		
+?>
+<form class="onoff labelPadding" id="submitform">
+	<ul class="list">
+		<li>
+			<ul class="upImg-display">
+				<li>
+					<input type="button" id="choose">
+				</li>
+				<li><a href="javascript:void(0);return false;" class="upload_delete" id="upload_delete"></a></li>
+				<li><a href="javascript:void(0);return false;" class="upload_delete" id="upload_delete"></a></li>
+				<li><a href="javascript:void(0);return false;" class="upload_delete" id="upload_delete"></a></li>
+				<li><a href="javascript:void(0);return false;" class="upload_delete" id="upload_delete"></a></li>
+				
+			</ul>
+		</li>
+		<li class="flex">
+			<div>车皮号:</div><div><input type="tel" name ="carnum" id="carnum" <?php echo $isnew?"":$product["carnum"]!=""?"readonly=\"readonly\"":"";?> value="<?php echo $isnew?"":$product["carnum"];?>"/></div>
+			<div>树种:</div>
+			<div>
+				<select name="stuffid" id="stuffid" <?php echo ($modifyright == 1 or $product["stuffid"]=="0")?"":"disabled=\"disabled\"";?>>
+				  <option value="0">选树种</option> 
+				<?php
+	              if (!is_array($stuff_array)) {
+	                echo "<p>No categories currently available</p>";
+	               return;
+	              }
+
+	            foreach ($stuff_array as $row)
+	            {
+	               $stuffid = $row['stuffid'];
+	               $stuffname = $row['stuffname'];
+	              echo "<option value =".$stuffid." ".($isnew==1?"":$stuffid==$product['stuffid']?"selected=\"selected\"":"\"\"").">".$stuffname."</option>";
+				}
+			    ?>
+				
+				
+				
+				</select>
+			</div>
+		</li>
+		<li class="flex">
+			<div>货种:</div>
+			<div>
+				<select name="typeOfGoods" id="kindid" <?php echo ($modifyright == 1 or $product["kindid"]=="0")?"":"disabled=\"disabled\"";?>>
+	                <option value="0">选货种</option> 
+				<?php
+			      $kind_array = $wood->kind; //货种 lja
+				  foreach($kind_array as $row) {
+						echo "<option ".($isnew?"":$product['kindid'] == $row["kindid"]?"selected = 'selected'":"")." value =".$row["kindid"].">".$row["kindname"]."</option>";					
+					}
+				?>
+				</select>
+			</div>
+			<div>长度(m):</div>
+			<div>
+				<select id="productlen" name="productlen" <?php echo ($modifyright == 1 or $product["productlen"]==0)?"":"disabled=\"disabled\"";?>>
+					<option value="0">选长度</option>
+				<?php
+					$len_array = $wood->length;
+					foreach($len_array as $row)
+					{
+						echo "<option ".($isnew?"":$product["productlen"]==$row["lenid"]?"selected='selected'":"")." value = ".$row["lenid"].">".$row["lenname"]."</option>";
+					}
+				?>
+				</select>
+			</div>
+		</li>
+		<!--原木-->
+		<li class="flex op-1 hide">
+			<div>径级(φ):</div><div><input type="tel" placeholder="10~80" name="diameterlen" id="diameterlen" <?php echo ($modifyright == 1 or $product["diameterlen"]=="0")?"":"readonly=\"readonly\"";?> <?php echo $isnew?"":($product["diameterlen"]!="0"?"value=\"".$product["diameterlen"]."\"":"");?> /></div>
+			<div>材质:</div>
+			<div>
+				<select name="timberid" id ="timberid" <?php echo ($modifyright == 1 or $product["timber"]=='0')?"":"disabled=\"disabled\"";?>>
+					<option value="0" >选择材质</option>
+				<?php 
+					$timber_arr = $wood->timber;  //array("选材","一级材","二级材","加工材");
+				    foreach($timber_arr as $row) {
+						echo "<option ".($isnew?"":$product['timber'] == $row["timberid"]?"selected = 'selected'":"")." value =".$row["timberid"].">".$row["timbername"]."</option>"; 
+					}
+					/*<option value="选材">选材</option>
+					<option value="一级材">一级材</option>
+					<option value="二级材">二级材</option>
+					<option value="加工材">加工材</option>*/
+				?>
+				</select>
+			</div>
+		</li>
+		<li class="flex op-1 hide col1-3">
+			<div>纹理:</div>
+			<div>
+				<?php $timbertype_array = $wood->timbertype;//array("粗纹","中纹","细纹","其它");?>
+				<select name="timbertypeid" id="timbertypeid" <?php echo ($modifyright == 1 or $product["timbertype"]=='0')?"":"disabled=\"disabled\"";?>>
+					<option value="0">选择纹理</option>
+				    <?php 
+					foreach($timbertype_array as $row)
+					{
+						echo "<option ".($isnew?"":$product["timbertype"]== $row["timbertypeid"]?"selected = 'selected'":"")." value = ".$row["timbertypeid"].">".$row["timbertypename"]."</option>";
+					}
+				    /*<option value="粗纹">粗纹</option>
+					<option value="中纹">中纹</option>
+					<option value="细纹">细纹</option>
+					<option value="其它">其它</option>*/
+					?>
+				</select>
+			</div>
+		</li>
+		<!--原木-->
+		<!--宽度-->
+		<li class="flex op-2 hide">
+			<div>厚度(mm):</div><div><input type="tel" placeholder="10~500" name="thinckness" id="thinckness" <?php echo ($modifyright == 1 or $product["thinckness"]=="0")?"":"readonly=\"readonly\"";?> <?php echo $isnew?"":($product["thinckness"]!="0"?"value=\"".$product["thinckness"]."\"":"");?>/></div>
+			<div class="op-3 hide">厚度范围:</div>
+			<div class="op-3 hide">
+				<select name="thincknessrange" id="thincknessrange" <?php echo ($modifyright == 1 or $product["thincknessrange"]==0)?"":"disabled=\"disabled\"";?>>
+					<option value="1" <?php echo $isnew?"":$product["thincknessrange"]==1?"selected = 'selected'":"";?>>固定值</option>
+				    <option value="2" <?php echo $isnew?"":$product["thincknessrange"]==2?"selected = 'selected'":"";?>>起步值</option>
+				</select>
+			</div>
+		</li>
+		<li class="flex op-2 hide">
+			<div>宽度(mm):</div><div><input type="tel" placeholder="10~500" name="wide" id="wide" <?php echo ($modifyright == 1 or $product["wide"]=="0")?"":"readonly=\"readonly\"";?> <?php echo $isnew?"":($product["wide"]!="0"?"value=\"".$product["wide"]."\"":"");?>/></div>
+			<div class="op-3 hide">宽度范围:</div>
+			<div class="op-3 hide">
+				<select name="widerange" id="widerange" <?php echo ($modifyright == 1 or $product["widerange"]==0)?"":"disabled=\"disabled\"";?>>
+					<option value="1" <?php echo $isnew?"":$product["widerange"]==1?"selected = 'selected'":"";?>>固定值</option>
+				    <option value="2" <?php echo $isnew?"":$product["widerange"]==2?"selected = 'selected'":"";?>>起步值</option>
+				</select>
+			</div>
+		</li>
+		<!--宽度-->
+		<li class="flex col1-3">
+			<div>当前位置:</div>
+			<?php
+	            if (!is_array($spot_array)) {
+	                echo "<p>No categories currently available</p>";
+	               return;
+	              }
+				  //未到达最后位置时允许修改
+				$maxpos=count($spot_array);//数组最大行15.06.24 ljm
+				$lastpos=$spot_array[$maxpos-1];//取最后一行记录15.06.24 ljm
+			?>
+			<div>
+				<select id="spotpositionid" name="spotpositionid" <?php echo ($modifyright == 1 or $product["spotpositionid"]!=$lastpos["spotpositionid"])?"":"disabled=\"disabled\"";?>>
+				<option value="0">选择位置</option>
+			    <?php
+				foreach ($spot_array as $row)
+	            {
+	               $spotpositionid = $row['spotpositionid'];
+	               $position = $row['position'];
+	              echo "<option value =".$spotpositionid." ".($isnew?"":$spotpositionid==$product['spotpositionid']?"selected=\"selected\"":"\"\"").">".$position."</option>";
+				}
+			    ?>
+				</select>
+			</div>
+		</li>
+		<li class="flex">
+			<div>销售状态:</div>
+			<div>
+				<select id="salestatusid" name="salestatusid" <?php echo ($modifyright == 1 or $product["salestatusid"]==0)?"":"disabled=\"disabled\"";?>>
+				<option value="0">销售状态</option>
+				<?php
+	              if (!is_array($sale_array)) {
+	                echo "<p>No categories currently available</p>";
+	               return;
+	              }
+
+	            foreach ($sale_array as $row)
+	            {
+	               $salestatusid = $row['salestatusid'];
+	               $salestatusname = $row['salestatusname'];
+	              echo "<option value =".$salestatusid." ".($isnew?"":$salestatusid==$product['salestatusid']?"selected=\"selected\"":"\"\"").">".$salestatusname."</option>";
+				}
+			    ?>
+				</select>
+			</div>
+			<div>展示状态:</div>
+			<div>
+				<?php //error_log(date('Y-m-d H:i:s') .'展示状态:'.$product["display"]."\n",3,$_SERVER['DOCUMENT_ROOT']."/log/run.log");?>
+				<select name="showstatus" id="showstatus" <?php echo ($modifyright == 1 or $product["display"]==0)?"":"disabled=\"disabled\"";?>>
+					<option value="2" <?php echo $product["display"]==2?"selected='selected'":"";?>>到货展示</option>
+					<option value="1" <?php echo ($isnew==1 or $product["display"]==1)?"selected='selected'":"";?>>立即展示</option>
+					
+				</select>
+			</div>
+		</li>
+		<li class="flex col1-3"><div>货主:</div><div><input type="text" class="shipper" name="contact" id="contact" <?php echo ($modifyright == 1 or $product["contact"]=="0")?"":"readonly=\"readonly\"";?> value="<?php echo ($isnew==1 or $product["contact"]=="0")?"":$product["contact"];?> "/>
+			<button type="button" class="shipper_btn" id="shipper_btn" <?php echo ($isnew==0 && strlen($product["contactphone"])>7)?"disabled='disabled'":"";?>>我是货主</button>
+		</div></li>
+		<li class="flex col1-3"><div>手机号:</div><div><input type="tel" name="contactphone" id="contactphone"  <?php echo ($isnew == 1 or $product["contactphone"]=="0")?"":"readonly=\"readonly\"";?> value="<?php echo $isnew?"":($product["contactphone"]=="0"?"":$product["contactphone"]);?>"/></div></li>
+	</ul>
+	<!-- <ul class="list op-1 hide">
+		
+	</ul>
+	<ul class="list op-2 hide">
+		
+		
+	</ul> -->
+	<dl class="panel collapse">
+		<dt>详细信息<i class="icon-caret-down"></i></dt>
+		<dd>
+			<ul class="list">
+				<!--新增加的-->
+				<li class="flex">
+			<div>公差(mm):</div>
+			<div><!-- <input type="number" placeholder="-2~3" name="tolerance" id="tolerance"/> -->
+				<select name="tolerance" id="tolerance" <?php echo ($modifyright == 1 or $product["tolerance"]==-99)?"":"disabled=\"disabled\"";?>>
+					<?php $tolerance_arr = $wood->tolerance;//array("-2","-1","0","+1","+2","+3");?>
+					<option value=-99>选择公差</option>
+					<?php
+						foreach($tolerance_arr as $row) echo "<option value=".$row["tolid"]." ".($isnew?"":$product["tolerance"]==$row["tolid"]?"selected = 'selected'":"").">".$row["tolname"]."</option>";
+					/*
+					<option value=-2>-2</option>
+					<option value=-1>-1</option>
+					<option value=0>0</option>
+					<option value=+1>+1</option>
+					<option value=+2>+2</option>
+					<option value=+3>+3</option>*/
+					?>
+				</select>
+			</div>
+			<div>节巴:</div>
+			<div>
+				<?php $knodid_arr = $wood->knob;//array("无节","小节","正常","大节","其它");?>
+				<select name="knobid" id="knobid"  <?php echo ($modifyright == 1 or $product["knob"]=="0")?"":"disabled=\"disabled\"";?>>
+					<option value="0">节巴 </option>
+				<?php
+					foreach($knodid_arr as $row) echo "<option value=\"".$row["knobid"]."\" ".($isnew?"":$product["knob"]==$row["knobid"]?"selected = 'selected'":"").">".$row["knobname"]."</option>";
+					  /*<option value="无节">无节</option>
+					  <option value="小节">小节</option>
+					  <option value="正常">正常</option>
+				      <option value="大节">大节</option>
+					  <option value="其它">其它</option>*/
+				?>
+				</select>
+			</div>
+		</li>
+		<li class="flex">
+			<div>爬皮:</div>
+			<div>
+				<?php $climb_arr = $wood->climb;//array("四面见线","个别","部分","其它"); ?>
+				<select name="climbid" id="climbid" <?php echo ($modifyright == 1 or $product["climb"]=="0")?"":"disabled=\"disabled\"";?>>
+					<option value="0">爬皮</option>
+					<?php
+					foreach($climb_arr as $row) echo "<option value=\"".$row["climbid"]."\" ".($isnew?"":$product["climb"]==$row["climbid"]?"selected = 'selected'":"").">".$row["climbname"]."</option>";
+					/*<option value="四面见线">四面见线</option>
+					<option value="个别">个别</option>
+					<option value="部分">部分</option>
+				    <option value="其它">其它</option>*/
+					?>
+				</select>
+			</div>
+			<div>取材位置:</div>
+			<div>
+					<?php $part_arr = $wood->part;//array("通拉","芯材","边材");?>
+					<select name="part" id="part" <?php echo ($modifyright == 1 or $product["part"]=="0")?"":"disabled=\"disabled\"";?>>
+					<option value="0">取材位置</option>
+					<?php
+						foreach($part_arr as $row) echo "<option value=\"".$row["positionid"]."\" ".($isnew?"":$product["part"]==$row["positionid"]?"selected = 'selected'":"").">".$row["positionname"]."</option>";
+					/*<option value="通拉">通拉</option>
+					<option value="芯材">芯材</option>
+					<option value="边材">边材</option>*/
+					?>
+				</select>
+			</div>
+		</li>
+		<li class="flex">
+			<div>加工设备:</div>
+			<div>
+				
+				<select name="deviceid" id="deviceid" <?php echo ($modifyright == 1 or $product["device"]=="0")?"":"disabled=\"disabled\"";?>>
+					<option value="0">加工设备</option>
+				<?php
+					foreach($device_array as $row)
+					{
+						echo "<option value=\"".$row["deviceid"]."\" ".($isnew?"":$product["device"]==$row["deviceid"]?"selected = 'selected'":"").">".$row["devicename"]."</option>";
+					}	
+					/*<option value="普通带锯">普通带锯</option>
+					<option value="俄罗斯锯">俄罗斯锯</option>
+					<option value="多片锯">多片锯</option>
+					<option value="其它">其它</option>*/
+				?>
+				</select>
+			</div>
+			<div class="op-4 hide">烘干:</div>
+			<div class="op-4 flex hide">
+				<input type="radio" name="honggan" value="是" id="hongganyes" <?php echo $isnew?"":$product["dry"]=="是"?"checked=\"checked\"":"";?>><label for="hongganyes">是</label>
+				<input type="radio" name="honggan" value="否" id="hongganno" <?php echo $isnew?"":$product["dry"]=="否"?"checked=\"checked\"":"";?>><label for="hongganno">否</label>
+			</div>
+		</li>
+				<!--新增加的-->
+				<li class="flex">
+				    <div>总货量(m³):</div><div><input type="tel" name="refcapacity" id="refcapacity" placeholder="立方米" <?php echo ($modifyright == 1 or $product["refcapacity"]==0)?"":"disabled=\"disabled\"";?> value="<?php echo $isnew?"":($product["refcapacity"]==0?"":$product["refcapacity"]); ?>"/></div>
+					<div>参考根数:</div><div><input type="tel" name="refnum" id="refnum" placeholder="100~20000" <?php echo ($modifyright == 1 or $product["refnum"]==0)?"":"readonly=\"readonly\"";?> value="<?php echo $isnew?"":($product["refnum"]==0?"":$product["refnum"]);?>"/></div>
+				</li>
+				<li class="flex">
+					<div>参考重量(t):</div><div><input type="tel" name="refwight" id="refwight" placeholder="40~90吨" <?php echo ($modifyright == 1 or $product["refwight"]==0)?"":"disabled=\"disabled\"";?> value="<?php echo $isnew?"":($product["refwight"]==0?"":$product["refwight"]); ?>"/></div>
+					<div>价格:</div><div><input type="tel" name="price" id="price"  placeholder="请输入价格" <?php echo ($modifyright == 1 or $product["price"]==0)?"":"disabled=\"disabled\"";?> value="<?php echo $isnew?"":($product["price"]==0?"":$product["price"]); ?>"/></div>
+				</li>
+
+				<li class="flex">
+					<div>新旧:</div>
+					<div>
+						<?php $newold_arr=$wood->newold;//array("新材","部分发黑","旧材");?>
+						<select name="newoldid" id="newoldid" <?php echo ($modifyright == 1 or $product["newold"]=="0")?"":"disabled=\"disabled\"";?>>
+							<option value="0">新旧</option>
+							<?php
+							foreach($newold_arr as $row) echo "<option value=\"".$row["newoldid"]."\" ".($isnew?"":$product["newold"]==$row["newoldid"]?"selected = 'selected'":"").">".$row["newoldname"]."</option>";
+							/*<option value="新材">新材</option>
+							<option value="部分发黑">部分发黑</option>
+							<option value="旧材">旧材</option>*/
+							?>
+						</select>
+					</div>
+					<div>蓝变:</div>
+					<div>
+						<?php $blue_arr= $wood->blue;//array("无蓝变","个别","部分","全蓝","其它");?>
+						<select name="blueid" id="blueid" <?php echo ($modifyright == 1 or $product["blue"]=="0")?"":"disabled=\"disabled\"";?>>
+							<option value="0">蓝变</option>
+							<?php
+							foreach($blue_arr as $row) echo "<option value=\"".$row["blueid"]."\" ".($isnew?"":$product["blue"]==$row["blueid"]?"selected = 'selected'":"").">".$row["bluename"]."</option>";
+							/*<option value="无蓝变">无蓝变</option>
+							<option value="个别">个别</option>
+							<option value="部分">部分</option>
+							<option value="全蓝">全蓝</option>
+							<option value="其它">其它</option>*/
+							?>
+						</select>
+					</div>
+				</li>
+				<li class="flex">
+					<div>虫眼:</div>
+					<div>
+						<?php $worm_arr = $wood->worm;//array("无虫眼","个别","部分","其它");?>
+						<select name="wormid" id="wormid" <?php echo ($modifyright == 1 or $product["worm"]=="0")?"":"disabled=\"disabled\"";?>>
+							<option value="0">虫眼</option>
+							<?php
+								foreach($worm_arr as $row) echo "<option value=\"".$row["wormid"]."\" ".($product["worm"]==$row["wormid"]?"selected = 'selected'":"").">".$row["wormname"]."</option>";
+								/*<option value="无虫眼">无虫眼</option>
+								<option value="个别">个别</option>
+							    <option value="部分">部分</option>
+							    <option value="其它">其它</option>*/
+							?>
+						</select>
+					</div>
+					<div>腐朽:</div>
+					<div>
+						<?php $decay_arr = $wood->decay;//array("无腐朽","个别","部分","其它");?>
+						<select name="decayid" id="decayid" <?php echo ($modifyright == 1 or $product["decay"]=="0")?"":"disabled=\"disabled\"";?>>
+							<option value="0">腐朽</option>
+							<?php
+								foreach($decay_arr as $row) echo "<option value=\"".$row["decayid"]."\" ".($product["decay"]==$row["decayid"]?"selected = 'selected'":"").">".$row["decayname"]."</option>";
+							/*<option value="无腐朽">无腐朽</option>
+							<option value="个别">个别</option>
+							<option value="部分">部分</option>
+							<option value="其它">其它</option>*/
+							?>
+						</select>
+					</div>
+				</li>
+				<li class="flex">
+					<div>斜裂:</div>
+					<div class="flex">
+						<input type="radio" name="xielie" value="有" id="xielieyes" <?php echo $isnew?"":$product["slash"]=="有"?"checked=\"checked\"":"";?>><label for="xielieyes">有</label>
+						<input type="radio" name="xielie" value="无" id="xielieno" <?php echo $isnew?"":$product["slash"]=="无"?"checked=\"checked\"":"";?>><label for="xielieno">无</label>
+					</div>
+					<div>环裂:</div>
+					<div class="flex">
+						<input type="radio" name="huanlie" value="有" id="huanlieyes" <?php echo $isnew?"":$product["ring"]=="有"?"checked=\"checked\"":"";?>><label for="huanlieyes">有</label>
+						<input type="radio" name="huanlie" value="无" id="huanlieno" <?php echo $isnew?"":$product["ring"]=="无"?"checked=\"checked\"":"";?>><label for="huanlieno">无</label>
+					</div>
+				</li>
+				<li class="flex">
+					<div>抽油:</div>
+					<div class="flex">
+						<input type="radio" name="chouyou" value="有" id="chouyouyes" <?php echo $isnew?"":$product["oil"]=="有"?"checked=\"checked\"":"";?>><label for="chouyouyes">有</label>
+						<input type="radio" name="chouyou" value="无" id="chouyouno" <?php echo $isnew?"":$product["oil"]=="无"?"checked=\"checked\"":"";?>><label for="chouyouno">无</label>
+					</div>
+					<div>黑心:</div>
+					<div class="flex">
+						<input type="radio" name="heixin" value="有" id="heixinyes" <?php echo $isnew?"":$product["black"]=="有"?"checked=\"checked\"":"";?>><label for="heixinyes">有</label>
+						<input type="radio" name="heixin" value="无" id="heixinno" <?php echo $isnew?"":$product["black"]=="无"?"checked=\"checked\"":"";?>><label for="heixinno">无</label>
+					</div>
+				</li>
+				<li class="flex col1-3">
+					<div>产地:</div>
+					<div>
+						<select name="fromid" id="fromid" <?php echo ($modifyright == 1 or $product["fromid"]=="0")?"":"disabled=\"disabled\"";?>>
+					     	<option value="0">产地</option>
+						<?php
+                          if (!is_array($from_array)) {
+                            echo "<p>No categories currently available</p>";
+                           return;
+                          }
+
+                        foreach ($from_array as $row)
+                        {
+                           $fromid = $row['fromid'];
+                           $fromname = $row['fromname'];
+                          echo "<option value =".$fromid." ".($isnew?"":$product["fromid"]==$fromid?"selected = 'selected'":"").">".$fromname."</option>";
+						}
+					    ?>	
+						</select>
+					</div>
+				</li>
+			</ul>
+		</dd>
+	</dl>
+	<ul class="list">
+		<li style="font-weight:bold;">具体描述</li>
+		<li><textarea class="fullCol" rows="6" id="content" name="content" ><?php echo $isnew?"":($product["content"]=="0"?"":$product["content"]);?></textarea></li>
+	</ul>
+	<input type="hidden" name="iomode" value='<?php echo $iomode;?>' id="iomode"/>
+	<input class="btnFixed" type="button" value="发布" id="sendmessage" />
+</form>
+<?php
+}else{
+  echo "<script>window.location.href='signIn.php?type=2';</script>";
+  }
+ ?>
+</body>
+<script src="http://libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
+<script type="text/javascript" src="js/reminder.js"></script>
+<script src="statics/js/config.js"></script>
+<script type="text/javascript" src="js/wxrelease.js?v=41c28fd"></script>
+
+<script>
+collapse();
+fliter();
+</script>
+
+<script type="text/javascript">
+	$(function(){
+		uploadImg();
+		deleteImg();
+		$("#showstatus option[value=2]").attr("selected","selected");
+		/*我是货主*/
+		$("#shipper_btn").on("click",function(){
+			var $username = "<?php echo $username; ?>";
+			var $phone = "<?php echo $phone; ?>";
+			$("#contact").val($username);
+			$("#contactphone").val($phone);
+		})
+	})
+	/*动态给上传的四张图片赋宽和高*/
+	function uploadImg(){
+		var $img_width = $(".list li .upImg-display li").width();
+		$(".list li .upImg-display li").css({"width":$img_width,"height":$img_width});
+		$(".list li .upImg-display li .upImg").css({"width":$img_width,"height":$img_width});
+		$("#upload_img").css({"width":$img_width,"height":$img_width});
+		$(".list li .upImg-display li .images").css({"width":$img_width,"height":$img_width});
+	}
+	/*删除上传的图片*/
+	function deleteImg(){
+		$(".list li .upImg-display li").find(".upload_delete").click(function(){
+			$(this).siblings(".images").remove();
+			$(this).hide();
+		});
+	}
+
+//ios fixed修复
+$('input').focus(function (){
+	$('.header').css('position','relative');
+	$('.btnFixed').css('position','relative');
+	$('body').css('padding','0');
+})
+$('input').blur(function(){
+	$('.header').css('position','relative');
+	$('.btnFixed').css('position','relative');
+})
+</script>
+</html>

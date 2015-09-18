@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<?php
+   // error_reporting(E_ALL || ~E_NOTICE);
+    header("Content-type:text/html; charset=utf-8");
+	//session_start();
+     include_once("db_fns.php");
+
+
+     require_once('system/model/weixin.class.php');
+    $weixin = new class_weixin();
+	$signPackage = $weixin->GetSignPackage();
+	
+
+  ?>
+<html>
+<head>
+<meta http-equiv="Content-Type"content="text/html; charset=utf-8">   
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+<title>现货发布</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<link rel="stylesheet" type="text/css" href="/statics/css/yumleeM.css" />
+<link rel="stylesheet" type="text/css" href="/statics/css/mcr.css" />
+<link rel="stylesheet" type="text/css" href="/com/icomoon/style.css" />
+<link rel="stylesheet" type="text/css" href="css/reminder.css" />
+<link rel="stylesheet" type="text/css" href="css/upload.css" />
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+
+<script type="text/javascript">
+  wx.config({
+        debug: false,
+		appId: '<?php echo $signPackage["appId"];?>',
+		timestamp: <?php echo $signPackage["timestamp"];?>,
+		nonceStr: '<?php echo $signPackage["nonceStr"];?>',
+		signature: '<?php echo $signPackage["signature"];?>',
+        jsApiList: [
+           /*
+            * 所有要调用的 API 都要加到这个列表中
+            * 这里以图像接口为例
+            */
+          'chooseImage',
+          'uploadImage'
+    ]
+  });
+  
+
+	
+</script>
+
+</head>
+<body>
+<header class="header">
+	<div><a href="javascript:history.back();"><i class="icon-arrow-back"></i></a></div>
+	<h1>现货发布</h1>
+	<div><a href="index.php"><i class="icon-home"></i></a></div>
+</header>
+<?php
+  
+	//echo  $weixin->msg;
+	
+    session_start();
+		include_once('system/model/wood.php');
+	$portid=$_SESSION['portid']=1;
+	$wood= new wood($portid);
+	$wood->release();
+	
+	$stuff_array =$wood->stuff ;
+    $from_array =$wood->from;
+    $dump_array=$wood->dumpposition;
+	if(isset($_SESSION['user']) ){	//用户或管理员登录后才可以发表信息	
+	
+?>
+<form class="onoff labelPadding" id="submitform">
+	<ul class="list">
+		<li>
+			<ul class="upImg-display">
+				<li>
+					<input type="button" id="choose">
+				</li>
+				<li><a href="javascript:void(0);return false;" class="upload_delete" id="upload_delete"></a></li>
+				<li><a href="javascript:void(0);return false;" class="upload_delete" id="upload_delete"></a></li>
+				<li><a href="javascript:void(0);return false;" class="upload_delete" id="upload_delete"></a></li>
+				<li><a href="javascript:void(0);return false;" class="upload_delete" id="upload_delete"></a></li>
+				
+			</ul>
+		</li>
+		<li class="flex">
+			<div>车皮号:</div><div><input type="tel" name ="carnum" id="carnum"/></div>
+			<div>树种:</div>
+			<div>
+				<select name="stuffid" id="stuffid">
+				  <option value="0">选树种</option> 
+				<?php
+	              if (!is_array($stuff_array)) {
+	                echo "<p>No categories currently available</p>";
+	               return;
+	              }
+
+	            foreach ($stuff_array as $row)
+	            {
+	               $stuffid = $row['stuffid'];
+	               $stuffname = $row['stuffname'];
+	              echo "<option value =".$stuffid.">".$stuffname."</option>";
+				}
+			    ?>
+				
+				
+				
+				</select>
+			</div>
+		</li>
+		<li class="flex">
+			<div>货种:</div>
+			<div>
+				<select name="typeOfGoods" id="kindid">
+	                <option value="0">选货种</option> 
+	                <option value="1">原木</option>
+					<option value="2">条子</option>
+					<option value="3">口料</option>
+					<option value="4">大方</option>
+					<option value="5">大板</option>
+					<option value="6">防腐材</option>
+				</select>
+			</div>
+			<div>长度(m):</div>
+			<div>
+				<select id="productlen" name="productlen">
+					<option value="0">选长度</option>
+					<option value="2">2米</option>
+					<option value="2.5">2.5米</option>
+					<option value="3">3米</option>
+					<option value="4">4米</option>
+					<option value="6">6米</option>
+					<option value="12">12米</option>
+					<option value="8">8米</option>
+				
+				</select>
+			</div>
+		</li>
+		<li class="flex">
+		    <div>总货量:</div><div><input type="tel" name="refcapacity" id="refcapacity"/></div>
+			<div>参考根数:</div><div><input type="tel" name="refnum" id="refnum" placeholder="100~20000"/></div>
+			
+		</li>
+		<li class="flex col1-3">
+			<div>参考重量:</div><div><input type="tel" name="refwight" id="refwight" placeholder="40~90t"/></div>
+		</li>
+		<li class="flex col1-3">
+			<div>当前位置:</div>
+			<div>
+				<select id="goodpositionid" name="goodpositionid">
+					<option value="0">选择位置</option>
+			            
+					<?php
+	              if (!is_array($dump_array)) {
+	                echo "<p>No categories currently available</p>";
+	               return;
+	              }
+
+	            foreach ($dump_array as $row)
+	            {
+	               $positionid = $row['positionid'];
+	               $position = $row['position'];
+	              echo "<option value =".$positionid.">".$position."</option>";
+				}
+			    ?>
+				</select>
+			</div>
+		</li>
+		<li class="flex col1-3"><div>货主:</div><div><input type="text" name="contact" id="contact" /></div></li>
+		<li class="flex col1-3"><div>手机号:</div><div><input type="tel" name="contactphone" id="contactphone"/></div></li>
+	</ul>
+	<ul class="list op-1 hide">
+		<li class="flex">
+			<div>径级(cm):</div><div><input type="tel" placeholder="10~80" name="diameterlen" id="diameterlen"/></div>
+			<div>材质:</div>
+			<div>
+				<select name="timberid" id ="timberid">
+					<option value="0">选择材质</option>
+					<option value="选材">选材</option>
+					<option value="一级材">一级材</option>
+					<option value="二级材">二级材</option>
+					<option value="加工材">加工材</option>
+				</select>
+			</div>
+		</li>
+		<li class="flex">
+			<div>纹理:</div>
+			<div>
+				<select name="timbertypeid" id="timbertypeid">
+					<option value="0">选择纹理</option>
+				    <option value="粗纹">粗纹</option>
+					<option value="中纹">中纹</option>
+					<option value="细纹">细纹</option>
+					<option value="其它">其它</option>
+				</select>
+			</div>
+			<div></div><div></div>
+		</li>
+	</ul>
+	<ul class="list op-2 hide">
+		<li class="flex">
+			<div>厚度(cm):</div><div><input type="tel" placeholder="10~500" name="thinckness" id="thinckness"/></div>
+			<div class="op-3 hide">厚度范围:</div>
+			<div class="op-3 hide">
+				<select name="thincknessrange" id="thincknessrange">
+					<option value="0">固定值</option>
+				    <option value="1">起步值</option>
+				</select>
+			</div>
+		</li>
+		<li class="flex">
+			<div>宽度(cm):</div><div><input type="tel" placeholder="10~500" name="wide" id="wide" /></div>
+			<div class="op-3 hide">宽度范围:</div>
+			<div class="op-3 hide">
+				<select name="widerange" id="widerange">
+					<option value="0">固定值</option>
+				    <option value="1">起步值</option>
+				</select>
+			</div>
+		</li>
+		<li class="flex">
+			<div>公差(cm):</div>
+			<div><!-- <input type="number" placeholder="-2~3" name="tolerance" id="tolerance"/> -->
+				<select name="tolerance" id="tolerance">
+					<option value=-99>选择公差</option>
+					<option value=-2>-2</option>
+					<option value=-1>-1</option>
+					<option value=0>0</option>
+					<option value=+1>+1</option>
+					<option value=+2>+2</option>
+					<option value=+3>+3</option>
+				</select>
+			</div>
+			<div>节巴:</div>
+			<div>
+				<select name="knobid" id="knobid">
+					<option value="0">节巴 </option>
+					  <option value="无节">无节</option>
+					  <option value="小节">小节</option>
+					  <option value="正常">正常</option>
+				      <option value="大节">大节</option>
+					  <option value="其它">其它</option>
+				</select>
+			</div>
+		</li>
+		<li class="flex">
+			<div>爬皮:</div>
+			<div>
+				<select name="climbid" id="climbid">
+					<option value="0">爬皮</option>
+					<option value="四面见线">四面见线</option>
+					<option value="个别">个别</option>
+					<option value="部分">部分</option>
+				    <option value="其它">其它</option>
+				</select>
+			</div>
+			<div>取材位置:</div>
+			<div>
+				<select name="positionid" id="positionid">
+					<option value="0">取材位置</option>
+					<option value="通拉">通拉</option>
+					<option value="芯材">芯材</option>
+					<option value="边材">边材</option>
+				</select>
+			</div>
+		</li>
+		<li class="flex">
+			<div>加工设备:</div>
+			<div>
+				<select name="deviceid" id="deviceid">
+					<option value="0">加工设备</option>
+					<option value="普通带锯">普通带锯</option>
+					<option value="俄罗斯锯">俄罗斯锯</option>
+					<option value="多片锯">多片锯</option>
+					<option value="其它">其它</option>
+				</select>
+			</div>
+			<div class="op-4 hide">烘干:</div>
+			<div class="op-4 flex hide">
+				<input type="radio" name="honggan" value="是" id="hongganyes"><label for="hongganyes">是</label>
+				<input type="radio" name="honggan" value="否" id="hongganno"><label for="hongganno">否</label>
+			</div>
+		</li>
+	</ul>
+	<dl class="panel collapse">
+		<dt>详细信息<i class="icon-caret-down"></i></dt>
+		<dd>
+			<ul class="list">
+				<li class="flex">
+					<div>新旧:</div>
+					<div>
+						<select name="newoldid" id="newoldid">
+							<option value="0">新旧</option>
+							<option value="新材">新材</option>
+							<option value="部分发黑">部分发黑</option>
+							<option value="旧材">旧材</option>
+							
+							
+						</select>
+					</div>
+					<div>蓝变:</div>
+					<div>
+						<select name="blueid" id="blueid">
+							<option value="0">蓝变</option>
+							<option value="无蓝变">无蓝变</option>
+							<option value="个别">个别</option>
+							<option value="部分">部分</option>
+							<option value="全蓝">全蓝</option>
+							<option value="其它">其它</option>
+						</select>
+					</div>
+				</li>
+				<li class="flex">
+					<div>虫眼:</div>
+					<div>
+						<select name="wormid" id="wormid">
+							<option value="0">虫眼</option>
+								<option value="无虫眼">无虫眼</option>
+								<option value="个别">个别</option>
+							    <option value="部分">部分</option>
+							    <option value="其它">其它</option>
+						</select>
+					</div>
+					<div>腐朽:</div>
+					<div>
+						<select name="decayid" id="decayid">
+							<option value="0">腐朽</option>
+							<option value="无腐朽">无腐朽</option>
+							<option value="个别">个别</option>
+							<option value="部分">部分</option>
+							<option value="其它">其它</option>
+						</select>
+					</div>
+				</li>
+				<li class="flex">
+					<div>斜裂:</div>
+					<div class="flex">
+						<input type="radio" name="xielie" value="有" id="xielieyes"><label for="xielieyes">有</label>
+						<input type="radio" name="xielie" value="无" id="xielieno"><label for="xielieno">无</label>
+					</div>
+					<div>环裂:</div>
+					<div class="flex">
+						<input type="radio" name="huanlie" value="有" id="huanlieyes"><label for="huanlieyes">有</label>
+						<input type="radio" name="huanlie" value="无" id="huanlieno"><label for="huanlieno">无</label>
+					</div>
+				</li>
+				<li class="flex">
+					<div>抽油:</div>
+					<div class="flex">
+						<input type="radio" name="chouyou" value="有" id="chouyouyes"><label for="chouyouyes">有</label>
+						<input type="radio" name="chouyou" value="无" id="chouyouno"><label for="chouyouno">无</label>
+					</div>
+					<div>黑心:</div>
+					<div class="flex">
+						<input type="radio" name="heixin" value="有" id="heixinyes"><label for="heixinyes">有</label>
+						<input type="radio" name="heixin" value="无" id="heixinno"><label for="heixinno">无</label>
+					</div>
+				</li>
+				<li class="flex col1-3">
+					<div>产地:</div>
+					<div>
+						<select name="fromid" id="fromid">
+					     	<option value="0">产地</option>
+						<?php
+                          if (!is_array($from_array)) {
+                            echo "<p>No categories currently available</p>";
+                           return;
+                          }
+
+                        foreach ($from_array as $row)
+                        {
+                           $fromid = $row['fromid'];
+                           $fromname = $row['fromname'];
+                          echo "<option value =".$fromid.">".$fromname."</option>";
+						}
+					    ?>	
+						</select>
+					</div>
+				</li>
+			</ul>
+		</dd>
+	</dl>
+	<ul class="list">
+		<li style="font-weight:bold;">具体描述</li>
+		<li><textarea class="fullCol" rows="6" id="content" name="content"></textarea></li>
+	</ul>
+	<input class="btnFixed" type="button" value="发布" id="sendmessage" />
+</form>
+<?php
+}else{
+  echo "<script>window.location.href='signIn.php?type=2';</script>";
+  }
+ ?>
+</body>
+<script src="http://libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
+
+<script type="text/javascript" src="js/reminder.js"></script>
+<script src="/statics/js/config.js"></script>
+<script type="text/javascript" src="js/wxrelease.js?v=41c28fd"></script>
+
+<script>
+collapse();
+fliter();
+</script>
+
+<script type="text/javascript">
+	$(function(){
+		uploadImg();
+		deleteImg();
+	})
+	/*动态给上传的四张图片赋宽和高*/
+	function uploadImg(){
+		var $img_width = $(".list li .upImg-display li").width();
+		$(".list li .upImg-display li").css({"width":$img_width,"height":$img_width});
+		$(".list li .upImg-display li .upImg").css({"width":$img_width,"height":$img_width});
+		$("#upload_img").css({"width":$img_width,"height":$img_width});
+		$(".list li .upImg-display li .images").css({"width":$img_width,"height":$img_width});
+	}
+	/*删除上传的图片*/
+	function deleteImg(){
+		$(".list li .upImg-display li").find(".upload_delete").click(function(){
+			$(this).siblings(".images").remove();
+			$(this).hide();
+		});
+	}
+</script>
+
+</html>

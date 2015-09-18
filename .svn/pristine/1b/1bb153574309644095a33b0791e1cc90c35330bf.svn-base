@@ -1,0 +1,48 @@
+@charset "UTF-8";
+
+*{margin:0;padding:0;list-style-type:none;}
+body{background:#fff;}
+.clear{clear:both;}
+ul li{text-align:center;}
+
+/*底部*/
+nav.navFixed{background:#fff;border-top:1px solid #a7a7a7;z-index:10;}
+
+/*header start*/
+.header{height:46px;line-height:35px;background:#d80001;}
+.header h1{  text-align: left;margin-left: 23%;}
+.header .header_home{padding-left: 8px;text-align:left;width:20%;}
+.header .moddle{padding-top:1px;width:45%;}
+.header .header_home .searchGroup{padding:0;height:35px;margin-top:5px;background:#fff;border-radius:15px;line-height:35px;}
+.header .header_home .searchGroup input{outline:0;}
+.header .header_home .searchGroup #numberInput{border-radius:18px 0 0 18px;padding-left:10px;width:60%}
+.header .header_home .searchGroup #ser_submit{;width:35%}
+.header .header_home span{position:relative;font-size:16px;font-family:"微软雅黑";}
+.header .header_home span .icon-caret-down{position:absolute;top:-13px;right:-15px;}
+
+/*end header*/
+
+/*按钮区*/
+.menuIcon{background:#fff;}
+.menuIcon li a span{color:#000;}
+.last{padding-bottom:10px;border-bottom:5px solid #fce4c8;}
+.first{margin-top:10px;}
+.menuIcon .classify{display:block;margin-top:15px;font-size:14px;font-family:"微软雅黑";}
+.menuIcon .classify span{display:block;margin-top:5px;}
+/*按钮区*/
+
+/*铁路现货弹出区*/
+.tip{width:100%;margin-top:-8px;display:none;}
+.tip .t_tiplist{width:100%;display:table;background:#e9e9e9;}
+.tip .t_tiplist li{height:60px;border-bottom:1px solid #ccc;line-height:60px;}
+.tip .t_tiplist li a{float:left;display:inline-block;font-size:14px;font-family:"微软雅黑";border-right:1px solid #ccc;color:#000;width:33%;}
+.tip .triangle{height:0;width:0;overflow: hidden;font-size: 0;line-height: 0;border-color:transparent transparent #e9e9e9 transparent;border-style:solid;border-width:8px;margin-left:15%;margin-top:5px;}
+/*铁路现货弹出区*/
+
+/*现货信息*/
+.goods h2{padding:10px 0 10px 5px;border-bottom:1px solid #000;}
+.goods .goods_list{width:100%;display:table;}
+.goods .goods_list tr{border-bottom:1px dashed #5b5b5b;width:100%;height:40px;line-height:45px;text-align:left;padding-left:10px;}
+.goods .goods_list tr td{font-size:14px;font-family:"微软雅黑";text-align:center;}
+/*现货信息*/
+#goodslist a ul li{font-family:"微软雅黑";font-size:13px;border-bottom:1px dashed #5b5b5b;color:#000;}

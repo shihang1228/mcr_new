@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<title>原木待售</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<link rel="stylesheet" type="text/css" href="/statics/css/yumleeM.css" />
+<link rel="stylesheet" type="text/css" href="/statics/css/mcr.css" />
+<link rel="stylesheet" type="text/css" href="/com/icomoon/style.css" />
+</head>
+<?php
+    include_once('mcr_sc_fns.php');
+	$stuff_array=get_stuffarray();	
+	?>
+<body>
+<?php
+	include('public.html');
+?>
+<header class="header">
+	<div class="header_home"><a href="javascript:history.back();"><i class="icon-arrow-back"></i></a></div>
+	<h1>原木待售</h1>
+	<div class="header_home"><a href="index.php"><i class="icon-home"></i></a></div>
+</header>
+<section>
+	<form action="" method="get">
+		<ul class="flex selectWrapper">
+			<li>
+				<select name = "areaselect" id="stuffselect">
+				<option value="0">选树种</option>
+						<?php
+                        foreach ($stuff_array as $row)
+                        {
+                           $stuffid = $row['stuffid'];
+                           $stuffname = $row['stuffname'];
+                          echo "<option value =".$stuffid.">".$stuffname."</option>";
+						}
+					    ?>
+				</select>
+			</li>
+			<li>
+				<select name = "areaselect" id="productlen">
+				    <option value="0">选长度</option>
+					<option value="2">2米</option>
+					<option value="2.5">2.5米</option>
+					<option value="3">3米</option>
+					<option value="4">4米</option>
+					<option value="6">6米</option>
+					<option value="12">12米</option>
+					<option value="8">8米</option>
+				</select>
+			</li>
+			<li>
+				<input type="tel" placeholder="径级" id="diameterlen" name="diameterlen"/>
+			</li>
+			<li>
+				<select name = "areaselect" id="timber">
+					<option value="0">选材质</option>
+					<option value="选材">选材</option>
+					<option value="一级材">一级材</option>
+					<option value="二级材">二级材</option>
+					<option value="加工材">加工材</option>
+				</select>
+			</li>
+			<li><input type="button" class="button" value="查询" onclick="start(1,1);"></li>
+		</ul>
+	</form>
+</section>
+<dl class="panel">
+	<dt><h2>待售</h2></dt>
+	<dd id="goodslist" class="borTop">
+		
+	</dd>
+</dl>
+
+</body>
+<script src="http://libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
+<script type="text/javascript" src="js/logsell.js"></script>
+</html>

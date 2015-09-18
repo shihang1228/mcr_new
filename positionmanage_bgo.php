@@ -1,0 +1,71 @@
+﻿<?php
+    include_once('system/model/db_fns.php');
+	include_once('system/model/constant.php');
+	session_start();
+	header("Content-Type: text/html; charset=utf-8");
+	$conn = db_connect();
+	$filtervalue="";
+    $noconnect ="<p>对不起，没有查找到您要查找的内容！</p>";
+
+    $num=$_POST['num'];
+	$search =$_POST['search'];
+	
+	//判断条件
+	
+	if($search !='0'){
+		$filtervalue =$filtervalue ." where  username like '%".$search."%' or phone like '%".$search
+		."%' or phone1 like '%".$search."%' or phone2 like '%".$search."%'";
+    }
+	
+	
+	 $query1 = "select userid,username,phone,case rightid when 0 then '普通用户' else '管理员' end as rightid, "
+         ." case freeze when 0 then '正常用户' else '被冻结' end as freeze,loginnum,logintime " ;
+		 
+	  $query2= " from t_user  ";
+	
+	if (strlen(trim($filtervalue))>0){
+		$query2 =$query2 . $filtervalue;
+	}
+	 $query =$query1.$query2;
+	// echo $query;
+	// return;
+    //查询页码
+	 $pagecount=0;
+	 
+	  $querypagenum="select count(*) as c ".$query2;
+	  $result = @$conn->query($querypagenum);
+	  $datanum =$result->fetch_row();
+      $total=$datanum[0];
+	  if($total % PAGESIZE ==0) { //获取总页数
+			$pagecount = intval($total/PAGESIZE);
+		} else {
+          $pagecount=ceil($total / PAGESIZE);
+		 
+	  }
+	//
+	 $pageid =($num*PAGESIZE);
+	 $query = $query ." order by logintime desc limit "  .$pageid.",". PAGESIZE;
+
+	$json_arr = array();
+    $result = @$conn->query($query);
+    if ((!$result) ||($result->num_rows ==0))
+	{
+	    echo json_encode( $json_arr );
+		return;
+    }
+	 $temp_arr = array();
+	 while($row = $result->fetch_assoc()){
+		 $temp_arr[] = $row;
+	 }
+     $page_arr =array(array('pagecount'=>$pagecount,'pagenum'=>$num));
+	 
+	  foreach($page_arr as $k=>$v){
+		 $json_arr[]  = $v;
+
+	 }
+	 foreach($temp_arr as $k=>$v){
+		 $json_arr[]  = $v;
+     }
+	
+	 echo json_encode( $json_arr );
+?>

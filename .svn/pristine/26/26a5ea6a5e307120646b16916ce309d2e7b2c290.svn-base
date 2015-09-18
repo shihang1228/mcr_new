@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+<title>免费注册</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<link rel="stylesheet" type="text/css" href="/statics/css/yumleeM.css" />
+<link rel="stylesheet" type="text/css" href="/statics/css/mcr.css" />
+<link rel="stylesheet" type="text/css" href="/com/icomoon/style.css" />
+<?php
+   session_start();
+   include_once('mcr_sc_fns.php');
+   $port_array = get_portarray();
+   $type=$_GET['type'];//type=1微信用户，type=2其他用户
+   $code=sendvalidmessage('13934544931');
+   $_SESSION['code'] = $code;
+   $_SESSION['time'] =time();
+ ?>
+ <style>
+ 	label{position: relative;}
+	label #identify{position:absolute;top:0px;right:10px;}
+ </style>
+<body>
+<header class="header">
+	<div class="header_home"><a href="javascript:history.back();"><i class="icon-arrow-back"></i></a></div>
+	<h1>登录</h1>
+	<div class="header_home"><a href="index.php"><i class="icon-home"></i></a></div>
+</header>
+<form name ="form1" method="post" action="savereg.php" onSubmit="return chkinput(this)">
+	<fieldset>
+		<legend>注册</legend>
+		<?php
+		  if($type==1){
+			  ?>
+		 
+		<input type="hidden" name="wxid" value=<?php echo $_GET['wxid'];?> >
+		<input type="hidden" name="userpic" value=<?php echo $_GET['userpic'];?> >
+		<input type="hidden" name="nickname" value=<?php echo $_GET['nickname'];?> >
+		<input type="hidden" name="province" value=<?php echo $_GET['province'];?> >
+		<input type="hidden" name="city" value=<?php echo $_GET['city'];?> >
+		<?php
+		 }
+		 ?>
+		<input type="hidden" name="type" value=<?php echo $_GET['type'];?> >
+		<label>
+			<i class="icon-user"></i>
+			<input type="text" name="userName" placeholder="请输用户名" id="userName" />
+			<i class="icon-checkbox-checked" id="userName_icon"></i>
+		</label>
+		<label>
+			<i class="icon-mobile"></i>
+			<input type="tel" placeholder="请输入您的手机号码" name="phoneNumber" id="phoneNum" />
+			<i class="icon-checkbox-checked" id="phoneNum_icon"></i>
+		</label>
+		<label>
+			<i class="icon-lock"></i>
+			<input type="password" name="userpwd" placeholder="请输入密码" id="pwd" />
+			<i class="icon-checkbox-checked" id="pwd_icon"></i>
+		</label>
+		<label>
+			<i class="icon-checkbox-checked"></i>
+			<input type="password" name="userpwd1" placeholder="请再次输入密码" id="pwd2" />
+			<i class="icon-checkbox-checked" id="pwd2_icon"></i>
+		</label>
+		<label>
+			<i class="icon-spell-check"></i>
+			<input type="text" placeholder="请输入短信验证码" name="validmessage" />
+			<button id="identify">获取验证码</button>
+			<i class="icon-checkbox-checked" id="pwd2_icon"></i>
+		</label>
+		<label class="text">
+			<div>关注口岸:</div>
+			<select name="portselect">
+				<option value =0>请选择关注口岸</option>
+				<?php
+                    if (!is_array($port_array)) {
+                        echo "<p>No categories currently available</p>";
+                        return;
+                    }
+                   foreach ($port_array as $row)
+                    {
+                        $portid = $row['portid'];
+                        $portname = $row['portName'];
+                        echo "<option value =".$portid.">".$portname."</option>";
+                    }
+
+                    ?>
+			</select>
+		</label>
+		<label class="text">
+			<div>备用手机:</div>
+			<input type="text" name ="phone1" placeholder="" />
+		</label>
+		<label class="text">
+			<div>备用手机2:</div>
+			<input type="text" name ="phone2" placeholder="" />
+		</label>
+		<input type="submit" value="注册" /></div>
+	</fieldset>
+</form>
+</body>
+ <script language="javascript">
+		function chkinput(form){				//定义一个函数
+			if(form.userName.value==""){				//判断usernc文本框中的值是否为空
+				alert("请输入用户昵称！");   		//如果为空则输出“请输入用户昵称”
+				form.userName.focus();					//返回到tel文本框
+				return(false);
+		   }
+		  if(form.userpwd.value==""){
+			    alert("请输入注册密码！");   
+				form.userpwd.focus();
+				return(false);
+			}
+		  if(form.userpwd1.value==""){
+			  alert("请输入重复密码！");   
+			  form.userpwd1.focus();
+			  return(false);
+			  }
+		  if(form.userpwd.value!=form.userpwd1.value){
+			  alert("密码与确认密码不同！");   
+			  form.userpwd.focus();
+			  return(false); 
+			 }
+		  if(form.portselect.value=="0"){
+			  alert("请选择关注口岸");   
+			  form.portselect.focus();
+			  return false;
+		  }
+		   return(true);							//提交表单
+		}
+	</script>
+<script type="text/javascript" src="/statics/js/rightForm.js"></script>
+</html>

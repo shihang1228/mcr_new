@@ -1,0 +1,111 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<title>企业介绍</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<link rel="stylesheet" type="text/css" href="statics/css/yumleeM.css" />
+<link rel="stylesheet" type="text/css" href="statics/css/mcr.css" />
+<link rel="stylesheet" type="text/css" href="com/icomoon/style.css" />
+<link rel="stylesheet" type="text/css" href="com/swiper/swiper.min.css" />
+<link rel="stylesheet" type="text/css" href="iconfont/iconfont.css" />
+<style>
+	.pic1{box-sizing: border-box; width: 100%; border: 0.3em solid white; -webkit-box-shadow: rgb(102, 102, 102) 0.2em 0.2em 0.5em; box-shadow: rgb(102, 102, 102) 0.2em 0.2em 0.5em; height: auto !important; float: none;}
+	
+	.tips{background-color:#ececec;height:35px;width:100%;display:block;}
+    .tips span{font-size: 16px;color: rgb(127, 127, 127); display: inline-block; vertical-align: middle; line-height:35px;padding-left:10px;font-weight: bold;}
+    .tip_detail{text-indent: 2em; text-align: left; line-height: 1.5em;}
+    .detail_con{line-height: 2em; text-indent: 1em;}
+</style>
+</head>
+<?php
+    session_start();
+    include_once('mcr_sc_fns.php');
+	$companyid=$_GET['companyid'];
+	$company_array = get_mydata("call p_mycompany(".$companyid.")");
+	$companypic_array =get_companypic($companyid);
+?>
+<body>
+
+
+<?php
+if (!is_array($company_array)) {
+  $noconnect ="<p>对不起，没有查找到您要查找的内容！</p>";
+  echo  $noconnect;
+					   
+}
+else {
+$row =$company_array[0];
+?>
+
+<header class="header">
+	<div><a href="javascript:history.back();"><i class="icon-arrow-back"></i></a></div>
+	<h1><?php echo $row['companyname'] ?></h1>
+	<div><a href="index.php"><i class="icon-home"></i></a></div>
+</header>
+<?php
+	 if (is_array($companypic_array)) {
+?>
+<div class="company-bg pic1">
+	<div class="swiper-container company">
+		<ul class="swiper-wrapper" id="auto-loop">
+			<?php
+				foreach($companypic_array as $rowpic){
+					echo "<li class='swiper-slide'><img src='".$rowpic['companypic']."'></li>";
+				}
+			?>
+		</ul>
+	</div>
+</div>
+<?php
+	}
+?>
+	<section>
+        <p style="" class="tips">
+            <span>公司介绍</span>
+        </p>
+        <p class="tip_detail"><?php echo $row['content'];?></p>
+    </section>
+    <section>
+        <p class="tips">
+            <span>主要产品</span>
+        </p>
+        <p class="tip_detail"><?php echo $row['product'];?></p>
+    </section>
+    <section>
+        <p class="tips">
+            <span>联系信息</span>
+        </p>
+        <p class="detail_con">
+            <span><i class="iconfont">&#xe605</i>联系人：<?php echo $row['contact'];?></span>
+        </p>
+         <p class="detail_con">
+            <span><i class="iconfont">&#xe601</i>手机：<?php echo $row['phone'];?></span>
+        </p>
+         <p class="detail_con">
+            <span><i class="iconfont">&#xe604</i>联系电话：<?php echo $row['contactphone'];?></span>
+        </p>
+         <p class="detail_con">
+            <span><i class="iconfont">&#xe603</i>地址：<?php echo $row['address'];?></span>
+        </p>
+    	 <p class="detail_con">
+            <span><i class="iconfont">&#xe602</i>邮箱：<?php echo $row['email'];?></span>
+        </p>
+         <p class="detail_con">
+            <span><i class="iconfont">&#xe606</i>网址：<a href="http://<?php echo $row['website'];?>"><?php echo $row['website'];?></a></span>
+        </p>
+    </section>
+<?php
+   }
+  ?>
+</body>
+<script type="text/javascript" src="com/swiper/swiper.min.js"></script>
+<script> 
+var mySwiper = new Swiper('.swiper-container',{
+autoplay : 3000,//可选选项，自动滑动
+})
+</script>
+</html>

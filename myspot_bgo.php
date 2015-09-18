@@ -1,0 +1,126 @@
+﻿<?php
+    session_start();
+	//echo '<script>alert("");</script>';
+	//return;
+	$userid = $_SESSION['userid'];
+    include_once('system/model/db_fns.php');
+	header("Content-Type: text/html; charset=utf-8");
+	$conn = db_connect();
+	$filtervalue="";
+    $noconnect ="<p>对不起，没有查找到您要查找的内容！</p>";
+
+	//读取参数
+    
+	$areavalue =$_SESSION['portid'];
+	//$areavalue =$_POST['areaselect'];
+	$kindvalue =$_POST['kindselect'];
+	$stuffvalue =$_POST['stuffselect'];
+	$productlen=$_POST['productlen'];
+	
+	$productwide=$_POST['productwide'];
+	$thinckness=$_POST['thinckness'];
+	//$kindid=$_POST['kindid'];
+	$carnum=$_POST['carnum'];
+	$diameterlen=$_POST['diameterlen'];
+	$timber=$_POST['timber'];
+	$startTime = $_POST['startTime'];
+	$endTime = $_POST['endTime'];
+	$status = $_POST['salestatusid'];
+
+	if($status !=0){
+		 $filtervalue =$filtervalue ." and p.salestatusid =".$status;
+	 }	//判断条件
+	// if($areavalue != 0){
+		// $filtervalue =$filtervalue . " and p.portid =".$areavalue;
+	// }
+	 if($kindvalue !=0){
+		 $filtervalue =$filtervalue ." and p.kindid =".$kindvalue;
+	 }
+	if($stuffvalue !=0){
+	    $filtervalue =$filtervalue ." and p.stuffid =".$stuffvalue;
+	}
+	 if($productlen !=0){
+	     $filtervalue =$filtervalue ." and p.productlen =".$productlen;
+	 }
+	//依据是否是原木来增加条件
+	 if($kindvalue ==1){//原木
+		if($diameterlen !=0) {
+		    $filtervalue =$filtervalue ." and p.diameterlen =".$diameterlen;
+		}
+		if($timber !=0) {
+		    $filtervalue =$filtervalue ." and p.timber =".$timber;
+		}
+	} else if( $kindvalue >1) {//其他类
+	 	if (($productwide !=0) ) {
+		    $filtervalue =$filtervalue ." and (p.wide =".$productwide ." or p.thinckness=".$productwide.")"; 
+		}
+		if ($thinckness !=0){
+			$filtervalue =$filtervalue." and ( p.thinckness = " .$thinckness." or p.wide=".$thinckness.")" ;
+		}
+	}
+	
+	if (strlen(trim($carnum))>=4){//车皮号，手机号
+		$filtervalue =$filtervalue." and  ((p.carnum like '%".$carnum."%') or(p.contactphone like '%".$carnum."%'))";
+	} 
+	$bdate = '';
+	$edate = '';
+	if(strlen($startTime)>0 && strlen($endTime)>0){
+		$bdate = $startTime;
+		$edate = $endTime;
+		$filtervalue =$filtervalue." and (TIMESTAMPDIFF(day,\'".$startTime."\',DATE_FORMAT(p.publishtime,\'%Y-%m-%d\'))>=0 and TIMESTAMPDIFF(day,DATE_FORMAT(p.publishtime,\'%Y-%m-%d\'),\'".$endTime."\')>=0)";
+	}
+	elseif(strlen($startTime)>0){
+		$bdate = $startTime;
+		$edate = $startTime;
+		$filtervalue =$filtervalue." and (TIMESTAMPDIFF(day,\'".$startTime."\',DATE_FORMAT(p.publishtime,\'%Y-%m-%d\'))>=0 and TIMESTAMPDIFF(day,DATE_FORMAT(p.publishtime,\'%Y-%m-%d\'),\'".$startTime."\')>=0)";
+	}
+	elseif(strlen($endTime)>0){
+		$bdate = $endTime;
+		$edate = $endTime;
+		$filtervalue =$filtervalue." and (TIMESTAMPDIFF(day,\'".$endTime."\',DATE_FORMAT(p.publishtime,\'%Y-%m-%d\'))>=0 and TIMESTAMPDIFF(day,DATE_FORMAT(p.publishtime,\'%Y-%m-%d\'),\'".$endTime."\')>=0)";
+	}
+	
+	//error_log(date('Y-m-d H:i:s').'报警查询:'.$filtervalue."\n",3,$_SERVER['DOCUMENT_ROOT']."/log/sqlrun.log");
+
+	if (strlen(trim($filtervalue))>0){
+		//echo $filtervalue;
+	}
+
+	
+	$json_arr = array();
+    $result = getdata("call p_myspot1(".$userid.",'".$filtervalue."','".$bdate."','".$edate."')");
+	//$result = @$conn->query($query);
+	
+    /*if ((!$result) ||($result->num_rows ==0))
+	{
+		//echo "<meta http-equiv='Content-Type'' content='text/html; charset=utf-8'>";
+      //  echo  $noconnect;
+	    echo json_encode( $json_arr );
+		return;
+    }*/
+	
+	  /*$temp_arr = array();
+	 while($row = $result->fetch_assoc()){
+		 $temp_arr[] = $row;
+	 }
+     
+	 foreach($temp_arr as $k=>$v){
+		 $json_arr[]  = $v;
+
+	 }*/
+	if(is_array($result))
+	{
+		$json_arr[0] = array("total"=>count($result));
+		//$json_arr[1] = $result;
+		foreach($result as $k=>$v){
+			$json_arr[]  = $v;
+		}
+		
+		echo json_encode( $json_arr);
+	}
+	else{
+	$json_arr[0] = array("total"=>0);
+		//$json_arr[1] = array();
+		echo json_encode( $json_arr );
+	}
+?>

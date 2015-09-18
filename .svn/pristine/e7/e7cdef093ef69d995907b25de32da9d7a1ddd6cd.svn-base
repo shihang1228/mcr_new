@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=no">
+	<meta name="format-detection" content="telephone=no">
+	<title>手势改变图片大小</title>
+	<script>
+	function init(){
+		var div = document.getElementById('div');
+		div.ongesturechange = function(e){
+			var scale = e.scale;
+			var img = document.getElementsByTagName("img")[0];
+			var w = img.width;
+			var h = img.height;
+			if(scale > 1){
+				w += 10;
+				h += 10;
+			}else if(scale <1) {
+				w -= 10;
+				h -= 10;
+			}
+			img.width = w;
+			img.height = h;
+		}
+	}
+	</script>
+	<style>
+		div{
+			border:2px solid red;
+			color:red;
+			margin:10px auto;
+			text-align: center;
+		}
+	</style>
+</head>
+<body onload = "init();">
+	<div id="div">
+		<img src="images/selected.jpg" alt="" width="200" height="200" />
+	</div>
+	
+</body>
+</html>

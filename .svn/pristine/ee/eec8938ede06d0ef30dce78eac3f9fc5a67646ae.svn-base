@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<meta charset="utf-8">
+<style>
+body {
+    margin-left: 0px;
+    margin-top: 0px;
+    margin-right: 0px;
+    margin-bottom: 0px;
+}
+.auto_hidden {
+    width:204px;border-top: 1px solid #333;
+    border-bottom: 1px solid #333;
+    border-left: 1px solid #333;
+    border-right: 1px solid #333;
+    position:absolute;
+    display:none;
+}
+.auto_show {
+    width:204px;
+    border-top: 1px solid #333;
+    border-bottom: 1px solid #333;
+    border-left: 1px solid #333;
+    border-right: 1px solid #333;
+    position:absolute;
+    z-index:9999; /* 设置对象的层叠顺序 */
+    display:block;
+}
+.auto_onmouseover{
+    color:#ffffff;
+    background-color:highlight;
+    width:100%;
+}
+.auto_onmouseout{
+    color:#000000;
+    width:100%;
+    background-color:#ffffff;
+}
+</style>
+
+<body>
+    <div align="center" style="padding-top:50px">
+        <input type="text" style="width:300px;height:20px;font-size:14pt;" placeholder="请输入手机号" id="o" onkeyup="autoComplete.start(event)">
+    </div>
+    <div class="auto_hidden" id="auto"><!--自动完成 DIV--></div>
+<script>
+    var autoComplete=new AutoComplete('o','auto',['18934544321','13934549876','13934543427','13934547639','13934547755','13934543399','13934548845','13934548753','13934542456']);
+</script>
+</body>
+<script src="js/autoComplete.js"></script>
+</html>

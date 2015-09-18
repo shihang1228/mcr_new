@@ -1,0 +1,126 @@
+/**
+ * @authors Yumlee (543265835@qq.com)
+ * @date    2015-05-27 10:18:41
+ */
+//dl add collapse
+$(function(){
+	changeFilter($("#kindid").val());
+})
+function collapse(){
+	$(".collapse dt").on("click",function (){
+		$(".collapse dd").toggle();
+	})
+}
+
+//通过货种过滤选项
+function fliter(){
+	$("#kindid").change(function (){
+		var n = $(this).val();
+		changeFilter(n);
+	})
+}
+
+function changeFilter(obj){
+	switch(obj){
+			case '0':
+			$(".op-1").addClass('hide');
+			$(".op-2").addClass('hide');
+			$(".op-3").addClass('hide');
+			$(".op-4").addClass('hide');
+			break;
+			case '1':
+			$(".op-1").removeClass('hide');
+			$(".op-2").addClass('hide');
+			$(".op-3").addClass('hide');
+			$(".op-4").addClass('hide');
+			break;
+			case '2':
+			$(".op-1").addClass('hide');
+			$(".op-2").removeClass('hide');
+			$(".op-3").addClass('hide');
+			$(".op-4").addClass('hide');
+			break;
+			case '3':
+			$(".op-1").addClass('hide');
+			$(".op-2").removeClass('hide');
+			$(".op-3").addClass('hide');
+			$(".op-4").removeClass('hide');
+			break;
+			case '4':
+			$(".op-1").addClass('hide');
+			$(".op-2").removeClass('hide');
+			$(".op-3").removeClass('hide');
+			$(".op-4").removeClass('hide');
+			break;
+			case '5':
+			$(".op-1").addClass('hide');
+			$(".op-2").removeClass('hide');
+			$(".op-3").removeClass('hide');
+			$(".op-4").removeClass('hide');
+			break;
+			case '6':
+			$(".op-1").addClass('hide');
+			$(".op-2").removeClass('hide');
+			$(".op-3").addClass('hide');
+			$(".op-4").removeClass('hide');
+			break;
+		}
+}
+
+function kindselect(){
+	$('#kindselect').change(function (){
+		var n = $("#kindselect").val();
+		switch(n){
+			case '0':
+			$(".op-1").addClass('hide');
+			$(".op-2").addClass('hide');
+			break;
+			case '1':
+			$(".op-1").removeClass('hide');
+			$(".op-2").addClass('hide');
+			break;
+			default:
+			$(".op-1").addClass('hide');
+			$(".op-2").removeClass('hide');
+		}
+	})
+}
+
+function tipToggle(){
+	$(".ul_list li").find(".select_btn").click(function(){
+		$(this).siblings(".tip").slideToggle(300);
+	})
+}
+// scroll fixed
+function scrollToFixed(height){
+	$(window).on('scroll',function (){
+		if ($(window).scrollTop()>height) {
+			$('.selectWrapper').addClass('toFixed');
+		}
+		if ($(window).scrollTop()<=height) {
+			$('.selectWrapper').removeClass('toFixed');
+		};
+	})
+}
+// 密码校验
+function checkPwd() {
+	var pwd = $('#pwd'),
+		pwd1 = $('#pwd1'),
+		pwd2 = $('#pwd2'),
+		submit = $('#confirmEdit');
+	submit.on('click',function (){
+		if (!pwd.val()) {
+			alert('请输入原始密码！');
+			return false;
+		} else if (!pwd1.val()) {
+			alert('请输入新密码！');
+			return false;
+		} else if (!pwd2.val()) {
+			alert('请确认密码！');
+			return false;
+		} else if (!(pwd1.val() === pwd2.val())) {
+			alert('两次输入密码不一致，请重新输入！');
+			return false;
+		};
+	})
+}

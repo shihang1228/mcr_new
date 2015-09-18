@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html"; charset="UTF-8">
+		<title>首页</title>
+		<meta name="Keywords" content="淘中国">
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width,initial-scale=1">
+		<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" />
+		<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+		<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+		<style>
+			*{margin:0;padding:0;}
+			body{font-size:14px;font-family:"微软雅黑"}
+			.clear{clear:both;}
+			
+			.metro_rec{width:30%;height:30%;float:left;margin:1.5%;border-radius:5px;}
+
+			.metro_color1{background-color:#ef9c00;}
+			.metro_color2{background-color:#2ebf1b;}
+			.metro_color3{background-color:#00aeef;}
+			.metro_color4{background-color:#ed2b84;}
+
+			.xianhuo{width:100%;height:30px;background:#ccc;margin:10px auto;}
+			.xianhuo h2{float:left;margin:0 25px;line-height:30px;}
+			.xianhuo p{line-height:30px;font-weight:bold;color:#ff0000;}
+			.xianhuo .wood{margin:0 15px;}
+		</style>
+
+		<script type="text/javascript">
+			$(function(){
+				$top_height = $("div[data-role=header]").height();
+				$bottom_height = $("div[data-role=footer]").height();
+				$body_height = $(window).height() - $top_height - $bottom_height;
+
+				$pic_height = ($body_height / 7) * 2;
+				$pic_height = $pic_height + "px";
+				$("div[data-role=main_pic]").width("100%").height($pic_height);
+
+				$body_height = ($body_height /7) * 5 - 35;
+				$body_height =  $body_height + "px";
+				$("div[data-role=metro_body]").width("100%").height($body_height);
+				
+			});
+		</script>
+
+	 </head>
+ <body>
+	<div data-role="page">
+		<div data-role="header" data-position="fixed" data-fullscreen="true" data-theme="b">
+			<h1>木材人</h1>
+		</div>
+
+		<div data-role="main_pic">
+			<img src="images/top.jpg" alt="" width="100%" height="100%" />
+		</div>
+		<div data-role="content">
+			<div class="xianhuo">
+				<h2>现货:</h2>
+				<p>
+					<span class="num">5588</span>
+					<span class="wood">原木</span>
+					<span class="date">5月20日&nbsp;&nbsp;15:30</span>
+				</p>
+			</div>
+
+			<div data-role="metro_body">
+			<div class="metro_color1 metro_rec">
+				<a href="test4.html"><img src="images/daohuo.png" alt="" width="100%" height="100%"/></a>
+			</div>
+			<div class="metro_color2 metro_rec">
+				<img src="images/zhaohuo.png" alt="" width="100%" height="100%"/>
+			</div>
+			<div class="metro_color3 metro_rec">
+				<img src="images/phone.png" alt="" width="100%" height="100%"/>
+			</div>
+			<div class="metro_color3 metro_rec">
+				<img src="images/dai.png" alt="" width="100%" height="100%"/>
+			</div>
+			<div class="metro_color4 metro_rec">
+				<img src="images/yuan.png" alt="" width="100%" height="100%"/>
+			</div>
+			<div class="metro_color1 metro_rec">
+				<img src="images/ban.png" alt="" width="100%" height="100%"/>
+			</div>
+			<div class="metro_color1 metro_rec">
+				<img src="images/gou.png" alt="" width="100%" height="100%"/>
+			</div>
+			<div class="metro_color3 metro_rec">
+				<img src="images/gou.png" alt="" width="100%" height="100%"/>
+			</div>
+			<div class="metro_color2 metro_rec">
+				<img src="images/gou.png" alt="" width="100%" height="100%"/>
+			</div>
+		</div>
+		</div>
+		
+		
+
+		<div data-role="footer" data-position="fixed" data-fullscreen="true" data-theme="b">
+			<div data-role="navbar">
+				<ul>
+					<li><a href="#" data-icon="home">首页</a></li>
+					<li><a href="#" data-icon="info">现货</a></li>
+					<li><a href="#" data-icon="refresh">发布</a></li>
+					<li><a href="#" data-icon="star">我</a></li>
+				</ul>
+			</div>
+		</div>
+
+	</div>
+
+
+ </body>
+</html>

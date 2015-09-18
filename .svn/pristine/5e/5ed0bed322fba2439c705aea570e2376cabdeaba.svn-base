@@ -1,0 +1,357 @@
+(function () {
+	var xhr;
+	var index =0;
+	var $loading;
+	var mypics=new Array();
+	var sendpics = new Array();
+	var mysendpics =new Array();
+	var $li = $(".list li .upImg-display li");
+	
+	var btn = document.getElementById('choose');
+	//  var download = document.getElementById('download');
+	  //定义images用来保存选择的本地图片ID，和上传后的服务器图片ID
+    var images = {
+	   localId: [],
+	   serverId: []
+    };
+
+    btn.onclick = function(){
+	        wx.chooseImage ({
+	            success : function(res){
+	                images.localId = res.localIds;  //保存到images
+					//img1.src =res.localIds;
+	                // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+					for(var i=0;i<images.localId.length;i++){
+						if (i >= 4 ){
+							break;
+						}
+						for(var j=1;j<=4;j++)
+						{
+							if($li.eq(j).has("img").length ==0){
+								$li.eq(j).prepend("<img src='"+images.localId[i]+"' id='img"+j+"' class='images' />");
+								$(".list li .upImg-display li").eq(j).find(".upload_delete").show();
+								var picobj = new Object();
+								picobj.pic = images.localId[i];
+								picobj.bj=true;
+								mypics[j-1]=picobj;
+								break;
+							}
+						}
+						
+					}
+			     //选择成功开始传图片
+				     var k = 0, len = mypics.length;
+						function wxUpload(){
+							if (mypics[k].bj)
+							{
+								wx.uploadImage({
+									localId: mypics[k].pic, // 需要上传的图片的本地ID，由chooseImage接口获得
+									isShowProgressTips:1, // 默认为1，显示进度提示
+									success: function (res) {
+										//将上传成功后的serverId保存到serverid
+										//images.serverId.push(sendpics);
+										sendpics[k]=res.serverId;
+										mypics[k].bj=false;
+										k++;
+										if(k < len){
+											wxUpload();
+										}
+										
+									}
+								});
+						   }
+						   else {
+							   k++;
+							   if(k < len){
+									wxUpload();
+								}
+						   }
+						}
+						wxUpload();
+				}
+	        });//choose message
+	  	};
+
+    function createXMLHttpRequest(){
+     if(window.XMLHttpRequest){
+       xhr = new XMLHttpRequest();
+    }
+    else if(window.ActiveXObject){//IE 浏览器
+      try{
+       xhr = new ActiveXObject("Msxml2.XMLHTTP");
+      }catch(e) {
+	      try {
+		    xhr = new ActiveXObject("Microsoft.XMLHTTP");
+	     }catch (e) {}
+      }
+ 
+     }
+   }
+  function checkpic(){
+	     var index = 0;
+		 mysendpics.length =0;
+	   	if($li.eq(1).has("img").length != 0){
+		 index =index +1;
+		 mysendpics[index -1] =sendpics[0];	
+		}
+		if($li.eq(2).has("img").length != 0){
+		 index =index +1;
+		 mysendpics[index -1] =sendpics[1];	
+		}
+		 if($li.eq(3).has("img").length != 0){
+		  index =index +1;
+		  mysendpics[index -1] =sendpics[2];	
+		}
+		 if($li.eq(4).has("img").length != 0){
+		  index =index +1;
+		  mysendpics[index -1] =sendpics[3];		
+		}
+   }
+	var diameterlen =document.getElementById("diameterlen");//径级 
+	var wide =document.getElementById("wide");//宽度
+	var thinckness=document.getElementById("thinckness");//厚度
+	var refcapacity=document.getElementById("refcapacity");//总货量
+   diameterlen.onchange = function v_diameterlen(){
+		var re = /^(?:[1-7]\d|80)$/;
+		if(!re.test(diameterlen.value)){
+			alert("径级范围必须在10~80之间");
+			diameterlen.focus();
+			return false;
+		}
+	}
+
+	wide.onchange = function v_wide(){
+		var re = /^(?:[1-9]\d|[1-4][0-9]{2}|500)$/;
+		if(!re.test(wide.value)){
+			alert("宽度范围必须在10~500之间");
+			wide.focus();
+			return false;
+		}
+	}
+
+	thinckness.onchange = function v_thinckness(){
+		var re = /^(?:[1-9]\d|[1-4][0-9]{2}|500)$/;
+		if(!re.test(thinckness.value)){
+			alert("厚度范围必须在10~500之间");
+			thinckness.focus();
+			return false;
+		}
+	}
+	refcapacity.onchange = function v_refcapacity(){
+		var re = /^(?:[1-9]{1}[0-9]{0,3}|10000)$/;
+		if(!re.test(refcapacity.value)){
+			alert("总货量不能超过10000");
+			refcapacity.focus();
+			return false;
+		}
+	}
+   
+	function start(){
+			try{
+				 createXMLHttpRequest();
+				 xhr.open('POST', '/wxdumpreceive.php',true);
+				 xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
+				 xhr.onreadystatechange = callback;
+				// sendmessage.disabled=true;
+				 var obj = new Object(); 
+				 //上传数据打包
+				   obj.productlen=$("#productlen").val();
+				   obj.refcapacity=$("#refcapacity").val();
+				   obj.diameterlen=$("#diameterlen").val();//径级
+				   obj.timberid=$("#timberid").val();//材质
+				   obj.timbertypeid=$("#timbertypeid").val();//材类
+				   obj.wide=$("#wide").val();//宽度
+				   obj.thinckness=$("#thinckness").val();//厚度
+				   obj.tolerance=$("#tolerance").val();//公差
+				   obj.knobid=$("#knobid").val();//节巴
+				   obj.climbid=$("#climbid").val();//爬皮
+				   obj.part=$("#part").val();//取材位置
+				   obj.deviceid=$("#deviceid").val();//加工设备
+				   obj.widerange=$("#widerange").val();//宽度范围
+				   obj.thincknessrange=$("#thincknessrange").val();//厚度范围
+				   obj.newoldid=$("#newoldid").val();//新旧
+				   obj.blueid=$("#blueid").val();//蓝变
+				   obj.wormid=$("#wormid").val();//虫眼
+				   obj.decayid=$("#decayid").val();//腐朽
+				   obj.fromid=$("#fromid").val();//产地
+				   obj.cdkey = $("#cdkey").val();//
+				   obj.part =$("#part").val();
+				   obj.stuffid=$("#stuffid").val();
+
+				   if(obj.stuffid == 0){
+						alert("请选择树种");
+						return false;
+				   }
+				   if(obj.productlen == 0){
+						alert("请选择长度");
+						return false;
+				   }
+				   obj.kindid =document.getElementById("kindid").value;
+				   if(obj.kindid == 0){
+						alert("请选择货种");
+						return false;
+				   }else if(obj.kindid == 1){
+				   		if(obj.diameterlen.length == 0){
+				   			alert("请填写径级");
+				   			document.getElementById("diameterlen").focus();
+				   			return false;
+				   		}
+
+				   		var re_diameterlen = /^(?:[1-7]\d|80)$/;
+						if(obj.diameterlen.length == 0){}
+						else if(!re_diameterlen.test(obj.diameterlen)){
+							alert("径级范围必须在10~80之间");
+							diameterlen.value = "";
+							diameterlen.focus();
+							return false;
+						}
+
+				   		if(obj.timberid == 0){
+				   			alert("请填写选材");
+				   			document.getElementById("timberid").focus();
+				   			return false;
+				   		}
+				   }else if(obj.kindid != 0 && obj.kindid != 1){
+				   		if(obj.wide.length == 0){
+				   			alert("请填写宽度");
+				   			document.getElementById("wide").focus();
+				   			return false;
+				   		}
+
+				   		var re_wide = /^(?:[1-9]\d|[1-4][0-9]{2}|500)$/;
+						if(obj.wide.length == 0){}
+						else if(!re_wide.test(obj.wide)){
+							alert("宽度范围必须在10~500之间");
+							wide.value = "";
+							wide.focus();
+							return false;
+						}
+
+				   		if(obj.thinckness.length == 0){
+				   			alert("请填写厚度");
+				   			document.getElementById("thinckness").focus();
+				   			return false;
+				   		}
+
+				   		var re_thinckness= /^(?:[1-9]\d|[1-4][0-9]{2}|500)$/;
+						if(obj.thinckness.length == 0){}
+						else if(!re_thinckness.test(obj.thinckness)){
+							alert("厚度范围必须在10~500之间");
+							thinckness.value = "";
+							thinckness.focus();
+							return false;
+						}
+				   }
+				  var re_refcapacity= /^(?:[1-9]{1}[0-9]{0,3}|10000)$/;
+				   if(obj.refcapacity.length == 0){
+				   		alert("请填写总货量");
+				   		return false;
+				   }else if(!re_refcapacity.test(obj.refcapacity)){
+				   		alert("总货量不能超过10000");
+				   		refcapacity.value = "";
+						refcapacity.focus();
+						return false;
+				   }
+				   //烘干 取值
+					var dry = document.getElementsByName("honggan");
+					var dryid="";
+					  for(var i=0;i<dry.length;i++)
+					  {
+						 if(dry[i].checked)
+							 dryid = dry[i].value;
+					  }
+					obj.dryid=dryid;  
+				  
+				   //斜裂取值
+				   var slash = document.getElementsByName("xielie");
+					var slashid="";
+					  for(var i=0;i<slash.length;i++)
+					  {
+						 if(slash[i].checked)
+							 slashid = slash[i].value;
+					  }
+					obj.slashid=slashid;
+					//环裂取值
+				   var ring = document.getElementsByName("huanlie");
+					var ringid="";
+					  for(var i=0;i<ring.length;i++)
+					  {
+						 if(ring[i].checked)
+							 ringid = ring[i].value;
+					  }
+					obj.ringid=ringid;
+					//抽油取值
+				   var oil = document.getElementsByName("chouyou");
+					var oilid="";
+					  for(var i=0;i<oil.length;i++)
+					  {
+						 if(oil[i].checked)
+							 oilid = oil[i].value;
+					  }
+					obj.oilid=oilid;
+					//黑心取值
+					var black = document.getElementsByName("heixin");
+					var blackid="";
+					  for(var i=0;i<black.length;i++)
+					  {
+						 if(black[i].checked)
+							 blackid = black[i].value;
+					  }
+					obj.blackid=blackid;
+					//物流数据上传
+				 
+				   obj.dumpposition=document.getElementById("dumpposition").value;//位置
+				   if(obj.dumpposition.length == 0){
+				   		alert("请输入位置");
+				   		return false;
+				   }
+				   obj.content =document.getElementById("content").value;//详细介绍
+				   
+				   //图片数组的上传
+				   checkpic();				
+				   obj.pics=mysendpics;
+				  //上传数据转换成json    
+				  var sendvalue =JSON.stringify(obj);
+				   xhr.send(sendvalue);
+
+				   /*动态获取遮罩层的宽和高 start*/
+				 var $body_width = $(document).width();
+				 var $body_height = $(document).height();
+				 $loading = $('<div id="fade" class="black_overlay"></div>').css({"width":$body_width,"height":$body_height}).insertBefore('.header');
+				/*end 动态获取遮罩层的宽和高*/
+				  $loading.show();
+				  $.tzLoading({content:"正在发布，请稍等....",width:143,height:45,timeout:2});
+			}
+			catch(e)
+			{
+					alert(e);
+			}
+        }
+		 var sendmessage = document.getElementById("sendmessage");
+		 sendmessage.onclick=start;
+
+		function callback(){
+			
+		 if ((xhr.readyState == 4) && (xhr.status == 200)){
+		
+		  //  var result = JSON.parse(xhr.response);
+		 $loading.hide();
+		 $(".tz_loading").hide();
+
+		 if(xhr.responseText =="success"){
+			 alert('发布成功！');
+			 window.location.href='index.php';
+		 }
+		 else {
+			 alert('发布失败，请稍后重新发布！');
+			 sendmessage.disabled=false;
+		 }
+
+			// tip.innerHTML = '<p>生成和上传完毕</p> <small class="text-muted">演示使用了大量内存，可能会造成几秒内卡顿，不代表真实表现，请亲测。</small>';
+
+		  
+		 }
+		
+		}
+    
+})();

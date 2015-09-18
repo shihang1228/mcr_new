@@ -1,0 +1,17 @@
+@charset "UTF-8";
+
+.tz_loading{  z-index: 1001;
+  width: 143px;
+  height: 50px;
+  border-radius: 4px;
+  background: #000;
+  box-shadow: 1px 3px 5px 0px #AAA2A2;
+  text-align: center;
+  line-height: 50px;
+  color: #FFF;
+  position: fixed;
+  font-size: 12px;
+  font-family: "微软雅黑";
+  padding-left: 10px;}
+.tz_loading #icon_loading{position:absolute;top:3px;left:7px;}
+.black_overlay{z-index:1000;position:absolute;top:0%;left:0%;width:100%;height:100%;background:#000;-moz-opacity:0.8;opacity:.80;filter:alpha(opacity=80);}

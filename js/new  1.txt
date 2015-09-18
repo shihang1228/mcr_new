@@ -1,0 +1,28 @@
+	var i = 0, len = mypics.length;
+					function wxUpload(){
+						if (mypics[i].bj)
+						{
+							wx.uploadImage({
+								localId: images.localId[i], // 需要上传的图片的本地ID，由chooseImage接口获得
+								isShowProgressTips: 1, // 默认为1，显示进度提示
+								success: function (res) {
+									i++;
+									//将上传成功后的serverId保存到serverid
+									//images.serverId.push(sendpics);
+									sendpics[i]=res.serverId;
+									mypics[i].bj=false;
+									if(i < len){
+										wxUpload();
+									}
+								}
+							});
+					   }
+					   else {
+						   i++;
+						   if(i < len){
+								wxUpload();
+							}
+					   }
+					}
+					
+					wxUpload();

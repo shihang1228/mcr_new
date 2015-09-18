@@ -1,0 +1,97 @@
+﻿
+$(function(){
+     start();
+ });
+ 
+ //这里就要进行计算滚动条当前所在的位置了。如果滚动条离最底部还有100px的时候就要进行调用ajax加载数据
+ $(window).scroll(function(){    
+     //此方法是在滚动条滚动时发生的函数
+     // 当滚动到最底部以上100像素时，加载新内容
+     var $doc_height,$s_top,$now_height;
+     $doc_height = $(document).height();        //这里是document的整个高度
+     $s_top = $(this).scrollTop();            //当前滚动条离最顶上多少高度
+     $now_height = $(this).height();            //这里的this 也是就是window对象
+     if(($doc_height - $s_top - $now_height) < 100) start();    
+ });
+ 
+ 
+ //做一个ajax方法来请求data.php不断的获取数据
+ var $num = 0;
+ var $pagecount = 1;
+
+function start(flag){	
+	if(flag == 1){
+		$num = 0;
+		$("#goodslist").empty();
+	}
+	var stuffselect=0,productlen=0,diameterlen=0;
+
+	timber=document.getElementById("timber").value;
+	stuffselect = document.getElementById("stuffselect").value;
+
+	if(document.getElementById("productlen").value.length == 0){
+		productlen=0;
+	}else{
+		productlen=document.getElementById("productlen").value;
+	}
+
+	if(document.getElementById("diameterlen").value.length == 0){
+		diameterlen=0;
+	}else{
+		diameterlen=document.getElementById("diameterlen").value;
+	}
+	//alert("pagecount:" + $pagecount + "num:" + $num);
+	if($pagecount > $num){
+
+		 $.ajax({
+			 url:'getloglist.php',
+			 type:'POST',
+			 data:"num="+$num+"&stuffselect="+stuffselect+"&productlen="+productlen+"&diameterlen="+diameterlen+"&timber="+timber,
+
+			 dataType:'json',
+			 success:function(json){
+				 if(typeof json == 'object'){
+
+					 var neirou,$row,iheight,$item,$productlen;
+					 $row =$("#goodslist").siblings("#no-result").hide();
+					 if(json.length == 0){
+
+						$("#goodslist").empty().siblings("#no-result").show();
+					 }else{
+						 
+						$pagecount = json[0].pagecount;
+						for(var i=1;i<json.length;i++){
+							neirou = json[i];    //当前层数据
+
+							 if(neirou.diameterlen == 0 ||  neirou.timber ==0) {
+								$bianhua = "<li>"+neirou.kindname + "</li>";
+							 }else{
+								$bianhua = "<li>" + neirou.diameterlen + "φ" + neirou.timber + "</li>";
+							 }
+							
+							/*判断长度不为0时*/
+							if(neirou.productlen == 0){
+								$productlen = "";
+							}else{
+								$productlen = neirou.productlen ;
+							}
+
+							 $item = $(
+								"<a href='detail.php?cdkey="+neirou.cdkey+"'>"+
+									"<ul class='flex table ltable5'>"+
+										"<li>"+neirou.carnum+"</li><li>"+neirou.stuffname+"</li><li>"+$productlen+"</li>"+$bianhua+"<li>"+neirou.dumpposition+"</li>"+
+									"</ul>"+
+								"</a>"		 
+							);
+
+							 $(".no_result").empty();
+							 $row.append($item);
+							 $item.fadeIn();
+						}
+					 }
+				}
+			 }
+		 });
+		$num = $num + 1;
+	}
+}

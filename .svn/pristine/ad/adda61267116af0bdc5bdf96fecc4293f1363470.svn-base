@@ -1,0 +1,8 @@
+@charset "UTF-8";
+
+body{background:#fff;}
+/*底部*/
+nav.navFixed{background:#fff;border-top:1px solid #a7a7a7;z-index:4;}
+/*头部*/
+.header{background:#d80001;line-height:35px;}	
+.header .header_home{line-height:42px;}

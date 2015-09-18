@@ -1,0 +1,130 @@
+<?php
+    session_start();
+	include_once('mcr_sc_fns.php');
+	$userid=$_SESSION['userid'];
+	$sql="select username,userpic,nickname,phone,portname,score,phone1,phone2,province,city from "
+	." t_user u,t_port p where u.portid = p.portid and userid=".$userid;
+	$user_array=get_mydata($sql);
+	$user=$user_array[0];
+
+	$portnum=0;
+    $port_array = get_port($portnum);
+?>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+<title>个人中心</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<link href="" rel="stylesheet">
+<!-- <link rel="stylesheet" type="text/css" href="/statics/css/yumReset.css" /> -->
+<!-- <link rel="stylesheet" type="text/css" href="/statics/css/yumPage.css" /> -->
+<link rel="stylesheet" type="text/css" href="statics/css/yumleeM.css" />
+<link rel="stylesheet" type="text/css" href="statics/css/mcr.css" />
+<link rel="stylesheet" type="text/css" href="com/icomoon/style.css" />
+<link rel="stylesheet" href="css/user_tx.css" />
+<body>
+<header class="header">
+	<div><a href="javascript:history.back();"><i class="icon-arrow-back"></i></a></div>
+	<h1>个人中心</h1>
+	<div><a href="index.php"><i class="icon-home"></i></a></div>
+</header>
+<ul class="list solidBottom iconList user">
+	<li class="user-header edit-head">
+		<span class="user-head-tit">头像</span>
+		<var class="img">
+			<span class="user-item-info"><img src="<?php echo $user['userpic'];?>" /></span>
+			<input type="file" class="uploadfile" />
+		</var>
+	</li>
+	<!--  <li><a href="#">昵称<var class="user-item-info"><?php echo $user['nickname'];?></var><i class="icon-angle-right"></i></a></li>-->
+	<li><a href="user_update.php?param=<?php echo $user['username'];?>&type=1">用户名<var class="user-item-info"><?php echo $user['username'];?></var><i class="icon-angle-right"></i></a></li>
+	<li><a>手机号<var class="user-item-info"><?php echo $user['phone'];?></var><i class="icon-angle-right"></i></a></li>
+	<li onclick="ShowDiv('MyDiv','fade')"><a href="javascript:void(0);">关注口岸<var class="user-item-info"><?php echo $user['portname'];?></var><i class="icon-angle-right"></i></a></li>
+	<li><a>积分<var class="user-item-info"><?php echo $user['score'];?></var><i class="icon-angle-right"></i></a></li>
+	<li><a href="user_update.php?param=<?php echo $user['phone1'];?>&type=2">备用手机1<var class="user-item-info"><?php echo $user['phone1'];?></var><i class="icon-angle-right"></i></a></li>
+	<li><a href="user_update.php?param=<?php echo $user['phone2'];?>&type=3">备用手机2<var class="user-item-info"><?php echo $user['phone2'];?></var><i class="icon-angle-right"></i></a></li>
+	<li><a>省份<var class="user-item-info"><?php echo $user['province'];?></var><i class="icon-angle-right"></i></a></li>
+	<li><a>城市<var class="user-item-info"><?php echo $user['city'];?></var><i class="icon-angle-right"></i></a></li>
+</ul>
+
+<!--弹出层时背景层DIV-->
+<div class="layer">
+	<div id="fade" class="black_overlay"></div>
+
+	<div id="MyDiv" class="white_content">
+		<div style="text-align: right; cursor: default; height: 40px;">
+		<span style="font-size: 16px;" onclick="CloseDiv('MyDiv','fade')" class="close">关闭</span>
+	</div>
+
+	<select name="port" id="port">
+		<option value="0">关联口岸</option>
+		<?php
+			for($i=0;$i<$portnum;$i++) {
+				$row =$port_array->fetch_assoc();
+				 $portid = $row['portid'];
+				$portname = $row['portName'];
+				 // echo "<li><a href=''>".$portname."</a></li>";
+				  echo "<option value =".$portid.">".$portname."</option>";
+			}
+
+		?>
+	</select>
+</div>
+
+ <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
+ <script type="text/javascript">
+	//弹出隐藏层
+	function ShowDiv(show_div,bg_div){
+		document.getElementById(show_div).style.display='block';
+		document.getElementById(bg_div).style.display='block' ;
+		var bgdiv = document.getElementById(bg_div);
+		bgdiv.style.width = document.body.scrollWidth;
+		// bgdiv.style.height = $(document).height();
+		$("#"+bg_div).height($(document).height());
+	};
+		//关闭弹出层
+	function CloseDiv(show_div,bg_div)
+	{
+		document.getElementById(show_div).style.display='none';
+		document.getElementById(bg_div).style.display='none';
+	};
+$(function(){
+	$("#fade").bind("click",function(evt){
+		if($(evt.target).siblings("#port").length==0) 
+		{ 
+			$("#fade").hide(); 
+			$("#MyDiv").hide();
+		}
+	});
+
+	$("#port").change(function(){
+		var $port = $("#port").val();
+		if($port == '0'){
+			alert("请选择关注口岸！");
+			return false;
+		}else{
+			$.ajax({
+				 url:'userupdate_bgo.php',
+				 type:'POST',
+				 data:"portid="+$port+"&type=0",
+				 success:function(){
+					document.getElementById("MyDiv").style.display='none';
+					document.getElementById("fade").style.display='none';
+					window.location.href="user_tx.php";
+				 }
+
+			});
+		}
+	});
+})
+	 
+
+	
+</script>
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+<title>免费注册</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<link rel="stylesheet" type="text/css" href="statics/css/yumleeM.css" />
+<link rel="stylesheet" type="text/css" href="statics/css/mcr.css" />
+<link rel="stylesheet" type="text/css" href="com/icomoon/style.css" />
+<?php
+   session_start();
+   include_once('mcr_sc_fns.php');
+   $port_array = get_portarray();
+   $type=$_GET['type'];//type=1微信用户，type=2其他用户
+   /*$code=sendvalidmessage('13934544931');
+   $_SESSION['code'] = $code;
+   $_SESSION['time'] =time();*/
+ ?>
+ <style>
+ 	label{position: relative;}
+ </style>
+<body>
+<header class="header">
+	<div class="header_home"><a href="javascript:history.back();"><i class="icon-arrow-back"></i></a></div>
+	<h1>免费注册</h1>
+	<div class="header_home"><a href="index.php"><i class="icon-home"></i></a></div>
+</header>
+<form name ="form1" method="post" action="savereg.php" onSubmit="return chkinput(this)">
+	<fieldset>
+		<legend>注册</legend>
+		<?php
+		  if($type==1){
+			  ?>
+		 
+		<input type="hidden" name="wxid" value=<?php echo $_GET['wxid'];?> >
+		<input type="hidden" name="userpic" value=<?php echo $_GET['userpic'];?> >
+		<input type="hidden" name="nickname" value=<?php echo $_GET['nickname'];?> >
+		<input type="hidden" name="province" value=<?php echo $_GET['province'];?> >
+		<input type="hidden" name="city" value=<?php echo $_GET['city'];?> >
+		<?php
+		 }
+		 ?>
+		<input type="hidden" name="type" value=<?php echo $_GET['type'];?> >
+		<label class="explain">
+			欢迎注册木材人官方网站，本平台保证你的个人信息安全
+		</label>
+		<label>
+			<i class="icon-user"></i>
+			<input type="text" name="userName" placeholder="请输用户名" id="userName" />
+			<i class="icon-checkbox-checked" id="userName_icon"></i>
+		</label>
+		<label>
+			<i class="icon-mobile"></i>
+			<input type="tel" placeholder="请输入您的手机号码" name="phoneNumber" id="phoneNum" />
+			<i class="icon-checkbox-checked" id="phoneNum_icon"></i>
+		</label>
+		<label>
+			<i class="icon-lock"></i>
+			<input type="password" name="userpwd" placeholder="请输入密码" id="pwd" />
+			<i class="icon-checkbox-checked" id="pwd_icon"></i>
+		</label>
+		<label>
+			<i class="icon-checkbox-checked"></i>
+			<input type="password" name="userpwd1" placeholder="请再次输入密码" id="pwd2" />
+			<i class="icon-checkbox-checked" id="pwd2_icon"></i>
+		</label>
+		<label class="smsRight">
+			<i class="icon-spell-check"></i>
+			<input type="tel" placeholder="请输入短信验证码" name="validmessage" id="validmessage"/>
+			<button id="identify" type="button">获取验证码</button>
+		</label>
+		<label class="text">
+			<div>关注口岸:</div>
+			<select name="portselect" id="portselect">
+				<option value = '0'>请选择关注口岸</option>
+				<?php
+                    if (!is_array($port_array)) {
+                        echo "<p>No categories currently available</p>";
+                        return;
+                    }
+                   foreach ($port_array as $row)
+                    {
+                        $portid = $row['portid'];
+                        $portname = $row['portName'];
+                        echo "<option value =".$portid.">".$portname."</option>";
+                    }
+
+                    ?>
+			</select>
+		</label>
+		<label class="text">
+			<div>备用手机:</div>
+			<input type="tel" name ="phone1" placeholder="" />
+		</label>
+		<label class="text">
+			<div>备用手机2:</div>
+			<input type="tel" name ="phone2" placeholder="" />
+		</label>
+		<input type="submit" value="注册" id="register" /></div>
+	</fieldset>
+</form>
+</body>
+<script src="http://libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
+<script>
+	$(function(){
+		//$("#phoneNum").change(function(){checkphone();});
+
+		$("#identify").on("click",function(){
+			var flag = checkphone();
+			var $phone = $("#phoneNum").val();
+			if(flag != false){
+				$.ajax({
+					url:"smsphone_bgo.php",
+					type:"POST",
+					data:"phone="+$phone,
+					success:function(data){
+						if(data == "success"){
+							alert("发送成功，请注意查收！");
+							$("#identify").attr("disabled","disabled");
+						}else{
+							alert("发送失败，请重新发送！");
+						}
+						
+					}
+				});
+				
+			}
+				
+		})
+	})
+
+	function checkphone(){
+		var re = /^[1][34578][0-9]{9}$/;
+		var pwd = document.getElementById('pwd');//获取输入密码的表单
+		var pwd_icon = document.getElementById('pwd_icon');//获取密码后面图标
+		var pwd2 = document.getElementById('pwd2');
+		var pwd2_icon = document.getElementById('pwd2_icon');
+		if(!re.test($("#phoneNum").val())){
+			alert("请输入正确的手机号");
+			$("#phoneNum").val("").focus();
+			return false;
+		}else if (pwd.value.length < 6 || pwd.value.length > 12) {
+			alert("请输入6-12位的密码！m");
+			pwd_icon.style.color = "black";
+			return false;
+		}else if (pwd.value != pwd2.value) {
+			alert("请输入相同的密码！");
+			return false;
+		};
+	}
+	
+</script>
+ <script language="javascript">
+</script>
+<script src="/statics/js/rightForm.js"></script>
+</html>

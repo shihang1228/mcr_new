@@ -1,0 +1,281 @@
+<?php
+
+/*
+    方倍工作室 http://www.fangbei.org/
+    CopyRight 2014 All Rights Reserved
+*/
+
+/*
+	require_once('weixin.class.php');
+	$weixin = new class_weixin();
+*/
+
+define('APPID',         "wxfb9fe4614872cea1");
+define('APPSECRET',		"e61c7b972bceb87145ab150d70061c74");
+
+class class_weixin
+{
+	var $appid = APPID;
+	var $appsecret = APPSECRET;
+	var $access_token;
+	var $jsapi_ticket;
+	var $jsapi_expire;
+	var $expires_time;
+    private $dbconn;//数据库连接
+	public  $msg;
+    //构造函数，获取Access Token
+	public function __construct($appid = NULL, $appsecret = NULL)
+	{
+        if($appid && $appsecret){
+            $this->appid = $appid;
+			$this->appsecret = $appsecret;
+        }
+
+		$this->dbconn =db_connect();//数据库连接
+
+        //3. 获取access_token
+		$sql="select access_token,accesstime,jsapi_ticket,jspapitime from t_wxcs where id = 1 ";
+		$result=$this->dbconn->query($sql);
+		if ($result){
+			$row=$result->fetch_row();
+			 $this->expires_time = $row[1];
+             $this->access_token = $row[0];
+			 $this->jsapi_ticket = $row[2];
+            $this->jsapi_expire = $row[3];
+			$this->msg=$this->msg.";"."select";
+		}
+
+        if (time() > ($this->expires_time + 5600)){
+            $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=".$this->appid."&secret=".$this->appsecret;
+            $res = $this->http_request($url);
+            $result = json_decode($res, true);
+            $this->access_token = $result["access_token"];
+            $this->expires_time = time();
+			//file_put_contents('access_token.json', '{"access_token": "'.$this->access_token.'", "expires_time": '.$this->expires_time.'}');
+			//获取到的指令写入数据库
+			$sql="update t_wxcs set access_token='". $this->access_token ."' ,accesstime='".$this->expires_time
+			."', accessupdatetime='".date("Y-m-d H:i:s")."' where id = 1 ";
+			$this->msg=$this->msg.$sql;
+			$this->dbconn->query($sql);
+			
+        }
+
+	}
+
+    /*
+    *  PART4 JS SDK 签名
+	*  PHP仅用于获得签名包，需要配合js一起使用
+    */
+	// require_once('weixin.class.php');
+	// $weixin = new class_weixin();
+	// $signPackage = $weixin->GetSignPackage();
+
+	//生成长度16的随机字符串
+    private function createNonceStr($length = 16) {
+        $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        $str = "";
+        for ($i = 0; $i < $length; $i++) {
+            $str .= substr($chars, mt_rand(0, strlen($chars) - 1), 1);
+        }
+        return $str;
+    }
+
+	//获得JS API的ticket
+    public  function getJsApiTicket() 
+	{
+		//2. 写文件，有改动，待测试 20150430
+		//$res = file_get_contents('jsapi_ticket.json');
+		//$result = json_decode($res, true);
+		//$this->jsapi_ticket = $result["jsapi_ticket"];
+        //$this->jsapi_expire = $result["jsapi_expire"];
+
+        if (time() > ($this->jsapi_expire + 5600)){
+            $url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=jsapi&access_token=".$this->access_token;
+            $res = $this->http_request($url);
+            $result = json_decode($res, true);
+            $this->jsapi_ticket = $result["ticket"];
+            $this->jsapi_expire = time();
+			//file_put_contents('jsapi_ticket.json', '{"jsapi_ticket": "'.$this->jsapi_ticket.'", "jsapi_expire": '.$this->jsapi_expire.'}');
+			//获取到的指令写入数据库
+			$sql="update t_wxcs set jsapi_ticket='". $this->jsapi_ticket ."' ,jspapitime='".$this->jsapi_expire
+			."',jsupdatetime='".date("Y-m-d H:i:s")."' where id = 1 ";
+			$this->msg=$this->msg.$sql;
+			$this->dbconn->query($sql);
+        }
+		return $this->jsapi_ticket;
+    }
+
+	//获得签名包
+    public function getSignPackage() {
+        $jsapiTicket = $this->getJsApiTicket();
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+        $url = $protocol.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+        $timestamp = time();
+        $nonceStr = $this->createNonceStr();
+        $string = "jsapi_ticket=".$jsapiTicket."&noncestr=".$nonceStr."&timestamp=".$timestamp."&url=".$url;
+        $signature = sha1($string);
+        $signPackage = array(
+							"appId"     => $this->appid,
+							"nonceStr"  => $nonceStr,
+							"timestamp" => $timestamp,
+							"url"       => $url,
+							"signature" => $signature,
+							"rawString" => $string
+							);
+        return $signPackage;
+    }
+
+    //HTTP请求（支持HTTP/HTTPS，支持GET/POST）
+    protected function http_request($url, $data = null)
+    {
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, FALSE);
+        if (!empty($data)){
+            curl_setopt($curl, CURLOPT_POST, 1);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+        }
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
+        $output = curl_exec($curl);
+        curl_close($curl);
+        return $output;
+    }
+	
+	//
+	public  function downloadWeixinFile($mediaid,$sourcefilename,$thumbfile) {
+		 
+		 $url="http://file.api.weixin.qq.com/cgi-bin/media/get?access_token=".$this->access_token."&media_id=".$mediaid;
+		 $ch=curl_init($url);
+		 curl_setopt($ch,CURLOPT_HEADER,0);
+		 curl_setopt($ch,CURLOPT_NOBODY,0);
+		 curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,FALSE);
+		 curl_setopt($ch,CURLOPT_SSL_VERIFYHOST,FALSE);
+		 curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+		 $package=curl_exec($ch);
+		// echo $package;
+		// echo "===================";
+		 
+		 $httpinfo=curl_getinfo($ch);
+	//	 echo @implode(';',$httpinfo);
+		 curl_close($ch);
+		 //
+	//	   error_log(date('Y-m-d H:i:s') . ':wxcompanyadd_bgo'.":".$url."\r\n",3,$_SERVER['DOCUMENT_ROOT']."/log/run.log");
+		 $imageAll=array_merge(array('header'=>$httpinfo),array('body'=>$package));
+		 if(strpos($package,'errcode')===false) //下载成功
+		 {
+			//  error_log(date('Y-m-d H:i:s') . ':wxcompanyadd_bgo'.":微信内部下载成功\r\n",3,$_SERVER['DOCUMENT_ROOT']."/log/run.log");
+			//  error_log(date('Y-m-d H:i:s') . ':wxcompanyadd_bgo'.":sourcefilename:".$sourcefilename.";thumbfile:".$thumbfile."\r\n",3,$_SERVER['DOCUMENT_ROOT']."/log/run.log");
+			if ( $this->saveWeixinFile($sourcefilename,$imageAll["body"],$thumbfile) !==false){
+			//	 error_log(date('Y-m-d H:i:s') . ':wxcompanyadd_bgo'.":微信内部save success\r\n",3,$_SERVER['DOCUMENT_ROOT']."/log/run.log");
+			    return true;
+			}
+            else {
+				// error_log(date('Y-m-d H:i:s') . ':wxcompanyadd_bgo'.":微信内部save error\r\n",3,$_SERVER['DOCUMENT_ROOT']."/log/run.log");
+				return false;
+			}			
+		 }
+		 else {
+			//  error_log(date('Y-m-d H:i:s') . ':wxcompanyadd_bgo'.":微信内部下载失败\r\n",3,$_SERVER['DOCUMENT_ROOT']."/log/run.log");
+			return false;
+		 }
+		
+	 }	
+	 
+	 function saveWeixinFile($sourcefilename,$filecontent,$thumbfile)
+	 {
+		 $local_file =fopen($sourcefilename,'w');
+	   if(false !==$local_file){
+		 if(false !==fwrite($local_file,$filecontent)) {
+			 //
+			//  error_log(date('Y-m-d H:i:s') . ':wxcompanyadd_bgo'.":微信内部mkThumbnail\r\n",3,$_SERVER['DOCUMENT_ROOT']."/log/run.log");
+			 $result =$this->mkThumbnail($sourcefilename,75,75,$thumbfile);  
+			 
+			 fclose($local_file);
+			 return $result;
+		 }
+		 else {
+			 return false;
+		 }
+	 }
+	 else {
+		 return false;
+	 }
+	 }
+		/** 
+	 * 生成缩略图函数（支持图片格式：gif、jpeg、png和bmp） 
+	 * @author ruxing.li 
+	 * @param  string $src      源图片路径 
+	 * @param  int    $width    缩略图宽度（只指定高度时进行等比缩放） 
+	 * @param  int    $width    缩略图高度（只指定宽度时进行等比缩放） 
+	 * @param  string $filename 保存路径（不指定时直接输出到浏览器） 
+	 * @return bool 
+	 */  
+	function mkThumbnail($src, $width = null, $height = null, $filename = null) {  
+		if (!isset($width) && !isset($height))  
+			return false;  
+		if (isset($width) && $width <= 0)  
+			return false;  
+		if (isset($height) && $height <= 0)  
+			return false;  
+	  
+		$size = getimagesize($src);  
+		if (!$size)  
+			return false;  
+	  
+		list($src_w, $src_h, $src_type) = $size;  
+		$src_mime = $size['mime'];  
+		switch($src_type) {  
+			case 1 :  
+				$img_type = 'gif';  
+				break;  
+			case 2 :  
+				$img_type = 'jpeg';  
+				break;  
+			case 3 :  
+				$img_type = 'png';  
+				break;  
+			case 15 :  
+				$img_type = 'wbmp';  
+				break;  
+			default :  
+				return false;  
+		}  
+	  
+		if (!isset($width))  
+			$width = $src_w * ($height / $src_h);  
+		if (!isset($height))  
+			$height = $src_h * ($width / $src_w);  
+	  
+		$imagecreatefunc = 'imagecreatefrom' . $img_type;  
+		$src_img = $imagecreatefunc($src);  
+		$dest_img = imagecreatetruecolor($width, $height);  
+		imagecopyresampled($dest_img, $src_img, 0, 0, 0, 0, $width, $height, $src_w, $src_h);  
+	  
+		$imagefunc = 'image' . $img_type;  
+		if ($filename) {  
+			$imagefunc($dest_img, $filename);  
+		} else {  
+			header('Content-Type: ' . $src_mime);  
+			$imagefunc($dest_img);  
+		}  
+		imagedestroy($src_img);  
+		imagedestroy($dest_img);  
+		return true;  
+	   }  
+
+	//日志记录
+    private function logger($log_content)
+    {
+        if(isset($_SERVER['HTTP_APPNAME'])){   //SAE
+            sae_set_display_errors(false);
+            sae_debug($log_content);
+            sae_set_display_errors(true);
+        }else if($_SERVER['REMOTE_ADDR'] != "127.0.0.1"){ //LOCAL
+            $max_size = 500000;
+            $log_filename = "log.xml";
+            if(file_exists($log_filename) and (abs(filesize($log_filename)) > $max_size)){unlink($log_filename);}
+            file_put_contents($log_filename, date('Y-m-d H:i:s').$log_content."\r\n", FILE_APPEND);
+        }
+    }
+}

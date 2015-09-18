@@ -1,0 +1,4 @@
+ /*loadingÌáÊ¾¿ò*/
+.tzui-loading{display:inline-block;background:#141414 url(../images/loaders/loader2.gif) no-repeat 5px center;color:#fff;box-shadow:5px 5px 1em #333;position:fixed;padding:6px 6px 6px 35px;z-index:1000}
+.tzui-loading .tzui-loading-cnt{padding:5px 16px;}
+.tzui-loading .tzui-loading-gif{padding:3px 8px;float:left}

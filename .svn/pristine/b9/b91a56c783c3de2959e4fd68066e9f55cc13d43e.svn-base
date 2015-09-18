@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<?php
+    session_start();
+	include_once("db_fns.php");  //lj+
+	//include_once('mcr_fns.php');
+	include_once('system/model/wood.php');
+
+	require_once('system/model/weixin.class.php');
+    $weixin = new class_weixin();
+	$signPackage = $weixin->GetSignPackage();
+
+	$portid=$_SESSION['portid'];
+	//error_log(date('Y-m-d H:i:s').'万里'."\n",3,$_SERVER['DOCUMENT_ROOT']."/log/run.log");
+	$wood= new wood($portid);
+	$wood->release();
+	$stuff_array =$wood->stuff ;
+    $from_array =$wood->from;
+?>
+<html>
+<head>
+<meta http-equiv="Content-Type"content="text/html; charset=utf-8">   
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+<title>散货发布</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<link rel="stylesheet" type="text/css" href="/statics/css/yumleeM.css" />
+<link rel="stylesheet" type="text/css" href="/statics/css/mcr.css" />
+<link rel="stylesheet" type="text/css" href="/com/icomoon/style.css" />
+<link rel="stylesheet" type="text/css" href="css/reminder.css" />
+<link rel="stylesheet" type="text/css" href="css/upload.css" />
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+
+<script type="text/javascript">
+  wx.config({
+        debug: false,
+		appId: '<?php echo $signPackage["appId"];?>',
+		timestamp: <?php echo $signPackage["timestamp"];?>,
+		nonceStr: '<?php echo $signPackage["nonceStr"];?>',
+		signature: '<?php echo $signPackage["signature"];?>',
+        jsApiList: [
+           /*
+            * 所有要调用的 API 都要加到这个列表中
+            * 这里以图像接口为例
+            */
+          'chooseImage',
+          'uploadImage'
+    ]
+  });
+</script>
+</head>
+<body>
+
+<header class="header">
+	<div><a href="javascript:history.back();"><i class="icon-arrow-back"></i></a></div>
+	<h1>散货发布</h1>
+	<div><a href="index.php"><i class="icon-home"></i></a></div>
+</header>
+<?php    
+    //$dump_array=$wood->dumpposition; lj-
+	if(isset($_SESSION['user']) ){	//用户或管理员登录后才可以发表信息	
+	$cdkey = $_GET["cdkey"];
+	$dump=array();
+	if($cdkey!="")
+	{
+		$isnew=0;
+		$sqlstr = "select userid,kindid,stuffid,productlen,diameterlen,wide,thinckness,"
+				."tolerance,widerange,thincknessrange,refcapacity,timber,"
+				."dry,newold,timbertype,knob,blue,worm,decay,climb,slash,ring,oil,black"
+				.",dumpposition,part,device,fromid,portid,publishtime,"
+				."updatetime,goodtype,cdkey,content from t_product where cdkey='".$cdkey."'";
+		$mydump = getdata($sqlstr);
+		if(!is_array($mydump))
+		{
+			echo "<p>对不起，没有查找到您要查找的内容！</p>";
+			return;
+		}
+		else
+		{
+			$dump =$mydump[0];
+		}
+	}
+	else
+	{
+		$isnew = 1;
+		$dump = array("refcapacity"=>"","refnum"=>"","refwight"=>"","contact"=>"","contactphone"=>"","diameterlen"=>"0","thinckness"=>"","price"=>"","wide"=>"","device"=>"","worm"=>"","decay"=>"","widerange"=>"","thincknessrange"=>"","xielie"=>"","huanlie"=>"","chouyou"=>"","heixin"=>"","content"=>"","display"=>"0","stuffid"=>"0","kindid"=>"0","productlen"=>"0","dumpposition"=>"0","timber"=>"0","timbertype"=>"0","tolerance"=>"-99","knob"=>"0","climb"=>"0","part"=>"0","dry"=>"0","newold"=>"0","blue"=>"0","slash"=>"0","oil"=>"0","black"=>"0","ring"=>"0","fromid"=>"0");
+	}
+?>
+<form class="onoff labelPadding" id="submitform">
+	<ul class="list">
+		<li>
+			<ul class="upImg-display">
+				<li>
+					<input type="button" id="choose">
+				</li>
+				<li><a href="javascript:void(0);return false;" class="upload_delete" id="upload_delete"></a></li>
+				<li><a href="javascript:void(0);return false;" class="upload_delete" id="upload_delete"></a></li>
+				<li><a href="javascript:void(0);return false;" class="upload_delete" id="upload_delete"></a></li>
+				<li><a href="javascript:void(0);return false;" class="upload_delete" id="upload_delete"></a></li>
+				
+			</ul>
+		</li>
+		<li class="flex">
+			<div>树种:</div>
+			<div>
+				<select name="stuffid" id="stuffid">
+				  <option value="0">选树种</option> 
+				<?php
+	              if (!is_array($stuff_array)) {
+	                echo "<p>No categories currently available</p>";
+	               return;
+	              }
+
+	            foreach ($stuff_array as $row)
+	            {
+	               $stuffid = $row['stuffid'];
+	               $stuffname = $row['stuffname'];
+				   echo "<option value =".$stuffid." ".($stuffid==$dump['stuffid']?"selected=\"selected\"":"\"\"")." >".$stuffname."</option>";
+				}
+			    ?>
+				</select>
+			</div>
+			<?php
+				//$kind_array = array("原木","条子","口料","大方","大板","防腐材");
+				
+		
+			?>
+			<div>货种:</div>
+			<div>
+				<select name="typeOfGoods" id="kindid">
+				<option value="0">选货种</option> 
+				<?php
+				     $kind_array = $wood->kind; //货种 lja
+			    //  for($j=0;$j<count($kind_array);$j++) {
+					//	echo "<option ".($dump['kindid'] == ($j+1)?"selected = 'selected'":"")." value =".($j+1).">".$kind_array[$j]."</option>"; 
+					//}
+				     foreach($kind_array as $row) {
+						echo "<option ".($isnew?"":$dump['kindid'] == $row["kindid"]?"selected = 'selected'":"")." value =".$row["kindid"].">".$row["kindname"]."</option>";					
+					}	
+				?>
+				</select>
+			</div>
+		</li>
+		<li class="flex">
+			<?php $productlen_array = array('2','2.5','3','4','6','12','8');?>
+			<div>长度(m):</div>
+			<div>
+				<select id="productlen" name="productlen">
+				<option value="0">选长度</option>
+				<?php
+					$len_array = $wood->length;
+					foreach($len_array as $row)
+					{
+						echo "<option ".($dump["productlen"]==$row["lenid"]?"selected='selected'":"")." value = ".$row["lenid"].">".$row["lenname"]."</option>";
+					}
+				/*?>
+				<?php
+				for($j=0;$j<count($productlen_array);$j++) {
+					 echo "<option ".($dump['productlen'] == $productlen_array[$j]?"selected = 'selected'":"")." value =".($productlen_array[$j]).">".$productlen_array[$j]."米</option>"; 
+				}*/
+				?>
+				</select>
+			</div>
+			 <div>总货量:</div><div><input type="tel" name="refcapacity" id="refcapacity" value="<?php echo ($isnew==1 or $dump["refcapacity"]==0)?"":$dump["refcapacity"]; ?>"/></div>
+		</li>
+		<li class="flex col1-3"><div>当前位置:</div><div><input type="text" name="dumpposition" id="dumpposition" value="<?php echo ($isnew==1 or $dump["dumpposition"]=="0")?"":$dump["dumpposition"]; ?>"/></div></li>
+	</ul>
+	<ul class="list op-1 hide">
+		<li class="flex">
+			<div>径级(φ):</div><div><input type="tel" placeholder="10~80" name="diameterlen" id="diameterlen" value="<?php echo ($isnew==1 or $dump["diameterlen"]==0)?"":$dump["diameterlen"]; ?>"/></div>
+			<div>材质:</div>
+			<div>
+				<select name="timberid" id ="timberid">
+					<option value="0">选材质</option>
+				<?php 
+					$timber = array("选材","一级材","二级材","加工材");
+				    for($j=0;$j<count($timber);$j++) {
+						echo "<option ".($dump['timber'] == $timber[$j]?"selected = 'selected'":"")." value =".$timber[$j].">".$timber[$j]."</option>"; 
+					}
+				?>
+				</select>
+			</div>
+		</li>
+		<li class="flex">
+			<div>纹理:</div>
+			<div>
+				<?php $timbertype_array = array("粗纹","中纹","细纹","其它");?>
+				<select name="timbertypeid" id="timbertypeid">
+					<option value="0">选纹理</option>
+				    <?php 
+					for($j=0;$j<count($timbertype_array);$j++)
+					{
+						echo "<option ".($dump["timbertype"]== $timbertype_array[$j]?"selected = 'selected'":"")." value = ".$timbertype_array[$j].">".$timbertype_array[$j]."</option>";
+					}
+					?>
+				</select>
+			</div>
+			<div></div><div></div>
+		</li>
+	</ul>
+	<ul class="list op-2 hide">
+		<li class="flex">
+			<div>厚度(mm):</div><div><input type="tel" placeholder="10~500" name="thinckness" id="thinckness" value="<?php echo ($isnew==1 or $dump["thinckness"]==0)?"":$dump["thinckness"];?>"/></div>
+			<div class="op-3 hide">厚度范围:</div>
+			<div class="op-3 hide">
+				<select name="thincknessrange" id="thincknessrange">
+					<option value="1" <?php echo $dump["thincknessrange"]==1?"selected = 'selected'":"";?>>固定值</option>
+				    <option value="2" <?php echo $dump["thincknessrange"]==2?"selected = 'selected'":"";?>>起步值</option>
+				</select>
+			</div>
+		</li>
+		<li class="flex">
+			<div>宽度(mm):</div><div><input type="tel" placeholder="10~500" name="wide" id="wide" value="<?php echo ($isnew==1 or $dump["wide"]==0)?"":$dump["wide"];?>"/></div>
+			<div class="op-3 hide">宽度范围:</div>
+			<div class="op-3 hide">
+				<select name="widerange" id="widerange">
+					<option value="1" <?php echo $dump["widerange"]==1?"selected = 'selected'":"";?>>固定值</option>
+				    <option value="2" <?php echo $dump["widerange"]==2?"selected = 'selected'":"";?>>起步值</option>
+				</select>
+			</div>
+		</li>
+		<li class="flex">
+			<div>公差(mm):</div>
+			<div><!-- <input type="number" placeholder="-2~3" name="tolerance" id="tolerance"/> -->
+				<?php $tolerance_arr = array("-2","-1","0","+1","+2","+3");?>
+				<select name="tolerance" id="tolerance">
+					<option value=-99>选择公差</option>
+					<?php
+						for($j=0;$j<count($tolerance_arr);$j++) echo "<option value=".$tolerance_arr[$j]." ".($dump["tolerance"]==$tolerance_arr[$j]?"selected = 'selected'":"").">".$tolerance_arr[$j]."</option>";
+					?>
+				</select>
+			</div>
+			<div>节巴:</div>
+			<div>
+				<?php $knodid_arr = array("节巴","无节","小节","正常","大节","其它");?>
+				<select name="knobid" id="knobid">
+					<!--<option value="0">节巴 </option>-->
+					<?php
+					for($j=0;$j<count($knodid_arr);$j++) echo "<option value=\"".$knodid_arr[$j]."\" ".($dump["knob"]==$knodid_arr[$j]?"selected = 'selected'":"").">".$knodid_arr[$j]."</option>";
+					?>
+				</select>
+			</div>
+		</li>
+		<li class="flex">
+			<div>爬皮:</div>
+			<div>
+				<?php $climb_arr = array("四面见线","个别","部分","其它"); ?>
+				<select name="climbid" id="climbid">
+					<option value="0">爬皮</option>
+					<?php
+					for($j=0;$j<count($climb_arr);$j++) echo "<option value=\"".$climb_arr[$j]."\" ".($dump["climb"]==$climb_arr[$j]?"selected = 'selected'":"").">".$climb_arr[$j]."</option>";
+					?>
+				</select>
+			</div>
+			<div>取材位置:</div>
+			<div>
+				<?php $portid_arr = array("通拉","芯材","边材");?>
+				<select name="portid" id="part">
+					<option value="0">取材位置</option>
+					<?php
+						for($j=0;$j<count($portid_arr);$j++) echo "<option value=\"".$portid_arr[$j]."\" ".($dump["part"]==$portid_arr[$j]?"selected = 'selected'":"").">".$portid_arr[$j]."</option>";
+					?>
+				</select>
+			</div>
+		</li>
+		<li class="flex">
+			<div>加工设备:</div>
+			<div>
+				<?php $device_arr = array("普通带锯","俄罗斯锯","多片锯","其它");?>
+				<select name="deviceid" id="deviceid">
+					<option value="0">加工设备</option>
+					<?php
+					for($j=0;$j<count($device_arr);$j++) echo "<option value=\"".$device_arr[$j]."\" ".($dump["device"]==$device_arr[$j]?"selected = 'selected'":"").">".$device_arr[$j]."</option>";
+					?>
+				</select>
+			</div>
+			<div class="op-4 hide">烘干:</div>
+			<div class="op-4 flex hide">
+				<input type="radio" name="honggan" value="是" id="hongganyes" <?php echo $dump["dry"]=="是"?"selected=\"selected\"":"";?>><label for="hongganyes">是</label>
+				<input type="radio" name="honggan" value="否" id="hongganno" <?php echo $dump["dry"]=="否"?"selected=\"selected\"":"";?>><label for="hongganno">否</label>
+			</div>
+		</li>
+	</ul>
+	<dl class="panel collapse">
+		<dt>详细信息<i class="icon-caret-down"></i></dt>
+		<dd>
+			<ul class="list">
+				<li class="flex">
+					<div>新旧:</div>
+					<div>
+						<?php $newold_arr=array("新材","部分发黑","旧材");?>
+						<select name="newoldid" id="newoldid">
+							<option value="0">新旧</option>
+							<?php
+							for($j=0;$j<count($newold_arr);$j++) echo "<option value=\"".$newold_arr[$j]."\" ".($dump["newold"]==$newold_arr[$j]?"selected = 'selected'":"").">".$newold_arr[$j]."</option>";
+							?>
+						</select>
+					</div>
+					<div>蓝变:</div>
+					<div>
+						<?php $blue_arr= array("无蓝变","个别","部分","全蓝","其它");?>
+						<select name="blueid" id="blueid">
+							<option value="0">蓝变</option>
+							<?php
+							for($j=0;$j<count($blue_arr);$j++) echo "<option value=\"".$blue_arr[$j]."\" ".($dump["blue"]==$blue_arr[$j]?"selected = 'selected'":"").">".$blue_arr[$j]."</option>";
+							?>
+						</select>
+					</div>
+				</li>
+				<li class="flex">
+					<div>虫眼:</div>
+					<div>
+						<?php $worm_arr = array("无虫眼","个别","部分","其它");?>
+						<select name="wormid" id="wormid">
+							<option value="0">虫眼</option>
+							<?php
+								for($j=0;$j<count($worm_arr);$j++) echo "<option value=\"".$worm_arr[$j]."\" ".($dump["worm"]==$worm_arr[$j]?"selected = 'selected'":"").">".$worm_arr[$j]."</option>";
+							?>
+						</select>
+					</div>
+					<div>腐朽:</div>
+					<div>
+						<?php $decay_arr = array("无腐朽","个别","部分","其它");?>
+						<select name="decayid" id="decayid">
+							<option value="0">腐朽</option>
+							<?php
+								for($j=0;$j<count($decay_arr);$j++) echo "<option value=\"".$decay_arr[$j]."\" ".($dump["decay"]==$decay_arr[$j]?"selected = 'selected'":"").">".$decay_arr[$j]."</option>";
+							?>
+						</select>
+					</div>
+				</li>
+				<li class="flex">
+					<div>斜裂:</div>
+					<div class="flex">
+						<input type="radio" name="xielie" value="有" id="xielieyes" <?php echo $dump["slash"]=="有"?"checked":"";?>><label for="xielieyes">有</label>
+						<input type="radio" name="xielie" value="无" id="xielieno" <?php echo $dump["slash"]=="无"?"checked":"";?>><label for="xielieno">无</label>
+					</div>
+					<div>环裂:</div>
+					<div class="flex">
+						<input type="radio" name="huanlie" value="有" id="huanlieyes" <?php echo $dump["ring"]=="有"?"checked":"";?>><label for="huanlieyes">有</label>
+						<input type="radio" name="huanlie" value="无" id="huanlieno" <?php echo $dump["ring"]=="无"?"checked":"";?>><label for="huanlieno">无</label>
+					</div>
+				</li>
+				<li class="flex">
+					<div>抽油:</div>
+					<div class="flex">
+						<input type="radio" name="chouyou" value="有" id="chouyouyes" <?php echo $dump["oil"]=="有"?"checked":"";?>><label for="chouyouyes">有</label>
+						<input type="radio" name="chouyou" value="无" id="chouyouno" <?php echo $dump["oil"]=="无"?"checked":"";?>><label for="chouyouno">无</label>
+					</div>
+					<div>黑心:</div>
+					<div class="flex">
+						<input type="radio" name="heixin" value="有" id="heixinyes" <?php echo $dump["black"]=="有"?"checked":"";?>><label for="heixinyes">有</label>
+						<input type="radio" name="heixin" value="无" id="heixinno" <?php echo $dump["black"]=="无"?"checked":"";?>><label for="heixinno">无</label>
+					</div>
+				</li>
+				<li class="flex col1-3 hide">
+					<div>产地:</div>
+					<div>
+						<select name="fromid" id="fromid">
+					     	<option value="0">产地</option>
+						<?php
+                          if (!is_array($from_array)) {
+                            echo "<p>No categories currently available</p>";
+                           return;
+                          }
+
+                        foreach ($from_array as $row)
+                        {
+                           $fromid = $row['fromid'];
+                           $fromname = $row['fromname'];
+							echo "<option value =".$fromid." ".($dump["fromid"]==$fromid?"selected=\"selected\"":"").">".$fromname."</option>";
+						}
+					    ?>	
+						</select>
+					</div>
+				</li>
+			</ul>
+		</dd>
+	</dl>
+	<ul class="list">
+		<li style="font-weight:bold;">具体描述</li>
+		<li><textarea class="fullCol" rows="6" id="content" name="content" ><?php echo ($isnew==1 or $dump["content"]=="0")?"":$dump["content"];?></textarea></li>
+	</ul>
+	<input class="btnFixed" type="button" value="发布" id="sendmessage" />
+	<input type="hidden" name="cdkey" id="cdkey" value = <?php echo "\"".$cdkey."\""; ?>/>
+</form>
+<?php
+}else{
+  echo "<script>window.location.href='signIn.php?type=2';</script>";
+  }
+ ?>
+</body>
+<script src="http://libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
+<script type="text/javascript" src="js/reminder.js"></script>
+<script src="/statics/js/config.js"></script>
+<script type="text/javascript" src="/lib/mobileFix.mini.js?v=ad62f13"></script>
+<script type="text/javascript" src="/lib/exif.js?v=0da8553"></script>
+<script type="text/javascript" src="/lrz.js?v=0589040"></script>
+<script type="text/javascript" src="/js/wxdumprelease.js"></script>
+<script>
+collapse();
+fliter();
+</script>
+
+<script type="text/javascript">
+	$(function(){
+		uploadImg();
+		deleteImg();
+		kindidChange();
+	})
+	/*动态给上传的四张图片赋宽和高*/
+	function uploadImg(){
+		var $img_width = $(".list li .upImg-display li").width();
+		$(".list li .upImg-display li").css({"width":$img_width,"height":$img_width});
+		$(".list li .upImg-display li .upImg").css({"width":$img_width,"height":$img_width});
+		$("#upload_img").css({"width":$img_width,"height":$img_width});
+		$(".list li .upImg-display li .images").css({"width":$img_width,"height":$img_width});
+	}
+	/*删除上传的图片*/
+	function deleteImg(){
+		$(".list li .upImg-display li").find(".upload_delete").click(function(){
+			$(this).siblings(".images").remove();
+			$(this).hide();
+		});
+	}
+	function kindidChange(){
+	var n = $("#kindid").val();
+	switch(n){
+		case '0':
+		$(".op-1").addClass('hide');
+		$(".op-2").addClass('hide');
+		$(".op-3").addClass('hide');
+		$(".op-4").addClass('hide');
+		break;
+		case '1':
+		$(".op-1").removeClass('hide');
+		$(".op-2").addClass('hide');
+		$(".op-3").addClass('hide');
+		$(".op-4").addClass('hide');
+		break;
+		case '2':
+		$(".op-1").addClass('hide');
+		$(".op-2").removeClass('hide');
+		$(".op-3").addClass('hide');
+		$(".op-4").addClass('hide');
+		break;
+		case '3':
+		$(".op-1").addClass('hide');
+		$(".op-2").removeClass('hide');
+		$(".op-3").addClass('hide');
+		$(".op-4").removeClass('hide');
+		break;
+		case '4':
+		$(".op-1").addClass('hide');
+		$(".op-2").removeClass('hide');
+		$(".op-3").removeClass('hide');
+		$(".op-4").removeClass('hide');
+		break;
+		case '5':
+		$(".op-1").addClass('hide');
+		$(".op-2").removeClass('hide');
+		$(".op-3").removeClass('hide');
+		$(".op-4").removeClass('hide');
+		break;
+		case '6':
+		$(".op-1").addClass('hide');
+		$(".op-2").removeClass('hide');
+		$(".op-3").addClass('hide');
+		$(".op-4").removeClass('hide');
+		break;
+	}	
+}
+//ios fixed修复
+$('input').focus(function (){
+	$('.header').css('position','relative');
+	$('.btnFixed').css('position','relative');
+	$('body').css('padding','0');
+})
+$('input').blur(function(){
+	$('.header').css('position','relative');
+	$('.btnFixed').css('position','relative');
+})
+</script>
+</html>

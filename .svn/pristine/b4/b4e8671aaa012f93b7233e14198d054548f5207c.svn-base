@@ -1,0 +1,35 @@
+﻿<?php
+session_start(); // 启用session支持
+if (isset($_SESSION['userid'])) {
+    $userid = $_SESSION['userid'];
+    $userphone = $_SESSION['user'];
+    $portid = $_SESSION["portid"]; // 目标口岸
+} else {
+    echo "error:login";
+    return;
+}
+// include_once('../model/db_fns.php'); //包含系统功能文件
+include_once ('system/model/db_fns.php'); // 包含系统功能文件
+header("Content-Type: text/html; charset=utf-8");
+
+$conn = db_connect();
+
+// 设置货种来源
+$goodtype = 1; // 现货
+if (! isset($_POST["carnum"])) {
+    return;
+}
+$carnum = $_POST["carnum"]; // 车皮
+$contactphone = $_POST["contactphone"]; // 手机
+if(strlen($contactphone)==0) $contactphone='0';
+$stuffid = $_POST["stuffid"]; // 树种
+$kindid = $_POST["kindid"]; // 货种
+$productlen = $_POST["productlen"]; // 长度
+$spotpositionid = $_POST["spotpositionid"]; // 位置
+$train=$_POST["train"];//列号
+$trainDate=$_POST["trainDate"];//列到货日期
+                                            
+// error_log(date('Y-m-d H:i:s') .'spotpositionid='.$spotpositionid."\n",3,$_SERVER['DOCUMENT_ROOT']."/log/run.log");
+
+// error_log(date('Y-m-d H:i:s') .'求购:'.$buyid."\n",3,$_SERVER['DOCUMENT_ROOT']."/log/run.log");
+?>

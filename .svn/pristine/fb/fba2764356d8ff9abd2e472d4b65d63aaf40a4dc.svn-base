@@ -1,0 +1,116 @@
+<?php
+	include_once("system/model/db_fns.php");
+	session_start();
+	if(isset($_SESSION['userid'])){
+		echo "<script>window.location.href='index.php';</script>"; 
+		return;
+	}
+	$code = $_GET["code"];
+	$userinfo = getUserInfo($code);
+	if (isset($userinfo["openid"])){//授权成功
+		
+	
+			$dbconn =db_connect();
+			$sql="select wxid,userid,phone,freeze,rightid,username from t_user where wxid ='".$userinfo["openid"]."'";
+			$result = $dbconn->query($sql);
+			if (($result) and ($result->num_rows >0)) {
+					$row=$result->fetch_row();
+					$_SESSION['user']=$row[2];
+					$_SESSION['phone']=$row[2];
+					$_SESSION['userid']=$row[1];
+					$_SESSION['username']=$row[5];
+					$_SESSION['freeze']=$row[3];
+					$_SESSION['ismgr']=$row[4];
+					$sql="update t_user set loginnum=loginnum+1,logintime='".date("Y-m-d H:i:s")."' where userid =".$row[1];
+					$result=$dbconn->query($sql);
+					if($_SESSION['freeze']==0){
+						
+					
+						if ($_SESSION['usertype']==1) {
+							echo "<script>window.location.href='user.php';</script>"; //转入用户中心	
+						}
+						elseif ($_SESSION['usertype']==2){
+							echo "<script>window.location.href='sh_release.php';</script>"; //转入用户发布	
+						}
+						elseif ($_SESSION['usertype']==4){
+							echo "<script>window.location.href='mygoods.php';</script>"; //转入我的货物
+						}
+						elseif ($_SESSION['usertype']==3){ //转入完善货物
+							echo "<script>window.location.href='wxrelease.php?userid=".$_SESSION['userid']."&cdkey=".$_SESSION['cdkey']."';</script>"; //转入我的货物
+						}
+						elseif ($_SESSION['usertype']==5){ //智能找货
+							echo "<script>window.location.href='search2.php';</script>"; //转入我的货物
+						}
+						elseif ($_SESSION['usertype']==6){ //手机号、车皮号搜索
+						    echo "<script>window.location.href='index.php';</script>"; //转入我的货物
+						}
+						else {
+							echo "<script>window.location.href='detail.php?cdkey=".$_SESSION['cdkey']."';</script>";
+						}
+					}
+					else { //账户被冻结
+						echo "<script>alert('您的账户异常，请速和管理员联系！');window.location.href='index.php';</script>"; 
+					}
+			
+			}
+			else {//未注册转入注册中心
+				$wxid=$userinfo["openid"];
+				$userpic=$userinfo["headimgurl"];
+				$nickname=$userinfo['nickname'];
+				$province=$userinfo["province"];
+				$city=$userinfo["city"];
+			 echo "<script>window.location.href='signup.php?type=1&wxid=".$wxid."&userpic=".$userpic."&nickname=".$nickname
+			   ."&province=".$province."&city=".$city."';</script>"; //转入用户注册中心	
+				
+			}
+	}
+	else{//授权失败
+		echo "<script>alert('授权失败，请重新登录');window.location.href='index.php';</script>"; 
+	}
+
+	function getUserInfo($code)
+	{
+		$appid = "wxfb9fe4614872cea1";
+		$appsecret = "e61c7b972bceb87145ab150d70061c74";
+
+		//oauth2的方式获得openid
+		$access_token_url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=".$appid."&secret=".$appsecret."&code="
+		.$code."&grant_type=authorization_code";
+		$access_token_json = https_request($access_token_url);
+		$access_token_array = json_decode($access_token_json, true);
+		$openid = $access_token_array['openid'];
+		$access_token =$access_token_array['access_token'];
+         
+		 /*
+		//非oauth2的方式获得全局access token
+		$new_access_token_url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=".$appid."&secret=".$appsecret;
+		$new_access_token_json = https_request($new_access_token_url);
+		$new_access_token_array = json_decode($new_access_token_json, true);
+		$new_access_token = $new_access_token_array['access_token'];
+		
+		//全局access token获得用户基本信息
+		$userinfo_url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=".$new_access_token."&openid=".$openid;
+		$userinfo_json = https_request($userinfo_url);
+		$userinfo_array = json_decode($userinfo_json, true);
+		return $userinfo_array;
+		*/
+		//oauth2获得用户基本信息
+		$userinfo_url = "https://api.weixin.qq.com/sns/userinfo?access_token=".$access_token."&openid=".$openid;
+		$userinfo_json = https_request($userinfo_url);
+		$userinfo_array = json_decode($userinfo_json, true);
+		return $userinfo_array;
+	}
+
+	function https_request($url)
+	{
+		$curl = curl_init();
+		curl_setopt($curl, CURLOPT_URL, $url);
+		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
+		curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, FALSE);
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+		$data = curl_exec($curl);
+		if (curl_errno($curl)) {return 'ERROR '.curl_error($curl);}
+		curl_close($curl);
+		return $data;
+	}
+?>

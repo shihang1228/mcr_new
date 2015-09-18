@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+<title>发布信息</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<link rel="stylesheet" type="text/css" href="/statics/css/yumleeM.css" />
+<link rel="stylesheet" type="text/css" href="/statics/css/mcr.css" />
+<link rel="stylesheet" type="text/css" href="/com/icomoon/style.css" />
+<link rel="stylesheet" type="text/css" href="/com/swiper/swiper.min.css" />
+
+<style type="text/css">
+	.menuIcon{border-bottom:1px dashed #ccc;}
+	.menuIcon li{text-align: center;margin-top:15px}
+	.menuIcon li img{margin-top:10%;}
+	body{background:#fff;}
+	nav.navFixed{background:#fff;border-top:1px solid #a7a7a7;}
+	.header{background:#d80001;line-height:35px;}
+	.header .header_home{line-height:42px;}
+</style>
+</head>
+<body class="home">
+<nav class="navFixed flex">
+	<a href="index.php"><i class="icon-home"></i><div>首页</div></a>
+	<a href="release.php"><i class="icon-bullhorn"></i><div>发布</div></a>
+	<a href="user.php"><i class="icon-head"></i><div>我</div></a>
+</nav>
+<header class="header">
+	<div class="header_home"><a href="javascript:history.back();"><i class="icon-arrow-back"></i></a></div>
+	<h1>发布信息类别</h1>
+	<div class="header_home"><a href="index.php"><i class="icon-home"></i></a></div>
+</header>
+
+<ul class="flex menuIcon">
+	<li><a href="goodlist.php"><img src="images/icon_1.png" width="67" height="67" alt="" /></a></li>
+	<li><a href="search2.php"><img src="images/icon_2.png" width="67" height="67" alt="" /></a></li>
+	<li><a href="search.php"><img src="images/icon_3.png" width="67" height="67" alt="" /></a></li>
+</ul>
+<ul class="flex menuIcon">
+	<li class="last"><a href="logsell.php"><img src="images/icon_4.png" width="67" height="67" alt="" /></a></a></li>
+	<li></li>
+	<li></li>
+</ul>
+
+</body>
+<script type="text/javascript" src="/com/swiper/swiper.min.js"></script>
+<script type="text/javascript" src="/statics/js/config.js"></script>
+</html>

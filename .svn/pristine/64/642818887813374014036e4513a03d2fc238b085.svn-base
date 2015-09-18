@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<title>木材人简要说明</title>
+<link rel="stylesheet" type="text/css" href="../statics/css/yumleeM.css" />
+<link rel="stylesheet" type="text/css" href="../statics/css/mcr.css" />
+<link rel="stylesheet" type="text/css" href="../com/icomoon/style.css" />
+</head>
+<body style="padding-top:0;padding-bottom:0;">
+
+<header class="header">
+	<div><a href="http://www.sxuav.com/mcr/"><i class="icon-arrow-back"></i></a></div>
+	<h1>木材人简要说明</h1>
+	<div><a href="http://www.sxuav.com/mcr/"><i class="icon-home"></i></a></div>
+</header>
+<dl class="panel help">
+	
+	<dt id="first" style="background-color:#ececec; margin-top:35px;">一、发布流程</dt>
+	<dd>
+		<p style="text-indent:2em;">首页——“发布”——“铁路现货”——输入所要发布货物的详细信息——完成后，点击“发布”，获得积分，发布完成。具体步骤如下所示：</p>
+		<p style="text-indent:2em;">1、用户可点击首页正下方的 发布，发布自己的铁路现货。如图1所示：</p>
+		<div class="img"><img src="../statics/images/fbxh.jpg" style="width:160%; height:270px; margin-left:-62px;"/></div>
+		<p style="text-align:center;">图1</p>
+		<br/>
+		<!-- <hr style="border:1px solid #757576; margin-top:-15px;"/> -->
+		<p style="text-indent:2em;">2、本平台可发布境外货物，未入关的货物都作保密处理（货主上传但不予展示），货物入境后自动显示并以微信方式单独通知货主。同时，货主还可以上传四张照片，并可填写规格混装等说明。如图2所示：</p>
+		<div class="img"><img src="../statics/images/fb2.png" style="width:80%; height:270px; align:center;margin-left:10%;"/></div>
+		<p style="text-align:center;">图2</p>
+		<br/>
+		<!-- <hr style="border:1px solid #757576;margin-top: -15px;"> -->
+		<p style="text-indent:2em;">3、货主可对树种、货种、长度、宽度范围等条件进行选择，并可对具体情况进行描述。如图3所示：</p>
+		<div class="img"><img src="../statics/images/fb3.png"  style="width:80%; height:270px; margin-left:10%;align:center;"/></div>
+		<p style="text-align:center;">图3</p>
+		<p style="text-indent:2em;">4、点击 发布，即可发布成功，并获得积分。如图4所示：</p>
+		<div class="img"><img src="../statics/images/fb4.png"  style="width:80%; height:270px; margin-left:10%;align:center;"/></div>
+		<p style="text-align:center;">图4</p>
+		<p style="text-indent:2em;">5、点击 我的现货，即可查看已发布信息的详细信息。如图5所示：</p>
+		<div class="img"><img src="../statics/images/fb5.jpg"  style="width:160%; height:270px; margin-left:-62px;"/></div>
+		<p style="text-align:center;">图5</p>
+		<br/>
+		<div class="img"><img src="../statics/images/fb6.jpg"  style="width:160%; height:270px; margin-left:-62px;"/></div>
+		<p style="text-align:center;">图6</p>
+
+	</dd>
+	<dt id="second" style="background-color:#ececec;">二、待售信息</dt>
+	<dd>
+		<p style="text-indent:2em;">1、原木待售信息优先级排序。如图7所示：</p>
+		<div class="img"><img src="../statics/images/rank1.jpg"  style="width:160%; height:270px; margin-left:-62px;"/></div>
+		<p style="text-align:center;">图7</p>
+		<br/>
+		<!--  <hr style="border:1px solid #757576; margin-top:-15px;"/>  -->
+		<p style="text-indent:2em;">2、口料待售信息优先级排序。如图8所示：</p>
+		<div class="img"><img src="../statics/images/rank2.jpg"  style="width:160%; height:270px; margin-left:-62px;"/></div>
+		<p style="text-align:center;">图8</p>
+	</dd>
+	<dt id="third" style="background-color:#ececec;">三、到货信息</dt>
+	<dd>
+		<p style="text-indent:2em;">在发布货物信息时，只有填入手机号，才可以向用户进行推送。</p>
+		<div class="img"><img src="../statics/images/nosend1.png" style="width:80%; height:270px; margin-left:10%;align:center;"/></div>
+		<p style="text-align:center;">图9</p>
+		<br/>
+		<hr style="border:1px solid #757576;margin-top: -15px;">
+		<br>
+		<div class="img"><img src="../statics/images/nosend2.png" style="width:80%; height:270px; margin-left:10%;align:center;"/></div>
+		<p style="text-align:center;">图10</p>
+	</dd>
+</dl>
+</body>
+</html>

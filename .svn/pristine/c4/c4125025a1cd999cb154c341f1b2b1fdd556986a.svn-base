@@ -1,0 +1,127 @@
+﻿/*
+ *  Javascript文件：waterfall.js
+ */
+$(function(){
+    start();
+ });
+
+ //做一个ajax方法来请求data.php不断的获取数据
+function start(flag){	
+	if(flag == 1){
+		$("#ul_list").empty();
+	}
+	var jareaselect=0,jstuffselect=0,productlen=0,productwide=0,thinckness=0,diameterlen=0,timber=0,jkindselect=0,carnum=0,startTime,endTime;;
+
+	//jareaselect =document.getElementById("areaselect").value;
+	carnum = document.getElementById("carnum").value;
+	startTime = document.getElementById("startTime").value;
+	endTime = document.getElementById("endTime").value;
+	jstuffselect = document.getElementById("stuffselect").value;
+	jkindselect =document.getElementById("kindselect").value;
+	timber=document.getElementById("timber").value;
+
+	if(document.getElementById("productlen").value.length == 0){
+		productlen=0;
+	}else{
+		productlen=document.getElementById("productlen").value;
+	}
+		
+	if(document.getElementById("productwide").value.length == 0){
+		productwide=0;
+	}else{
+		productwide=document.getElementById("productwide").value;
+	}
+		
+	if(document.getElementById("thinckness").value.length == 0){
+		thinckness=0;
+	}else{
+		thinckness=document.getElementById("thinckness").value;
+	}	
+
+	if(document.getElementById("diameterlen").value.length == 0){
+		diameterlen=0;
+	}else{
+		diameterlen=document.getElementById("diameterlen").value;
+	}
+
+	 $(".loading").show();
+	 $.ajax({
+		 url:'myspot_bgo.php',
+		 type:'POST',
+		data:"carnum="+carnum+"&kindselect="+jkindselect+"&startTime="+startTime+"&endTime="+endTime+"&stuffselect="+jstuffselect
+	  +"&productlen="+productlen+"&productwide="+productwide+"&thinckness="+thinckness+"&diameterlen="+diameterlen
+	  +"&timber="+timber,
+
+		 dataType:'json',
+		 success:function(json){
+			 if(typeof json == 'object'){
+			 	$(".loading").hide();
+
+				 var neirou,$row,$item;
+				 $row =$("#ul_list");
+				 $("#ul_list").siblings("#no-result").hide();
+				 if(json.length == 0){
+					$("#ul_list").empty().siblings("#no-result").show();
+				 }else{
+					for(var i=0;i<json.length;i++){
+						neirou = json[i];    //当前层数据
+						/*判断原木*/
+
+						if(neirou.kindname == "原木"){
+							if ((neirou.diameterlen == 0) ||(neirou.timber ==0)) {
+								$bianhua = "<span>"+neirou.kindname + "</span>";
+							}else{
+								$bianhua = "<span>" + neirou.diameterlen + "φ</span><span>" + neirou.timber + "</span>";
+							}
+						}else{
+							
+							if(neirou.wide == 0 || neirou.thinckness == 0 ){
+								
+								$bianhua = "<span>"+neirou.kindname + "</span>";
+							}else{	
+								$bianhua = "<span" + neirou.thinckness + "*" + neirou.wide + "</span>";
+								if (neirou.kind_bj == 1){
+									  if(neirou.widerange !=0 || neirou.thincknessrange !=0){
+										   $bianhua = "<span>" + neirou.thinckness + "*" + neirou.wide + "起</span>";
+									  }
+								}
+							}
+						}
+						/*判断长度不为0时*/
+						if(neirou.productlen == 0){
+							$productlen = "";
+						}else{
+							$productlen = neirou.productlen;
+						}
+
+						$item = $(
+						"<li>"+
+							"<b class='select_btn'><img src='images/img_2.png' alt='' width='40' height='40'/></b>"+
+							"<a href='detail.php?cdkey="+neirou.cdkey+"' class='li_link'>"+
+								"<h3>"+
+									"<span>"+neirou.carnum+"</span>"+
+									"<span>"+neirou.stuffname+"</span>"+
+									"<span>"+$productlen+"</span>"+$bianhua+
+								"</h3>"+
+								"<p>"+
+									"<span>"+neirou.completestatus+"</span><span>浏览次数："+neirou.viewnum+"</span>"+"<span>"+neirou.updatetime1+"</span>"+
+								"</p>"+
+							"</a>"+
+							"<div class='tip'>"+
+								"<div class='triangle'></div>"+
+								"<div class='t_con'>"+
+									"<input type='hidden' name='mes_id' id='mes_id' value='"+neirou.cdkey+"' />"+
+									"<a href='#' class='down' id='down'><i class='icon-download'></i><br /><span>下架</span></a>"+
+									"<a href='wxrelease.php?cdkey="+neirou.cdkey+"'><i class='icon-pencil'></i><br /><span>修改</span></a>"+
+								"</div>"+
+							"</div>"+
+						"</li>"
+						);
+						$row.append($item);
+						 $item.fadeIn();
+					}
+				}
+			}
+		 }//success
+	 });
+}

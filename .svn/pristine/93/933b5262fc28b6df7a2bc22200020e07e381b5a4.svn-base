@@ -1,0 +1,197 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<title>求购信息列表</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<!-- <link rel="stylesheet" type="text/css" href="/statics/css/yumReset.css" /> -->
+<!-- <link rel="stylesheet" type="text/css" href="/statics/css/yumPage.css" /> -->
+<link rel="stylesheet" type="text/css" href="/statics/css/yumleeM.css" />
+<link rel="stylesheet" type="text/css" href="/statics/css/mcr.css" />
+<link rel="stylesheet" type="text/css" href="/com/icomoon/style.css" />
+</head>
+<?php
+    include_once('mcr_sc_fns.php');
+	$buyid=$_GET['buyid'];
+	$buy_array = get_mydata("call p_mybuy_detail(".$buyid.")");
+?>
+<body>
+<header class="header">
+	<div><a href="javascript:history.back();"><i class="icon-arrow-back"></i></a></div>
+	<h1>求购信息列表</h1>
+	<div><a href="index.php"><i class="icon-home"></i></a></div>
+</header>
+<div class="detail_bg"><img src="images/share_bg.jpg" alt="" width="100%" height="100%"/></div>
+<?php
+   if (!is_array($buy_array)) {
+      $noconnect ="<p>对不起，没有查找到您要查找的内容！</p>";
+      echo  $noconnect;
+                           
+    }
+	else {
+	$row =$buy_array[0];
+
+	$weixin = new class_weixin();
+	$signPackage = $weixin->GetSignPackage();
+	$title="木材人信息交流平台";
+	$description="求购:".$row['portname']."  ".$row['stuffname']."  ".$row['productlen']." ".$row['kindname'];
+	$picurl ='http://www.sxuav.com/images/mcrwx.jpg';
+	
+   $url ='http://www.sxuav.com/buyDetail.php?buyid='.$buyid; 
+?>
+<dl class="panel panel-theme">
+	<dt>
+		<h3>求购 <?php echo $row['portname']." ".$row['stuffname']." ".$row['productlen']." ".$row['kindname'] ;?></h3>
+	</dt>
+	<dd class="">
+		<div class="flex"><div><?php echo $row['publishtime'];?></div><div>浏览次数:<?php echo $row['viewnum'];?></div><button class="shareToWechart" id="share">分享到微信</button></div>
+	</dd>
+</dl>
+<ul class="list borBottom">
+	<?php
+		  if ($row['kindname']=="原木") {
+	?>
+	<li class="flex">
+		<?php
+			if(strlen($row['diameterlen']) == 0){
+		?>
+				<div><span>径级:</span><var></var></div>
+		<?php
+			}if(strlen($row['diameterlen']) != 0){
+		?>
+				<div><span>径级:</span><var><?php echo $row['diameterlen'].($row['diameterlenMax']==0?'':'-'.$row['diameterlenMax']);?>φ </var></div>
+		<?php
+			}
+		?>
+		<div><span>选材:</span><var><?php echo $row['timber'];?></var></div>
+	</li>
+	<?php
+		  } else {
+    ?>
+	<li class="flex">
+	    <div><span>厚度(mm):</span><var><?php echo $row['thinckness'];?></var></div>
+		<div><span>宽度(mm):</span><var><?php echo $row['wide'];?></var></div>
+		
+	</li>
+	<?php } ?>
+	<li class="flex">
+		<div><span>价格:</span><var><?php  if (($row['price']=="") ||($row['price']=="")) {echo "面议";} else { echo $row['price']; }  ;?></var></div>
+		<div><span>总货量(m³):</span><var><?php echo $row['refcapacity'];?></var></div>
+		
+	</li>
+	<li>
+		详细信息:<p><?php echo $row['content'];?></p>
+	</li>
+</ul>
+<div class="flex qr_flex">
+	<div class="qr_img"><img src="images/qrcode1.jpg" alt="" width="100%"></div>
+</div>
+<ul class="flex contact">
+	<li class="flex">
+		<div><?php  echo $row['contact'];?>:<?php  echo $row['contactphone'];?></div>
+	</li>
+	<li class="flex">
+		<a href="tel:<?php  echo $row['contactphone'];?>"><i class="icon-phone borkerTel"></i>电话</a>
+	</li>
+</ul>
+<?php
+	}
+ ?>
+</body>
+<script src="http://libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script>
+	wx.config({
+		debug: false,
+		appId: '<?php echo $signPackage["appId"];?>',
+		timestamp: <?php echo $signPackage["timestamp"];?>,
+		nonceStr: '<?php echo $signPackage["nonceStr"];?>',
+		signature: '<?php echo $signPackage["signature"];?>',
+		jsApiList: [
+			// 所有要调用的 API 都要加到这个列表中
+			'checkJsApi',
+			'onMenuShareTimeline',
+			'onMenuShareAppMessage'
+		  ]
+	});
+</script>
+<script>
+$(function(){
+	//分享功能
+	$("#share").click(function(){
+		var width = $(document).width();
+		var height = (parseInt($(document).height()) + 35) + "px";
+		$(".detail_bg img").attr({"width":width,"height":height});
+		$(".detail_bg").css("top","-28px").show();
+		$(".detail_bg").click(function(){
+			$(".detail_bg").hide();
+		});
+	})
+})
+</script>
+
+<script>
+	wx.ready(function () {
+		//自动执行的
+		wx.checkJsApi({
+			jsApiList: [
+				'onMenuShareTimeline',
+				'onMenuShareAppMessage'
+			],
+			success: function (res) {
+				//alert(JSON.stringify(res));
+				// alert(JSON.stringify(res.checkResult.getLocation));
+				// if (res.checkResult.getLocation == false) {
+					// alert('你的微信版本太低，不支持微信JS接口，请升级到最新的微信版本！');
+					// return;
+				// }
+			}
+		});
+		wx.onMenuShareAppMessage({
+		  title: '<?php echo $title;?>',
+		  desc: '<?php echo $description;?>',
+		  link: '<?php echo $url;?>',
+		  imgUrl: '<?php echo $picurl;?>',
+		  trigger: function (res) {
+			// 不要尝试在trigger中使用ajax异步请求修改本次分享的内容，因为客户端分享操作是一个同步操作，这时候使用ajax的回包会还没有返回
+			// alert('用户点击发送给朋友');
+		  },
+		  success: function (res) {
+			// alert('已分享');
+		  },
+		  cancel: function (res) {
+			// alert('已取消');
+		  },
+		  fail: function (res) {
+			// alert(JSON.stringify(res));
+		  }
+		});
+
+		wx.onMenuShareTimeline({
+		  title: '<?php echo $title;?>',
+		  link: '<?php echo  $url;?>',
+		  imgUrl: '<?php echo $picurl;?>',
+		  trigger: function (res) {
+			// 不要尝试在trigger中使用ajax异步请求修改本次分享的内容，因为客户端分享操作是一个同步操作，这时候使用ajax的回包会还没有返回
+			// alert('用户点击分享到朋友圈');
+		  },
+		  success: function (res) {
+			// alert('已分享');
+		  },
+		  cancel: function (res) {
+			// alert('已取消');
+		  },
+		  fail: function (res) {
+			// alert(JSON.stringify(res));
+		  }
+		});
+	});
+
+	wx.error(function (res) {
+		alert(res.errMsg);
+	});
+ </script>
+</html>

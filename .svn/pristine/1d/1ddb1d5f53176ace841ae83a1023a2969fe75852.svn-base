@@ -1,0 +1,81 @@
+﻿<?php
+session_start(); // 启用session支持
+if (isset($_SESSION['userid'])) {
+    $userid = $_SESSION['userid'];
+    $userphone = $_SESSION['user'];
+    $portid = $_SESSION["portid"]; // 目标口岸
+} else {
+    echo "error:login";
+    return;
+}
+// include_once('../model/db_fns.php'); //包含系统功能文件
+include_once ('system/model/db_fns.php'); // 包含系统功能文件
+include_once ('system/model/wxdump.php');
+header("Content-Type: text/html; charset=utf-8");
+
+/**
+ * 检查空串关把空串赋值为0
+ */
+function chageEmptyStr($str)
+{
+    if (trim($str) === "") {
+        return '0';
+    } else {
+        return (trim($str));
+    }
+}
+
+$conn = db_connect();
+
+$publishtime = date("Y-m-d H:i:s"); // 发布时间
+$userid = $_SESSION['userid']; // 调用注册时提交的用户名称
+$portid = $_SESSION['portid'];
+$updatetime = $publishtime;
+
+// 设置货种来源
+$goodtype = 1; // 现货
+if (! isset($_POST["carnum"])) {
+    return;
+}
+$carnum = $_POST["carnum"]; // 车皮
+$contactphone = $_POST["contactphone"]; // 手机
+$stuffid = $_POST["stuffid"]; // 树种
+$kindid = $_POST["kindid"]; // 货种
+$productlen = $_POST["productlen"]; // 长度
+$spotpositionid = $_POST["spotpositionid"]; // 位置
+$train=$_POST["train"];//列号
+$trainDate=$_POST["trainDate"];//列到货日期
+                                            
+// error_log(date('Y-m-d H:i:s') .'spotpositionid='.$spotpositionid."\n",3,$_SERVER['DOCUMENT_ROOT']."/log/run.log");
+
+$userphone = $_SESSION['phone']; // 操作员手机
+
+$dump = new dump($carnum, $spotpositionid, $portid, $userid, $userphone);
+$dump->kindid = $kindid;
+$dump->stuffid = $stuffid;
+$dump->productlen = chageEmptyStr($productlen);
+$dump->contactphone = $contactphone;
+$dump->train=$train;
+$dump->trainDate=$trainDate;
+
+$result = $dump->operationRecord();
+// $updateresult=array();
+if ($result) {
+    if ($dump->isnew)
+        $caption = "发布";
+    else
+        $caption = "更新";
+    $caption = $caption . "成功,获得积分:" . $dump->perfect;
+    echo "<script>alert('" . $caption . "');window.location.href=\" "."goodspublish.php?train='"
+        .$train."'&trainDate='".$trainDate."'"."\";</script>";
+    // echo "<script>window.location.href='goodspublish.php';</script>";
+    // window.location.href='index.php';
+    return;
+} else {
+    echo "<script>alert('发布失败');history.back();</script>";
+    // return;
+}
+
+// error_log(date('Y-m-d H:i:s') .'求购:'.$buyid."\n",3,$_SERVER['DOCUMENT_ROOT']."/log/run.log");
+
+?>

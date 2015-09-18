@@ -1,0 +1,11 @@
+<?php
+   session_start();
+   include_once('mcr_sc_fns.php');
+   $port_array = get_portarray();
+
+   $phone = $_POST["phone"];
+   
+	$code=sendvalidmessage($phone);
+	$_SESSION['code'] = $code;
+	$_SESSION['time'] =time();
+?>

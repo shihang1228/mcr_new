@@ -1,0 +1,18 @@
+@charset "UTF-8";
+/**
+ * 
+ * @authors Yumlee (543265835@qq.com)
+ * @date    2015-04-21 15:18:33
+ * @version $Id$
+ */
+.tabs_wrap { width:100%; position:relative; margin:20px auto; font-size:12px; }
+.tabs_list { list-style:none; height:30px; position:relative; z-index:1; display: -webkit-flex;}
+.tabs_list li { background-color: #60af00; -webkit-flex: 1; height:30px; width:50px; line-height:30px; text-align:center; color:#fff; font-size:13px; cursor:pointer; }
+.tabs_list li.curr { background:url(images/tabs_v.png) no-repeat; font-size:14px; color:#397ab2; font-weight:bold; }
+.tabs_con { border:1px solid #c8cdd0; height:550px; width:100%; position:relative; z-index:0; top:-1px; overflow:hidden; background:#fff;}
+.tabs_con_wrap { width:9999%;  position:relative; }
+.tabs_move { position:absolute; left:0; }
+.tabs_move>div { float:left; width:318px; padding:10px; }
+#tabsPrev, #tabsNext { height:280px; background:red; position:absolute; width:20px; top:0; cursor:pointer; }
+/*#tabsPrev { left: -50px; background:url(images/left.png) no-repeat center center; }
+#tabsNext { right: -50px;  background:url(images/right.png) no-repeat center center; }*/

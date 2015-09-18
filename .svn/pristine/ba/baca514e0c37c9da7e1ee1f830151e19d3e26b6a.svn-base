@@ -1,0 +1,509 @@
+<?php
+/*
+    方倍工作室 http://www.cnblogs.com/txw1958/
+    CopyRight 2013 www.doucube.com  All Rights Reserved
+*/
+//traceHttp();
+include_once('../mcr_sc_fns.php');
+define("TOKEN", "mcrblbsuccess");
+$wechatObj = new wechatCallbackapiTest();
+if (isset($_GET['echostr'])) {
+    $wechatObj->valid();
+}else{
+    $wechatObj->responseMsg();
+}
+
+class wechatCallbackapiTest
+{
+    public function valid()
+    {
+        $echoStr = $_GET["echostr"];
+        if($this->checkSignature()){
+            echo $echoStr;
+            exit;
+        }
+    }
+
+    private function checkSignature()
+    {
+        $signature = $_GET["signature"];
+        $timestamp = $_GET["timestamp"];
+        $nonce = $_GET["nonce"];
+
+        $token = TOKEN;
+        $tmpArr = array($token, $timestamp, $nonce);
+        sort($tmpArr);
+        $tmpStr = implode( $tmpArr );
+        $tmpStr = sha1( $tmpStr );
+
+        if( $tmpStr == $signature ){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+	 public function responseMsg()
+    {
+       // $postStr = $GLOBALS["HTTP_RAW_POST_DATA"];
+		  $postStr = file_get_contents("php://input");
+        if (!empty($postStr)){
+            $postObj = simplexml_load_string($postStr, 'SimpleXMLElement', LIBXML_NOCDATA);
+            $RX_TYPE = trim($postObj->MsgType);
+
+            switch ($RX_TYPE)
+            {
+                case "text":
+                    $resultStr = $this->receiveText($postObj);
+                    break;
+                case "event":
+                    $resultStr = $this->receiveEvent($postObj);
+                    break;
+                default:
+                    $resultStr = "";
+                    break;
+            }
+            echo $resultStr;
+        }else {
+            echo "";
+            exit;
+        }
+    }
+
+    private function receiveText($object)
+    {
+        $funcFlag = 0;
+        //$contentStr = "你发送的内容为：".$object->Content;
+		 $contentStr = "请点击菜单‘官方网站’进入系统，进入系统后您可以浏览信息、发布信息、进行更多的操作。";
+		
+        $resultStr = $this->transmitText($object, $contentStr, $funcFlag);
+        return $resultStr;
+    }
+    
+    private function receiveEvent($object)
+    {
+        $contentStr = "";
+		$sql="";
+        switch ($object->Event)
+        {
+            case "subscribe":   //关注事件
+                $this->getwxuserid($object);
+               // $contentStr = "欢迎关注木材人,点击菜单‘官方网站--访问官网’进入系统，可以进行更多操作;"
+                  //  ."点击'最新到货'即可获取最新到货信息统计,同时可激活到货信息通知,平台将在48小时内给您发送即时到货信息通知";
+                 $contentStr = $this->sendregMsg(); 
+                break;
+            case "unsubscribe":  //取消关注
+                $this->delwxuserid($object);
+                break;
+            case "LOCATION"://上报地理位置事件
+                   $this->saveLocation($object);
+                   //$contentStr = "欢迎光临木材人,点击菜单‘最新到货’获取最新的到货信息";
+                   $contentStr ="";
+                   break;
+            case "CLICK":     //菜单单击事件到
+                switch ($object->EventKey)
+                {
+                    case "vkey_contact":
+                        $this->updatewxuserid($object,"contact");
+                        $contentStr =$this->contact();
+                        break;
+                    case "vkey_todaygood":  
+                        //当日到货满洲里
+                        $contentStr =$this->todaygood();
+						 break;
+                    case "vkey_newgood":
+                        $this->updatewxuserid($object,"newgood");
+                        $contentStr=$this->newgood();
+                        break;	 
+                    default:
+                        $contentStr[] = array("Title" =>"默认菜单回复", 
+                        "Description" =>"您正在使用的是木材人自定义菜单测试接口", 
+                        "PicUrl" =>"http://discuz.comli.com/weixin/weather/icon/cartoon.jpg", 
+                        "Url" =>"weixin://addfriend/pondbaystudio");
+                        break;
+                }
+                break;
+            default:
+                break;      
+
+        }
+        if (is_array($contentStr)){
+            $resultStr = $this->transmitNews($object, $contentStr);
+        }else{
+            $resultStr = $this->transmitText($object, $contentStr);
+        }
+        return $resultStr;
+    }
+    //了解我们
+    private function contact()
+    {
+        $index =0;
+        $contentStr = "";
+        //
+        $showtime=date("m月d日");
+        $display =$showtime;
+        $sowtimestr="当今大数据、云计算等互联网技术使传统行业倍受冲击,木材人愿与各位同行一道开启木材行业新的篇章";
+        $picurl="http://www.sxuav.com/mcr/wx/images/zjmcr.png";
+        $url="http://wqx.sxuav.com/v-S608C9NHR4";
+       
+        
+        
+            $contentStr[] = array("Title" =>"走进木材人",
+                "Description" =>$sowtimestr,
+                "PicUrl" =>$picurl,
+                "Url" =>$url);
+      
+        
+       
+         return $contentStr;
+    }
+    //最新到货  2015-8-12
+    private function newgood()
+    { 
+        $index =0;
+        $contentStr = "";
+        //
+        $showtime=date("m月d日");
+        $display =$showtime;
+        $sowtimestr="  截止".$showtime."满洲里口岸 48小时内到货";
+        $picurl="http://www.sxuav.com/mcr/wx/images/zxdh2.png";
+        $url="http://www.sxuav.com/mcr/";
+        $product_array = get_mydata('call p_come_2day');  
+        foreach($product_array as $row) {
+            
+            $train=$row['trains'];
+            $logsum=' 原木 '.$row['yuan'];
+            $boardsum=' 板材'.$row['board'];
+            $sowtimestr=$sowtimestr.$train."列".$logsum."车".$boardsum."车;"
+                    ."\n\n为了尊重您的工作和休息,如果您48小时内不点击'最新到货',我们将不再冒然给您推送消息";
+            $contentStr[] = array("Title" =>"木材人最新到货",
+                "Description" =>$sowtimestr,
+                "PicUrl" =>$picurl,
+                "Url" =>$url);
+        }
+        
+        //
+        /*
+        $product_array = get_mydata('call p_train_sum');  //2
+         
+        if (!is_array($product_array)) {
+            $contentStr[] = array("Title" =>"木材人为您提供即时服务",
+                "Description" =>"木材人提供即时到货信息、木材销售发布、求购信息发布及服务",
+                "PicUrl" =>"http://www.sxuav.com/mcr/wx/images/rg.jpg",
+                "Url" =>"http://www.sxuav.com/mcr/");
+        }
+        else {						// $contentStr[] = array();
+             $picurl="http://www.sxuav.com/mcr/wx/images/rg.jpg";
+             $url="http://www.sxuav.com/mcr/";
+             
+            foreach($product_array as $row) {
+                $index =$index +1;
+              //
+                $train=$row['train'];
+                $trainDate=$row['traindate'];
+                $train_display=$row['train_display'];
+             //  $time_display=substr($row['时间'],0,5);
+                $time_display=$row['时间'];
+                $log_display=$row['原木'];
+                $board_display=$row['板材'];
+                $capacity_display=$row['总货量'];
+              //
+                $kindname=$train_display." ".$capacity_display." ".$log_display
+                ." ".$board_display."\r\n".$time_display;
+              //
+                $picurl="http://www.sxuav.com/mcr/wx/images/".$index.".jpg";
+                $url="http://www.sxuav.com/mcr/trainDetailList.php?train=".$train."&trainDate=".$trainDate;
+                $contentStr[] = array("Title" =>$kindname,
+                    "Description" =>"木材人提供即时到货信息、木材销售发布、求购信息发布及服务",
+                    //"PicUrl" =>"http://www.sxuav.com/wx/images/ym.jpg",
+                    "PicUrl" =>$picurl,
+                    "Url" =>$url);
+            }
+        
+        }
+        */
+        return $contentStr;
+    }
+    
+    //当日到货
+    private function todaygood()
+    {
+        $contentStr = "";
+        $product_array = get_mydata("call p_h24sum()");  //2
+        	
+        if (!is_array($product_array)) {
+            $contentStr[] = array("Title" =>"木材人为您提供即时服务",
+                "Description" =>"木材人提供即时到货信息、木材销售发布、求购信息发布及服务",
+                "PicUrl" =>"http://discuz.comli.com/weixin/weather/icon/cartoon.jpg",
+                "Url" =>"http://www.sxuav.com/mcr/");
+        }
+        else {						// $contentStr[] = array();
+            $picurl="";
+            $url="";
+            $showtime=date("m月d日H时i分");
+            //$sowtimestr="昨日".$showtime."至今";
+            $sowtimestr="  截止".$showtime."满洲里口岸 24小时内";
+            foreach($product_array as $row) {
+                //$kindname=$sowtimestr.$row['kindname']."到货".$row['cou']."车";
+               // $kindname="24小时内到 ".$row['kindname']." ".$row['cou']."车";
+                $kindname="当日到货".$row['kindname']."： ".$row['cou']."车";
+                if ($row['kindname']=='总量'){
+                    $picurl="http://www.sxuav.com/mcr/wx/images/ym.jpg";
+                    $kindname=$sowtimestr."到货 ".$row['cou']."车";
+                    $url="http://www.sxuav.com/mcr/";
+                    	
+                }
+                elseif ($row['kindname']=='原木'){
+                    $picurl="http://www.sxuav.com/mcr/wx/images/ym.jpg";
+                    $url="http://www.sxuav.com/mcr/logsell.php";
+                }
+                	
+                elseif($row['kindname']=='大板') {
+                    $picurl="http://www.sxuav.com/mcr/wx/images/db.jpg";
+                    $url="http://www.sxuav.com/mcr/boardsell.php?kindid=5";
+                }
+                elseif($row['kindname']=='大方') {
+                    $picurl="http://www.sxuav.com/mcr/wx/images/df.jpg";
+                    $url="http://www.sxuav.com/mcr/boardsell.php?kindid=4";
+                }
+                elseif($row['kindname']=='口料') {
+                    $picurl="http://www.sxuav.com/mcr/wx/images/kl.jpg";
+                    $url="http://www.sxuav.com/mcr/boardsell.php?kindid=3";
+                }
+                else {
+                    $picurl="http://www.sxuav.com/mcr/wx/images/tz.jpg";
+                    $url="http://www.sxuav.com/mcr/boardsell.php?kindid=2";
+                }
+                	
+                $contentStr[] = array("Title" =>$kindname,
+                    "Description" =>"木材人提供即时到货信息、木材销售发布、求购信息发布及服务",
+                    //"PicUrl" =>"http://www.sxuav.com/wx/images/ym.jpg",
+                    "PicUrl" =>$picurl,
+                    "Url" =>$url);
+                	
+                //error_log(date('Y-m-d H:i:s') . $kindname."\r\n",3,$_SERVER['DOCUMENT_ROOT']."/log/run.log");
+            }
+        
+        }
+        
+        return $contentStr;
+    }
+    
+    private function saveLocation($object)
+    {//保存访问者的地理位置信息
+        $wxid=$object->FromUserName;
+        
+      //  $url="http://api.map.baidu.com/geocoder/v2/?ak=E62da11ca2281b414e690bb8d35f02df"
+        //    ."&location=".$object->Latitude.",".$object->Longitude."&output=json&coordtype=gcj0211";
+        $url="http://api.map.baidu.com/geocoder/v2/?ak=YUDcgNjliFYkPsfwMarK5LcG"
+            ."&location=".$object->Latitude.",".$object->Longitude."&output=json&pois=0";
+        $output=file_get_contents($url);
+        $address=json_decode($output,true);
+        $location=$address["result"]["formatted_address"];
+        $updatetime=date('Y-m-d H:i:s');
+        $sqlstr="insert into t_userlocation(wxid,location,updatetime,Latitude,Longitude,city,"
+          ."district,province,street,street_number) values('".$wxid."','"
+            .$location."','".$updatetime."','".$object->Latitude."','".$object->Longitude."','"
+            .$address["result"]["addressComponent"]["city"]."','"
+            .$address["result"]["addressComponent"]["district"]."','"
+            .$address["result"]["addressComponent"]["province"]."','"
+            .$address["result"]["addressComponent"]["street"]."','"
+            .$address["result"]["addressComponent"]["street_number"]."')";
+        
+        sqlexec($sqlstr);
+    }
+    
+    private function getwxuserid($object)
+    {//获取微信注册用户的ID
+       $wxid =$object->FromUserName;
+       $updatetime=date('Y-m-d H:i:s');
+       $sqlstr="select * from t_wxreguser where wxid='".$wxid."'";
+       if ((get_mydata($sqlstr))==false)
+       {
+         $keyword = "reg";
+           $sqlstr="insert into t_wxreguser (wxid,regtime,keyword,updatetime) values ('"
+               .$wxid."','".$updatetime."','".$keyword."','".$updatetime."')";
+           //error_log(date('Y-m-d H:i:s') ."false:". $sqlstr."\r\n",3,$_SERVER['DOCUMENT_ROOT']."\mcr\log\run.log");
+           sqlexec($sqlstr);
+       }
+       else {
+         // error_log(date('Y-m-d H:i:s') ."true:". $sqlstr."\r\n",3,$_SERVER['DOCUMENT_ROOT']."\mcr\log\run.log");
+       }
+        return true;
+    }
+    
+    private function delwxuserid($object)
+    {//取消关注时删除关注用户的id
+        $wxid =$object->FromUserName;
+        $sqlstr="delete from t_wxreguser where wxid ='".$wxid."'";
+        sqlexec($sqlstr);
+        return true;
+    }
+    
+    private function updatewxuserid($object,$keyword)
+    {//更新wxid操作
+        $wxid =$object->FromUserName;
+        $updatetime=date('Y-m-d H:i:s');
+        $sqlstr="select * from t_wxreguser where wxid='".$wxid."'";
+        if ((get_mydata($sqlstr))==false)
+        {
+            $sqlstr="insert into t_wxreguser (wxid,regtime,keyword,updatetime) values ('"
+                .$wxid."','".$updatetime."','".$keyword."','".$updatetime."')";
+            sqlexec($sqlstr);
+        }
+        else {
+            $sqlstr ="update t_wxreguser set keyword='".$keyword."',updatetime ='".$updatetime
+             ."' where wxid='".$wxid."'";
+            sqlexec($sqlstr);
+        }
+        return true;
+    }
+    
+    private function transmitText($object, $content, $funcFlag = 0)
+    {
+        $textTpl = "<xml>
+		<ToUserName><![CDATA[%s]]></ToUserName>
+		<FromUserName><![CDATA[%s]]></FromUserName>
+		<CreateTime>%s</CreateTime>
+		<MsgType><![CDATA[text]]></MsgType>
+		<Content><![CDATA[%s]]></Content>
+		<FuncFlag>%d</FuncFlag>
+		</xml>";
+        $resultStr = sprintf($textTpl, $object->FromUserName, $object->ToUserName, time(), $content, $funcFlag);
+        return $resultStr;
+    }
+
+    private function transmitNews($object, $arr_item, $funcFlag = 0)
+    {
+        //首条标题28字，其他标题39字
+        if(!is_array($arr_item))
+            return;
+
+        $itemTpl = "    <item>
+        <Title><![CDATA[%s]]></Title>
+        <Description><![CDATA[%s]]></Description>
+        <PicUrl><![CDATA[%s]]></PicUrl>
+        <Url><![CDATA[%s]]></Url>
+		</item>";
+        $item_str = "";
+        foreach ($arr_item as $item)
+		{
+            $item_str .= sprintf($itemTpl, $item['Title'], $item['Description'], $item['PicUrl'], $item['Url']);
+		//	error_log(date('Y-m-d H:i:s') .  $item_str."\r\n",3,$_SERVER['DOCUMENT_ROOT']."/log/run.log");
+		}
+
+        $newsTpl = "<xml>
+			<ToUserName><![CDATA[%s]]></ToUserName>
+			<FromUserName><![CDATA[%s]]></FromUserName>
+			<CreateTime>%s</CreateTime>
+			<MsgType><![CDATA[news]]></MsgType>
+			<Content><![CDATA[]]></Content>
+			<ArticleCount>%s</ArticleCount>
+			<Articles>".
+			$item_str."</Articles>
+			<FuncFlag>%s</FuncFlag>
+			</xml>";
+
+        $resultStr = sprintf($newsTpl, $object->FromUserName, $object->ToUserName, time(), count($arr_item), $funcFlag);
+        return $resultStr;
+    }
+	
+			
+	function https_request($url,$data = null){
+		$curl = curl_init();
+		curl_setopt($curl, CURLOPT_URL, $url);
+		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
+		curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, FALSE);
+		if (!empty($data)){
+			curl_setopt($curl, CURLOPT_POST, 1);
+			curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+		}
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+		$output = curl_exec($curl);
+		curl_close($curl);
+		return $output;
+	}
+	//关注后发送消
+	//群发客服消息
+	public function sendregMsg()
+	{
+	    
+	    $contentStr[] = array("Title" =>"木材人欢迎您加入  拥有木材人您将拥有即时便捷的木材信息",
+	        "Description" =>"",
+	        "PicUrl" =>"http://www.sxuav.com/mcr/wx/images/mcrzc1.jpg",
+	        "Url" =>"http://www.sxuav.com/mcr/");
+	    $contentStr[] = array("Title" =>"走进我们  了解我们  拥有我们",
+	        "Description" =>"",
+	        "PicUrl" =>"http://www.sxuav.com/mcr/wx/images/ljwm1.jpg",
+	        "Url" =>"http://wqx.sxuav.com/v-S608C9NHR4");
+	    $contentStr[] = array("Title" =>"木材人使用手册",
+	        "Description" =>"",
+	        "PicUrl" =>"http://www.sxuav.com/mcr/wx/images/zjmcr.png",
+	        "Url" =>"http://www.sxuav.com/mcr/help/help.html");
+	    $contentStr[] = array("Title" =>"点击菜单‘官方网站--访问官网’进入系统，可以进行更多操作",
+	        "Description" =>"",
+	        "PicUrl" =>"",
+	        "Url" =>"http://www.sxuav.com/mcr/");
+	    return $contentStr;
+	    
+	}
+	
+	
+/* 
+    public function responseMsg()
+    {
+       // $postStr = $GLOBALS["HTTP_RAW_POST_DATA"];
+	   $postStr = file_get_contents("php://input");
+        	
+        if (!empty($postStr)){
+			error_log(date('Y-m-d H:i:s') .":1 \t\n",3,$_SERVER['DOCUMENT_ROOT']."/log/run.log");
+            $postObj = simplexml_load_string($postStr, 'SimpleXMLElement', LIBXML_NOCDATA);
+				error_log(date('Y-m-d H:i:s') .":2 \t\n",3,$_SERVER['DOCUMENT_ROOT']."/log/run.log");
+            $fromUsername = $postObj->FromUserName;
+            $toUsername = $postObj->ToUserName;
+            $keyword = trim($postObj->Content);
+            $time = time();
+				error_log(date('Y-m-d H:i:s') .":3 \t\n",3,$_SERVER['DOCUMENT_ROOT']."/log/run.log");
+            $textTpl = "<xml>
+                        <ToUserName><![CDATA[%s]]></ToUserName>
+                        <FromUserName><![CDATA[%s]]></FromUserName>
+                        <CreateTime>%s</CreateTime>
+                        <MsgType><![CDATA[%s]]></MsgType>
+                        <Content><![CDATA[%s]]></Content>
+                        <FuncFlag>0</FuncFlag>
+                        </xml>";
+		error_log(date('Y-m-d H:i:s') .":4 \t\n",3,$_SERVER['DOCUMENT_ROOT']."/log/run.log");				
+            if($keyword == "?" || $keyword == "？")
+            {
+                $msgType = "text";
+                $contentStr = date("Y-m-d H:i:s",time());
+                $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
+                echo $resultStr;
+            }
+        }else{
+			error_log(date('Y-m-d H:i:s') .":空 \t\n",3,$_SERVER['DOCUMENT_ROOT']."/log/run.log");
+            echo "blb";
+            exit;
+        }
+    } */
+}
+
+function traceHttp()
+{
+    logger("\n\nREMOTE_ADDR:".$_SERVER["REMOTE_ADDR"].(strstr($_SERVER["REMOTE_ADDR"],'101.226')? " FROM WeiXin": "Unknown IP"));
+    logger("QUERY_STRING:".$_SERVER["QUERY_STRING"]);
+}
+function logger($log_content)
+{
+    if(isset($_SERVER['HTTP_APPNAME'])){   //SAE
+        sae_set_display_errors(false);
+        sae_debug($log_content);
+        sae_set_display_errors(true);
+    }else{ //LOCAL
+        $max_size = 500000;
+        $log_filename = "log.xml";
+        if(file_exists($log_filename) and (abs(filesize($log_filename)) > $max_size)){unlink($log_filename);}
+        file_put_contents($log_filename, date('Y-m-d H:i:s').$log_content."\r\n", FILE_APPEND);
+    }
+}
+?>

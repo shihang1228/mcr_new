@@ -1,0 +1,267 @@
+﻿(function () {
+	var xhr;
+	var index =0;
+	var mypics=new Array()
+	var sendpics = new Array();
+	var $li = $(".list li .upImg-display li");
+
+    function createXMLHttpRequest(){
+     if(window.XMLHttpRequest){
+       xhr = new XMLHttpRequest();
+    }
+    else if(window.ActiveXObject){//IE 浏览器
+      try{
+       xhr = new ActiveXObject("Msxml2.XMLHTTP");
+      }catch(e) {
+	      try {
+		    xhr = new ActiveXObject("Microsoft.XMLHTTP");
+	     }catch (e) {}
+      }
+ 
+     }
+   }
+
+   function checkpic(){
+	     var index = 0;
+	   	if($li.eq(1).has("img").length != 0){
+		 index =index +1;
+		 sendpics[index -1] =mypics[0];	
+		}
+		if($li.eq(2).has("img").length != 0){
+		 index =index +1;
+		 sendpics[index -1] =mypics[1];	
+		}
+		 if($li.eq(3).has("img").length != 0){
+		  index =index +1;
+		  sendpics[index -1] =mypics[2];	
+		}
+		 if($li.eq(4).has("img").length != 0){
+		  index =index +1;
+		  sendpics[index -1] =mypics[3];		
+		}
+   }
+	var input = document.getElementById("sendfile");
+    input.onchange = function () {
+        // 也可以传入图片路径：lrz('../demo.jpg', ...
+        lrz(this.files[0], {width: 250,qulatity:0.2}, function (results) {
+            // 你需要的数据都在这里，可以以字符串的形式传送base64给服务端转存为图片。
+          // console.log(results);
+
+          var data = {
+					size: results.base64.length, // 校验用，防止未完整接收
+                    base64: results.base64
+				};
+				
+				
+			  if($li.eq(1).has("img").length ==0){
+					$li.eq(1).prepend("<img src='"+results.base64+"' id='img1' class='images' />");
+					$(".list li .upImg-display li").eq(1).find(".upload_delete").show();
+					mypics[0]=data;
+                    results.base64 = null;
+				}
+				else if($li.eq(2).has("img").length ==0){
+					$li.eq(2).prepend("<img src='"+results.base64+"' id='img2' class='images' />");
+					$(".list li .upImg-display li").eq(2).find(".upload_delete").show();
+					mypics[1]=data;
+                    results.base64 = null;
+				}
+				else if($li.eq(3).has("img").length ==0){
+					$li.eq(3).prepend("<img src='"+results.base64+"' id='img3' class='images' />");
+					$(".list li .upImg-display li").eq(3).find(".upload_delete").show();
+					mypics[2]=data;
+                    results.base64 = null;
+				}
+				else if($li.eq(4).has("img").length ==0){
+					$li.eq(4).prepend("<img src='"+results.base64+"' id='img4' class='images' />");
+					$(".list li .upImg-display li").eq(4).find(".upload_delete").show();
+					mypics[3]=data;
+                    results.base64 = null;
+				}
+          
+        });
+    };
+    
+	var companyname =document.getElementById("companyname");
+	var product =document.getElementById("product");
+	var contact =document.getElementById("contact");
+	var phone=document.getElementById("phone");
+	var contactphone=document.getElementById("contactphone");
+	var email=document.getElementById("email");
+	var website=document.getElementById("website");
+	var content=document.getElementById("content");
+	var address =document.getElementById("address");  
+	
+	contact.onchange = function(){
+		if(contact.value.length > 10){
+			alert("联系人的长度不能超过10");
+			contact.value = "";
+			contact.focus();
+			return false;
+		}
+	}
+
+	product.onchange = function(){
+		if(product.value.length > 50){
+			alert("产品的长度不能超过50");
+			product.value = "";
+			product.focus();
+			return false;
+		}
+	}
+	
+	phone.onchange = function(){
+		var re = /^1[3|4|5|7|8]\d{9}$/;
+		if(!re.test(phone.value)){
+			alert("请输入合法的手机号");
+			phone.value = "";
+			phone.focus();
+			return false;
+		}
+	}
+
+	contactphone.onchange = function(){
+		if(contactphone.value.length > 16){
+			alert("联系电话不能超过16位");
+			contactphone.value = "";
+			contactphone.focus();
+			return false;
+		}
+	}
+
+	email.onchange = function(){
+		var re = /^(\w)+(\.\w+)*@(\w)+((\.\w+)+)$/;
+		if(!re.test(email.value)){
+			alert("请输入合法的邮箱");
+			email.value = "";
+			email.focus();
+			return false;
+		}
+	}
+
+	website.onchange = function(){
+		if(website.value.length > 20){
+			alert("网址的长度不能超过20");
+			website.value = "";
+			website.focus();
+			return false;
+		}
+	}
+
+	content.onchange = function(){
+		if(content.value.length > 200){
+			alert("内容长度不能超过200");
+			content.value = "";
+			content.focus();
+			return false;
+		}
+	}
+
+	address.onchange = function(){
+		if(address.value.length >36){
+			alert("地址长度不能超过36");
+			address.value = "";
+			address.focus();
+			return false;
+		}
+	}
+	
+	
+	function start(){
+		createXMLHttpRequest();
+		xhr.open('POST', 'companyadd_bgo.php',true);
+		xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
+		xhr.onreadystatechange = callback;
+		//sendmessage.disabled=true;
+		var obj = new Object(); 
+		//上传数据打包
+		//
+		obj.companyname =document.getElementById("companyname").value;
+		if(obj.companyname.length == 0){
+			alert("请输入企业名称");
+			companyname.focus();
+			return false;
+		}
+		obj.product =document.getElementById("product").value;
+		obj.contact =document.getElementById("contact").value;
+		obj.phone=document.getElementById("phone").value;
+		obj.contactphone=document.getElementById("contactphone").value;
+		obj.email=document.getElementById("email").value;
+		obj.website=document.getElementById("website").value;
+		obj.content=document.getElementById("content").value;
+		obj.address =document.getElementById("address").value; 
+		//关键字
+		var ch1 = document.getElementById("ch1");
+		var ch2 = document.getElementById("ch2");
+		var ch3 = document.getElementById("ch3");
+		var ch4 = document.getElementById("ch4");
+		var ch5 = document.getElementById("ch5");
+		var ch6 = document.getElementById("ch6");
+				
+		var keyword="";
+		var flag = false;
+		if(ch1.checked){
+		 keyword=keyword +"原木加工,";
+		 flag = true;
+		}
+		if(ch2.checked){
+		 keyword=keyword +"板材加工,";
+		 flag = true;
+		}
+		if(ch3.checked){
+		 keyword=keyword +"条子加工,";
+		 flag = true;
+		}
+		if(ch4.checked){
+		 keyword=keyword +"木材运输,";
+		 flag = true;
+		}
+		if(ch5.checked){
+		 keyword=keyword +"加工设备,";
+		 flag = true;
+		}
+		if(ch6.checked){
+		 keyword=keyword +"木材联运,";
+		 flag = true;
+		}
+		
+		if(flag == false){
+			alert("请选择至少一个关键词！");
+			return false;
+		}
+		
+		obj.keyword=keyword;
+			   
+		//图片数组的上传				
+		checkpic();			   
+		obj.pics=sendpics;
+		//上传数据转换成json    
+		var sendvalue =JSON.stringify(obj);
+		xhr.send(sendvalue);
+		/*动态获取遮罩层的宽和高 start*/
+			 var $body_width = $(document).width();
+			 var $body_height = $(document).height();
+			 $loading = $('<div id="fade" class="black_overlay"></div>').css({"width":$body_width,"height":$body_height}).insertBefore('.header');
+			/*end 动态获取遮罩层的宽和高*/
+			  $loading.show();
+			  $.tzLoading({content:"正在发布，请稍等....",width:143,height:45,timeout:2});
+    }
+	var sendmessage = document.getElementById("sendmessage");
+	sendmessage.onclick=start;
+
+	function callback(){
+		if ((xhr.readyState === 4) && (xhr.status === 200)){
+			//  var result = JSON.parse(xhr.response);
+			if(xhr.response ==="success"){
+				alert('发布成功！');
+				window.location.href='companylist.php';
+			}
+			else {
+				alert('发布失败，请稍后重新发布！');
+				//sendmessage.disabled=false;
+			}
+
+		}
+	}
+
+
+})();

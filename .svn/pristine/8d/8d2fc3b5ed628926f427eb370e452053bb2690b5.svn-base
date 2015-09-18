@@ -1,0 +1,5 @@
+﻿2015-07-07 02:14:52getpositionvalueselect ordervalue from t_spotposition where spotpositionid=5 and portid=1
+2015-07-07 02:14:52construct1533470347215070702145279851
+2015-07-07 02:27:03getpositionvalueselect ordervalue from t_spotposition where spotpositionid=5 and portid=1
+2015-07-07 02:27:03construct1533470347215070702270359431
+2015-07-07 02:27:03简易发布: insert into t_product(carnum,userid,kindid,stuffid,productlen,diameterlen,wide,thinckness,tolerance,widerange,thincknessrange,refwight,refcapacity,refnum,timber,dry,newold,timbertype,knob,blue,worm,decay,climb,slash,ring,oil,black,part,device,fromid,portid,publishtime,spotpositionid,updatetime,goodtype,cdkey,perfect,contact,contactphone,content,price,salestatusid,display,salechgedtime) values ('08654124',28,2,2,'3',0,0,0,-99,0,1,0,0,0,'0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','1','2015-07-07 02:27:03',5,'2015-07-07 02:27:03',1,'1533470347215070702270359431',145,'贺海宾','15334703472','0',0,1,1,case when 1<>1 then now() else null end)

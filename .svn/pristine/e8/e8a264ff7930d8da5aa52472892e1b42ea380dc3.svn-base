@@ -1,0 +1,31 @@
+﻿2015-07-01 10:17:20展示状态:0
+2015-07-01 12:13:03db:1new:1id:1
+2015-07-01 12:14:26db:2new:1id:2
+2015-07-01 12:22:53db:3new:1id:3
+2015-07-01 12:26:06db:2new:1id:2
+2015-07-01 12:26:06sql:,carnum='71122513' ,thincknessrange='1' ,contactphone='13900351309' ,spotpositionid='3' ,salestatusid='2' ,salechgedtime=now()
+2015-07-01 12:28:09sql:,carnum='71122720' ,thincknessrange='1' ,contactphone='13900351309' ,spotpositionid='4' ,salestatusid='3' ,salechgedtime=now()
+2015-07-01 12:30:15sql:,carnum='71120229' ,thincknessrange='1' ,contactphone='13900351309' ,spotpositionid='3' ,salestatusid='3' ,salechgedtime=now()
+2015-07-01 12:38:11sql:,salestatusid='2' ,salechgedtime=now()
+2015-07-01 12:45:35sql:,carnum='15354698' ,thincknessrange='1' ,spotpositionid='8' ,salestatusid='2' ,salechgedtime=now()
+2015-07-01 12:50:07sql:,carnum='52525522' ,kindid='5' ,stuffid='1' ,productlen='3' ,refcapacity='12' ,thincknessrange='1' ,spotpositionid='3' ,salestatusid='2' ,salechgedtime=now()
+2015-07-01 13:05:45sql:,carnum='18854648' ,kindid='2' ,thincknessrange='1' ,spotpositionid='2' ,salestatusid='2' ,salechgedtime=now()
+2015-07-01 13:08:48sql:,carnum='54448533' ,kindid='5' ,stuffid='6' ,productlen='5' ,refcapacity='233' ,thincknessrange='1' ,spotpositionid='20' ,salestatusid='2' ,salechgedtime=now()
+2015-07-01 13:10:49sql:,carnum='54444466' ,kindid='5' ,stuffid='5' ,productlen='6' ,refcapacity='55' ,tolerance='+2' ,thincknessrange='1' ,spotpositionid='8' ,salestatusid='2' ,salechgedtime=now()
+2015-07-01 13:12:35sql:,carnum='25355222' ,kindid='2' ,stuffid='7' ,productlen='6' ,refcapacity='222' ,thincknessrange='1' ,spotpositionid='20' ,salestatusid='2' ,salechgedtime=now()
+2015-07-01 15:40:33求购:insert into t_buy (userid,portid,content,updatetime,kindid,stuffid,price,wide,thinckness,refcapacity,publishtime,productlen,diameterlen,timber,buystatus) values (8,1,'3265471298','2015-07-01 15:40:33',1,8,36,0,0,253,'2015-07-01 15:40:33',6,65,'一级材',1)
+2015-07-01 15:56:56求购:insert into t_buy (userid,portid,content,updatetime,kindid,stuffid,price,wide,thinckness,refcapacity,publishtime,productlen,diameterlen,timber,buystatus) values (8,1,'3265471298','2015-07-01 15:56:56',1,8,36,0,0,253,'2015-07-01 15:56:56',6,65,'一级材',1)
+2015-07-01 15:59:44求购:insert into t_buy (userid,portid,content,updatetime,kindid,stuffid,price,wide,thinckness,refcapacity,publishtime,productlen,diameterlen,timber,buystatus) values (8,1,'9845','2015-07-01 15:59:44',2,2,25.3,40,20,356,'2015-07-01 15:59:44',5,0,'0',1)
+2015-07-01 16:01:13求购:insert into t_buy (userid,portid,content,updatetime,kindid,stuffid,price,wide,thinckness,refcapacity,publishtime,productlen,diameterlen,timber,buystatus) values (8,1,'456456','2015-07-01 16:01:13',5,6,65.3,15,15,30,'2015-07-01 16:01:13',7,0,'0',1)
+2015-07-01 16:05:24求购:insert into t_buy (userid,portid,content,updatetime,kindid,stuffid,price,wide,thinckness,refcapacity,publishtime,productlen,diameterlen,timber,buystatus) values (8,1,'456456','2015-07-01 16:05:24',5,6,65,15,15,30,'2015-07-01 16:05:24',7,0,'0',1)
+2015-07-01 16:05:24求购:insert into t_buy (userid,portid,content,updatetime,kindid,stuffid,price,wide,thinckness,refcapacity,publishtime,productlen,diameterlen,timber,buystatus) values (,,'','2015-07-01 16:05:24',,,,,,,'2015-07-01 16:05:24',,0,'0',1)
+2015-07-01 16:05:24求购:insert into t_buy (userid,portid,content,updatetime,kindid,stuffid,price,wide,thinckness,refcapacity,publishtime,productlen,diameterlen,timber,buystatus) values (8,1,'456456','2015-07-01 16:05:24',5,6,65,15,15,30,'2015-07-01 16:05:24',7,0,'0',1)
+2015-07-01 16:07:14求购:insert into t_buy (userid,portid,content,updatetime,kindid,stuffid,price,wide,thinckness,refcapacity,publishtime,productlen,diameterlen,timber,buystatus) values (8,1,'3265471298','2015-07-01 16:07:14',1,8,36,0,0,253,'2015-07-01 16:07:14',6,65,'一级材',1)
+2015-07-01 16:07:48求购:insert into t_buy (userid,portid,content,updatetime,kindid,stuffid,price,wide,thinckness,refcapacity,publishtime,productlen,diameterlen,timber,buystatus) values (8,1,'3266','2015-07-01 16:07:48',1,2,28.6,0,0,1204,'2015-07-01 16:07:48',6,76,'一级材',1)
+2015-07-01 16:08:22求购:insert into t_buy (userid,portid,content,updatetime,kindid,stuffid,price,wide,thinckness,refcapacity,publishtime,productlen,diameterlen,timber,buystatus) values (8,1,'32668956','2015-07-01 16:08:22',1,2,29,0,0,1204,'2015-07-01 16:08:22',6,76,'一级材',1)
+2015-07-01 16:13:25求购:insert into t_buy (userid,portid,content,updatetime,kindid,stuffid,price,wide,thinckness,refcapacity,publishtime,productlen,diameterlen,timber,buystatus) values (8,1,'32662580','2015-07-01 16:13:25',1,2,29,0,0,1204,'2015-07-01 16:13:25',6,76,'一级材',1)
+2015-07-01 16:15:59求购:
+2015-07-01 16:15:59求购:insert into t_buy (userid,portid,content,updatetime,kindid,stuffid,price,wide,thinckness,refcapacity,publishtime,productlen,diameterlen,timber,buystatus) values (8,1,'32662580这个号应该不存在了','2015-07-01 16:15:59',1,2,29,0,0,1204,'2015-07-01 16:15:59',6,76,'一级材',1)
+2015-07-01 16:20:41GET取:85
+2015-07-01 16:20:44求购:
+2015-07-01 16:20:44求购:insert into t_buy (userid,portid,content,updatetime,kindid,stuffid,price,wide,thinckness,refcapacity,publishtime,productlen,diameterlen,timber,buystatus) values (8,1,'32668956','2015-07-01 16:20:44',1,2,29,0,0,1204,'2015-07-01 16:20:44',6,76,'一级材',1)

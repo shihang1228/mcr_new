@@ -1,0 +1,8 @@
+@charset "UTF-8";
+.upImg{position:relative;}
+#upload_img{border:1px solid #787878;}
+.upImg b{position:absolute;top:0px;left:0px;}
+.list li .upImg-display{}
+.list li .upImg-display li{float:left;width:19%;margin:1px 2px 3px 0;position:relative;}
+.upload_delete{position:absolute;background:url("../images/close.png") no-repeat scroll;width:18px;height:18px;display:inline-block;top:2px;right:2px;display:none;}
+.list li #choose{width:57px;height:57px;border-radius:0;padding:0;background:url("../images/upload.png") no-repeat;background-size:56px 56px;}

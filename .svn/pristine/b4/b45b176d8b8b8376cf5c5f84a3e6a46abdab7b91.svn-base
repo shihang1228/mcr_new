@@ -1,0 +1,8 @@
+<?php
+	session_start();		//启用session支持
+	include_once('system/model/db_fns.php');		//包含系统功能文件
+	$phonearr=getdata("select contactphone from t_ownphone");
+	//foreach($phonearr as $row) echo $row["contactphone"]."\n";
+	if(is_array($phonearr)) return $phonearr;
+	else return "error";
+?>

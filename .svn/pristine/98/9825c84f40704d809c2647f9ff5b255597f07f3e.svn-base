@@ -1,0 +1,137 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+<title>木材人留言板</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+
+<link rel="stylesheet" type="text/css" href="statics/css/yumleeM.css" />
+<link rel="stylesheet" type="text/css" href="statics/css/mcr.css" />
+<link rel="stylesheet" type="text/css" href="css/chat.css" />
+<link rel="stylesheet" type="text/css" href="com/icomoon/style.css" />
+<style>
+	
+</style>
+</head>
+<body>
+<?php
+
+	include_once('mcr_sc_fns.php');
+	include_once('system/model/user.php');
+	session_start(); // 启用session支持
+	if (isset($_SESSION['userid'])) {
+		$userid = $_SESSION['userid'];
+		$userphone = $_SESSION['user'];
+		$portid = $_SESSION["portid"]; // 目标口岸
+		$userclass=new user($_SESSION['userid']);
+		if($userclass->login()===false){//用户不存在
+		    echo "<script>alert('您的账户异常 ，请速和管理员联系！');history.back();</script>";
+		    return;
+		}
+		else {
+		    if($_SESSION['freeze']==1){//冻结用户
+		        echo "<script>alert('您的账户异常，请速和管理员联系！');history.back();</script>";
+		        return;
+		    }
+		} 
+	}else{
+		$_SESSION['usertype']=7;//判断转过去的页面
+		echo "<script>window.location.href='signIn.php?type=2';</script>";
+		return;
+	}
+	
+	
+	
+	include_once ('system/model/db_fns.php'); // 包含系统功能文件
+	$userinfo = getdata("select userid,username,userpic from t_user where userid=".$userid);
+	if(!is_array($userinfo)){
+		echo 'error:获取个人信息出错';
+		return;
+	}
+	$user = $userinfo[0];
+	//print_r(array_values($user));$user['userid']  $user['username'] $user['userpic']
+	$chatinfo = getdata("select m.mb_id,m.mb_text as content,mb_text2 as description,cdkey,DATE_FORMAT(m.mb_date,'%Y-%m-%d %H:%i:%s') as mb_date,u.userid,ifnull(u.username,'访客') as username,u.userpic from t_messageboard m left outer join t_user u on m.userid=u.userid order by mb_date desc limit 100");
+?>
+<header class="header">
+    <div><a href="javascript:history.back();"><i class="icon-arrow-back"></i></a></div>
+    <h1>木材人留言板</h1>
+    <div><a href="index.php"><i class="icon-home"></i></a></div>
+</header>
+    <input type="hidden" value="<?php echo $user['username']; ?>" id="username" />
+    <input type="hidden" value="<?php echo $user['userpic']; ?>" id="userpic" />
+    <div class="content">
+        <div class="chatBox">
+            <div class="chatLeft">
+                <div class="chat01">
+                    <div class="chat01_content">
+						<div class="message_box mes1" style="display: block;">
+                            <!--开始-->
+							<?php
+								if(is_array($chatinfo)){
+									for($i=count($chatinfo) - 1;$i>=0;$i--){
+										$row=$chatinfo[$i];
+							?>
+										<div class='message clearfix' <?php echo $i!=0?'':'id="anchor0" name="anchor0"';?>>
+											<div class='user-logo'>
+												<img src='<?php echo $row['userpic']==''?'images/chat_img/2022.jpg':$row['userpic']; ?>' width='50' height='50'/> <!--图片logo-->
+											</div>
+											<div class='wrap-text'> 
+												<h5 class='clearfix'><?php echo $row['username']; ?></h5>  <!--本人姓名-->
+												<div><?php echo $row['cdkey']!=''?'<a style="text-decoration:underline;" class="atextcolor" href="detail.php?cdkey='.$row['cdkey'].'">'.$row['content'].$row['description'].'</a>':$row['content'];?></div> <!--文本框内容-->
+											</div> 
+											<div class='wrap-ri'>
+												<div clsss='clearfix'>
+													<span><?php echo $row['mb_date'];?></span>  <!--发送日期-->
+												</div>
+											</div>
+											<div style='clear:both;'></div>
+										</div>
+							<?php
+									}
+								}
+							?>
+                            <!--结束-->
+                        </div>
+                    </div>
+                </div>
+                <div class="chat02">
+                    <div class="chat02_title">留言板</div>
+                    <div class="chat02_content">
+                        <textarea id="textarea"></textarea>
+                    </div>
+                    <div class="chat02_bar">
+                        <ul>
+                            <li style="right: 5px; top: 5px;"><a href="javascript:;">
+                                <img src="images/chat_img/send_btn.jpg"></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div style="clear: both;"></div>
+        </div>
+    </div>
+<div style="text-align:center;margin:0px 0; font:normal 14px/24px 'MicroSoft YaHei';">
+</div>
+<script src="http://libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
+<script type="text/javascript" src="js/chat.js"></script>
+<script>
+	$(function(){
+		window.location.hash = "#anchor0";
+		$("body").on("click",".chat02_title",function(){
+			$(".chat01_content").scrollTop($(".mes1").height());
+		})
+		$('.chat02_title').trigger("click");
+		var height = ($(window).height() - 85) + "px";
+		$(".content").css("height",height);
+
+        $("input").focus(function(){
+            $("body").css("padding","0");
+        })
+	})
+</script>
+</body>
+</html>

@@ -1,0 +1,120 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+<title>木材人留言板</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+
+<link rel="stylesheet" type="text/css" href="statics/css/yumleeM.css" />
+<link rel="stylesheet" type="text/css" href="statics/css/mcr.css" />
+</head>
+<body>
+<header class="header">
+	<div><a href="javascript:history.back();"><i class="iconfont">&#x1245;</i></a></div>
+	<h1>专家在线</h1>
+	<div><a href="{:U('index')}"><i class="iconfont">&#x1241;</i></a></div>
+</header>
+<input type="hidden" value="<?php echo $user_id; ?>" id="user_id"/>
+    <div class="content">
+        <div class="chatBox">
+            <div class="chatLeft">
+                <div class="chat01">
+                    <div class="chat01_title">
+                        <ul class="talkTo">
+                            <li><a href="javascript:;"></a></li>
+                        </ul>
+                    </div>
+                    <div class="chat01_content">   <!--每个人对应的聊天对话框-->
+                    <input type="hidden" id="isdoctor" value="<?php echo $isdoctor; ?>"/>
+						<?php
+							//$doctor = getdata("select user_id,user_name from ak_user where isdoctor=1");
+							if($isdoctor==0){  //患者登录加载医生列表
+								if(is_array($doctor)){
+									$i = 0;
+									foreach($doctor as $row){
+										$i++;
+										echo '<div class="message_box mes'.$i.'"'.($i==1?'style="display: block;"':'').'></div>';
+									}
+								}
+							}
+							else{  //医生登录，应加载患者列表。
+							}
+						?>
+                        <!--div class="message_box mes3" style="display: block;">              </div-->
+                    </div>
+                </div>
+                <div class="chat02">
+                    <div class="chat02_title">
+                        <!-- <div class="wl_faces_box">
+                            <div class="wl_faces_content">
+                                <div class="title">
+                                    <ul>
+                                        <li class="title_name">常用表情</li><li class="wl_faces_close"><span>&nbsp;</span></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="wlf_icon">
+                            </div>
+                        </div> -->
+                    </div>
+                    <div class="chat02_content">
+                        <textarea id="textarea"></textarea>
+                    </div>
+                    <div class="chat02_bar">
+                        <ul>
+                            <li style="right: 5px; top: 5px;"><a href="javascript:;">
+                                <img src="__PUBLIC__/chat_img/send_btn.jpg"></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="chatRight">
+                <div class="chat03">
+                    <div class="chat03_title">
+                        <label class="chat03_title_t">
+                            成员列表</label>
+                    </div>
+                    <div class="chat03_content">
+                        <ul>
+						<?php
+							//$doctor = getdata("select user_id,user_name from ak_user where isdoctor=1");
+							if($isdoctor==0){  //患者登录加载医生列表
+								if(is_array($doctor)){
+									$j = 2;
+									foreach($doctor as $row){
+										$j++;
+										$doctor_id = $row['user_id'];
+										echo '<li><label class="online"></label><a href="javascript:;"><img src="__PUBLIC__/chat_img/head/201'.$j.'.jpg"></a><a href="javascript:;" class="chat03_name" data-doctorid="'.$doctor_id.'">'.$row['user_name'].'</a></li>';
+
+									}
+								}
+							}
+						?>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div style="clear: both;">
+            </div>
+        </div>
+    </div>
+<div style="text-align:center;margin:0px 0; font:normal 14px/24px 'MicroSoft YaHei';">
+</div>
+<script src="http://libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/chat_js/chat.js"></script>
+<script>
+	$(function(){
+		var height = ($(window).height() - 35) + "px";
+		$(".content").css("height",height);
+
+        $("input").focus(function(){
+            $("body").css("padding","0");
+        })
+	})
+</script>
+</body>
+</html>

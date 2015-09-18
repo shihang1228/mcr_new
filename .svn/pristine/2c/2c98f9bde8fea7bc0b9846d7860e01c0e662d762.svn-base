@@ -1,0 +1,61 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+<title>发布信息</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<link rel="stylesheet" type="text/css" href="/statics/css/yumleeM.css" />
+<link rel="stylesheet" type="text/css" href="/statics/css/mcr.css" />
+<link rel="stylesheet" type="text/css" href="/com/icomoon/style.css" />
+<link rel="stylesheet" type="text/css" href="/com/swiper/swiper.min.css" />
+<style type="text/css">
+	.menuIcon{border-bottom:1px dashed #ccc;}
+	.menuIcon li{text-align: center;margin-top:15px;}
+	.menuIcon li img{margin-top:10%;}
+	body{background:#fff;}
+	nav.navFixed{background:#fff;border-top:1px solid #a7a7a7;}
+	.header{background:#d80001;line-height:35px;}
+	.header .header_home{line-height:42px;}
+</style>
+</head>
+<body class="home">
+<?php
+	include('public.html');
+?>
+<?php
+    session_start();
+	if(isset($_SESSION['user']) ){			//用户或管理员登录后才可以发表信息
+	   if($_SESSION['freeze']==1){//冻结用户
+		echo "<script>alert('您的账户异常，请速和管理员联系！');history.back();</script>";  
+	 }
+	 else {
+?>
+<header class="header">
+	<div class="header_home"><a href="index.php"><i class="icon-arrow-back"></i></a></div>
+	<h1>发布信息类别</h1>
+	<div class="header_home"><a href="index.php"><i class="icon-home"></i></a></div>
+</header>
+
+<ul class="flex menuIcon">
+	<li><a href="wxrelease.php?cdkey="><div class="home8"><i class="icon-road"></i></div><span>现货</span></a></li>
+	<li><a href="wxdumprelease.php?cdkey="><div class="home4"><i class="icon-now-widgets"></i></div><span>散货</span></a></li>
+	<li><a href="buyrelease.php?buyid="><div class="home5"><i class="icon-bag"></i></div><span>求购</span></a></li>
+</ul>
+<ul class="flex menuIcon">
+	<li class="last"><a href="wxcompanyadd.php"><div class="home6"><i class="icon-office"></i></div><span>企业</span></a></li>
+	<li><a href="goodspublish.php"><div class="home10"><i class="icon-user2"></i></div><span>操作员</span></a></li>
+	<li></li>
+</ul>
+<?php
+	 }
+}else{
+	$_SESSION['usertype']=2;
+  echo "<script>window.location.href='signIn.php?type=2';</script>";
+  }
+ ?>
+</body>
+</html>

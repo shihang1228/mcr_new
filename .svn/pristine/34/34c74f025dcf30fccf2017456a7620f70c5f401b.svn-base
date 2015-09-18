@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type"content="text/html; charset=utf-8">   
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+<title>求购信息发布</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<link rel="stylesheet" type="text/css" href="/statics/css/yumleeM.css" />
+<link rel="stylesheet" type="text/css" href="/statics/css/mcr.css" />
+<link rel="stylesheet" type="text/css" href="css/valid.css" />
+<link rel="stylesheet" type="text/css" href="/com/icomoon/style.css" />
+</head>
+<?php
+	session_start();
+    include_once('mcr_sc_fns.php');
+	include_once('system/model/wood.php');
+	$buyid=$_GET['buyid'];
+	//error_log(date('Y-m-d H:i:s') .'GET取:'.$buyid."\n",3,$_SERVER['DOCUMENT_ROOT']."/log/run.log");
+	$portid=$_SESSION['portid'];
+	$wood= new wood($portid);
+	$wood->release();
+	$stuff_array =$wood->stuff ;  //树种
+	$isnew = 1;
+	if($buyid!='')
+	{
+		$isnew=0;
+		$buy_array = get_mydata('call p_mybuy_detail('.$buyid.')');
+		if (is_array($buy_array)) $buyrow =$buy_array[0];
+	}
+	else
+	{
+		$buyrow= array("stuffname"=>"","kindname"=>"","lenname"=>"","refcapacity"=>"","diameterlen"=>"","timber"=>"","thinckness"=>"","wide"=>"","price"=>"","content"=>"","productlen"=>"");
+	}
+?>
+<?php
+	if(isset($_SESSION['user']) ){			//用户或管理员登录后才可以发表信息
+?>
+<header class="header">
+	<div><a href="javascript:history.back();"><i class="icon-arrow-back"></i></a></div>
+	<h1>求购信息发布</h1>
+	<div><a href="index.php"><i class="icon-home"></i></a></div>
+</header>
+<form class="releaseForm" method ="post" action ="buyrelease_bgo.php">
+	<input type="hidden" value="<?php echo $buyid;?>" name="buyid"/>
+	<ul class="list list2">
+		<li class="flex col1-3">
+			<div>树种:</div>
+			<div>
+				<select name="stuffid" id="stuffid" class="selection">
+				  <option value = '0'>选树种</option>
+					<?php
+		                  foreach ($stuff_array as $row){
+							 $stuffid = $row['stuffid'];
+		                     $stuffname = $row['stuffname'];
+		                     echo "<option value =".$stuffid." ".($buyrow["stuffname"]==$stuffname?"selected=\"selected\"":"").">".$stuffname."</option>";
+							}
+		                    ?>
+				</select>
+			</div>
+		</li>
+		<li class="flex col1-3">
+			<div>货种:</div>
+			<div>
+				<select name="kindid" id="kindid" class="selection">
+					<option value = '0'>选货种</option>
+						<?php
+			         $kind_array = $wood->kind; //货种 lja
+				     foreach($kind_array as $row) {
+						echo "<option value =".$row["kindid"]." ".($buyrow["kindname"]==$row["kindname"]?"selected=\"selected\"":"").">".$row["kindname"]."</option>";
+					}
+				   ?>
+				</select>
+			</div>
+		</li>
+		<li class="flex col1-3">
+			<div>长度(m):</div>
+			<div>
+				<select name="productlen" id="productlen" class="selection">
+	             	<option value="0">选长度</option>
+						<?php
+					$len_array = $wood->length;
+					foreach($len_array as $row)
+					{
+						echo "<option value = ".$row["lenid"]." ".($row["lenname"]==$buyrow["productlen"]?"selected=\"selected\"":"").">".$row["lenname"]."</option>";
+					}
+					?>
+				</select>
+			</div>
+		</li>
+		<li class="flex col1-3">
+			<div>总货量(m³):</div>
+			<div><input class="selection" type="tel" name="refcapacity" id="refcapacity" datatype="va_5" ignore="ignore" errormsg="参考载量范围必须在50～120m之间" <?php echo $buyrow['refcapacity']==0?'':" value=\"".$buyrow['refcapacity']."\""; ?>/></div>
+
+		</li>
+		<li class="flex col1-3 beym hide">
+			<div>径级(φ):</div>
+			<div><input class="tel" type="text" placeholder="10~80" datatype="va_1" ignore="ignore" errormsg="径级范围必须在10~80之间" name="diameterlen" id="diameterlen"  <?php echo $buyrow['diameterlen']==0?'':" value=\"".$buyrow['diameterlen']."\""; ?>/></div>
+		</li>
+		<li class="flex col1-3 beym hide">
+			<div>材质:</div>
+			<div>
+				<?php $timber=array('选材','一级材','二级材','加工材');?>
+				<select name="timber" id="timber" class="selection">
+					<option value="0">材质</option>
+					 <?php 
+				      for($j=0;$j<count($timber);$j++) {
+						echo "<option ".($buyrow['timber'] == $timber[$j]?"selected = 'selected'":"")." value =".$timber[$j].">".$timber[$j]."</option>"; 
+					}
+					/*<option value="选材">选材</option>
+				    <option value="一级材">一级材</option>
+					<option value="二级材">二级材</option>
+					<option value="加工材">加工材</option>*/
+				   ?>
+				</select>
+			</div>
+		</li>
+		<li class="flex col1-3 beother hide">
+		    <div>厚度(mm):</div>
+			<div><input class="selection" type="tel" placeholder="10~500" datatype="va_2" ignore="ignore" errormsg="厚度范围必须在10~500之间" name="thinckness" id="thinckness" <?php echo $buyrow['thinckness']==0?'':" value=\"".$buyrow['thinckness']."\""; ?>/></div>
+		</li>
+		<li class="flex col1-3 beother hide">
+			<div>宽度(mm):</div>
+			<div><input class="selection" type="tel" placeholder="10~500" datatype="va_2" name="wide" id="wide" <?php echo $buyrow['wide']==0?'':" value=\"".$buyrow['wide']."\""; ?>/></div>
+		</li>
+		<li class="flex col1-3">
+			<div>价格:</div>
+			<div><input class="selection" type="tel" name="price" <?php echo $buyrow['price']==0?'':" value=\"".$buyrow['price']."\""; ?>/></div>
+		</li>
+	</ul>
+	<ul class="list">
+		<li style="font-weight:bold;">求购内容</li>
+		<li><textarea class="fullCol" cols="40" rows="5" id="content" name="content"><?php echo $buyrow['content']==0?'':$buyrow['content']; ?></textarea></li>
+	</ul>
+
+	<input class="btnFixed" type="submit" id="sendmessage" value="发布" />
+</form>
+<?php
+   }else{
+     echo "<script>window.location.href='signIn.php?type=2';</script>";
+  }
+  ?>
+</body>
+
+<script src="http://libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="js/Validform_v5.3.2_min.js"></script>
+<script>
+$(function(){
+	$("#kindid").change(function(){
+		var value = $("#kindid").val();
+		switch(value){
+			case '0' :
+				$(".beym").addClass("hide");
+				$(".beother").addClass("hide");
+				break;
+			case '1' :
+				$(".beym").removeClass("hide");
+				$(".beother").addClass("hide");
+				break;
+			default :
+				$(".beym").addClass("hide");
+				$(".beother").removeClass("hide");
+				break;
+		}
+	})
+
+	
+})
+
+// 表单验证
+function releaseForm (item,min,max) {
+	item.blur(function (){
+		if (!(item.val() == "")) {
+			if (item.val() > max || item.val() < min) {
+				alert("请输入"+min+"-"+max+"之间的数字！");
+			};
+		};
+	})
+}
+releaseForm($('#diameterlen'),10,80);
+releaseForm($('#thinckness'),10,500);
+releaseForm($('#wide'),10,500);
+$('#sendmessage').click(function (){
+	var re_refcapacity = /^(?:[1-9]{1}[0-9]{1,3}|10000)$/;
+	if ($('#stuffid').val() == '0') {
+		alert('请选择树种！');
+		return false;
+	} else if ($('#kindid').val() == '0') {
+		alert('请选择货种！');
+		return false;
+	} else if ($('#productlen').val() == '0') {
+		alert('请选择长度！');
+		return false;
+	} else if (!$('#refcapacity').val()) {
+		alert('请输入总货量！');
+		return false;
+	} else if(!re_refcapacity.test($('#refcapacity').val())){
+		alert('总货量不能超过10000');
+		return false;
+	}else if($('#price').val()){
+		if (!re_refcapacity.test($('#price').val())) {
+			alert('价格不能超过10000！');
+			return false;
+		}
+	}
+
+	if ($('#diameterlen').val()) {
+		if ($('#diameterlen').val() < 10 || $('#diameterlen').val() > 80) {
+			alert('径级输入有误！');
+			return false;
+		}
+	} else if ($('#thinckness').val()) {
+		if ($('#thinckness').val() < 10 || $('#thinckness').val() > 500) {
+			alert('厚度输入有误！');
+			return false;
+		}
+	} else if ($('#wide').val()) {
+		if ($('#wide').val() < 10 || $('#wide').val() >500) {
+			alert('宽度输入有误！');
+			return false;
+		}
+	}
+})
+//ios fixed修复
+$('input').focus(function (){
+	$('.header').css('position','relative');
+	$('.btnFixed').css('position','relative');
+	$('body').css({'padding-top':'0','width':'100%'});
+})
+$('input').blur(function(){
+	$('.header').css('position','relative');
+	$('.btnFixed').css('position','relative');
+})
+</script>
+</html>

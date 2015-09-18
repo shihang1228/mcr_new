@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type"content="text/html; charset=utf-8">   
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="format-detection" content="telephone=no">
+<title>木材人录入系统</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<link rel="stylesheet" type="text/css" href="statics/css/yumleeM.css" />
+<link rel="stylesheet" type="text/css" href="statics/css/mcr.css" />
+<link rel="stylesheet" type="text/css" href="com/icomoon/style.css" />
+<style>
+	.list4{border-radius:4px;}
+	.text_center{text-align: center;}
+	body{background: #fff;padding: 50px 20%;}
+	.header{width: 60%;}
+	.btn_submit{height: 50px;background-color: #5f9cf9;color: #fff;font-size: 16px;font-weight: bold;border: 0;border-radius: 0;  border-radius: 8px;}
+</style>
+</head>
+<body>
+<header class="header">
+	<div class="header_home"><a href="index.php"></a></div>
+	<h1>木材人录入系统</h1>
+	<div class="header_home"><a href="index.php">退出</a></div>
+</header>
+<form class="releaseForm" method ="post" action ="goodspublish_bgo.php">
+	<ul class="list list2 list4">
+		<li class="flex col1-3">
+			<div>位置:</div>
+			<div style="width: 105%;">
+				<select id="spotpositionid" name="spotpositionid" class="selection">
+					<option value="0">选择位置</option>
+					<option value="19">境外</option>
+					<option value="2" selected="selected">满市西货场</option>
+					<option value="3">满市暂停线</option>
+					<option value="4">转运站</option>
+					<option value="5">三机场南线</option>
+					<option value="20">三机场北线</option>
+					<option value="8">二机806</option>
+					<option value="7">二机12道</option>
+					<option value="10">二机8道</option>
+					<option value="9">二机2道</option>
+					<option value="11">05库</option>
+					<option value="6">哈外径</option>
+					<option value="12">40道</option>
+					<option value="13">仓储南线</option>
+					<option value="14">仓储北线</option>
+					<option value="15">外运</option>
+					<option value="17">32道</option>				
+				</select>
+			</div>
+		</li>
+		<li class="flex">
+			<div class="col8-5">车皮号:</div>
+			<div class="col11-5">
+				<input type="tel" maxLength="8" size="8" name ="carnum" id="carnum" class="selection"/>
+			</div>
+			<div class="col8-5 text_center">车皮号:</div>
+			<div class="col11-5">
+				<input type="tel" maxLength="8" size="8" name ="carnum" id="carnum" class="selection"/>
+			</div>
+		</li>
+		<li class="flex">
+			<div class="col8-5">车皮号:</div>
+			<div class="col11-5">
+				<input type="tel" maxLength="8" size="8" name ="carnum" id="carnum" class="selection"/>
+			</div>
+			<div class="col8-5 text_center">车皮号:</div>
+			<div class="col11-5">
+				<input type="tel" maxLength="8" size="8" name ="carnum" id="carnum" class="selection"/>
+			</div>
+		</li>
+		<li class="flex">
+			<div class="col8-5">车皮号:</div>
+			<div class="col11-5">
+				<input type="tel" maxLength="8" size="8" name ="carnum" id="carnum" class="selection"/>
+			</div>
+			<div class="col8-5 text_center">车皮号:</div>
+			<div class="col11-5">
+				<input type="tel" maxLength="8" size="8" name ="carnum" id="carnum" class="selection"/>
+			</div>
+		</li>
+		<li class="flex">
+			<div class="col8-5">车皮号:</div>
+			<div class="col11-5">
+				<input type="tel" maxLength="8" size="8" name ="carnum" id="carnum" class="selection"/>
+			</div>
+			<div class="col8-5 text_center">车皮号:</div>
+			<div class="col11-5">
+				<input type="tel" maxLength="8" size="8" name ="carnum" id="carnum" class="selection"/>
+			</div>
+		</li>
+		<li class="flex">
+			<div class="col8-5">车皮号:</div>
+			<div class="col11-5">
+				<input type="tel" maxLength="8" size="8" name ="carnum" id="carnum" class="selection"/>
+			</div>
+			<div class="col8-5 text_center">车皮号:</div>
+			<div class="col11-5">
+				<input type="tel" maxLength="8" size="8" name ="carnum" id="carnum" class="selection"/>
+			</div>
+		</li>
+	</ul>
+	<input class="btn_submit" type="submit" id="sendmessage" value="提交" />
+</form>
+
+</body>
+
+<script src="http://libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
+</html>

@@ -1,0 +1,80 @@
+﻿<?php
+ session_start();		//启用session支持
+ header("Content-Type: text/html; charset=utf-8");
+ include_once('system/model/db_fns.php');		//包含系统功能文件
+ 
+  $conn = db_connect();
+
+  $publishtime=date("Y-m-d H:i:s");//发布时间
+  $userid=$_SESSION['userid'];			//调用注册时提交的用户名称
+  $portid=$_SESSION['portid'];
+  $content =$_POST["content"];
+  $updatetime =$publishtime;
+  $kindid =$_POST["kindid"];
+  $stuffid =$_POST["stuffid"];
+  $price =$_POST["price"];
+  $buyid=$_POST["buyid"];
+ 	//error_log(date('Y-m-d H:i:s') .'求购:'.$buyid."\n",3,$_SERVER['DOCUMENT_ROOT']."/log/run.log");
+$productlen =$_POST["productlen"];
+  if ($kindid ==1) {
+	
+	$timber =$_POST["timber"];
+	if ($_POST["diameterlen"]!=="" ) {
+		 $diameterlen =$_POST["diameterlen"];
+	}else {
+		$diameterlen =0;
+	}
+	$diameterlenMax = $_POST["diameterlenMax"]!==""?$_POST["diameterlenMax"]:0;
+	$wide =0;
+    $thinckness =0;
+  }else {
+	$timber =0;
+    $diameterlen =0; 
+	
+	if ($_POST["wide"]!=="" ) {
+		 $wide =$_POST["wide"];
+	}else {
+		$wide =0;
+	}   
+   
+   if ($_POST["thinckness"]!=="" ) {
+		 $thinckness =$_POST["thinckness"];
+	}else {
+		$thinckness =0;
+	}   
+  }
+  
+ if($price==="") {
+	 $price=0;
+ }
+    $refcapacity =$_POST["refcapacity"];
+  if($refcapacity==="") {
+	 $refcapacity=0;
+ }
+ 
+
+  $buystatus =1; //求购状态
+  if($buyid==0){
+	   $query ="insert into t_buy (userid,portid,content,updatetime,kindid,stuffid,price,"
+			 ."wide,thinckness,refcapacity,publishtime,productlen,diameterlen,timber,buystatus,diameterlenMax) values ("
+			 .$userid.",".$portid.",'".trim($content)."','".$updatetime."',".$kindid.",".$stuffid.",".$price.","
+			 .$wide.",".$thinckness.",".$refcapacity.",'".$publishtime."',".$productlen.",".$diameterlen.",'"
+			 .$timber."',".$buystatus.",".$diameterlenMax.")";
+  }
+	else{
+		  $query ="update t_buy set userid=".$userid.",portid=".$portid.",content='".trim($content)."',updatetime='".$updatetime."',kindid=".$kindid
+		  .",stuffid=".$stuffid.",price=".$price.",wide=".$wide.",thinckness=".$thinckness.",refcapacity=".$refcapacity.",publishtime='".$publishtime."'"
+		  .",productlen=".$productlen.",diameterlen=".$diameterlen.",timber='".$timber."',buystatus=".$buystatus.",diameterlenMax=".$diameterlenMax." where buyid=".$buyid;
+	}
+	 // echo $query;
+	//  return;
+	//error_log(date('Y-m-d H:i:s') .'求购:'.$query."\n",3,$_SERVER['DOCUMENT_ROOT']."/log/run.log");
+	$result =$conn->query($query);
+   if($result)
+   {
+     echo "<script>alert('求购发布成功！');window.location.href='buyList.php'</script>";
+   }else{
+      echo "<script>alert('发布失败！');history.back();</script>";
+	  }
+
+?>

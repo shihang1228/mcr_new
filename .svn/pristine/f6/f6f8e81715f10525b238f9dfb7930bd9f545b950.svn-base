@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<title>我的现货</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<link rel="stylesheet" type="text/css" href="/statics/css/yumReset.css" />
+<link rel="stylesheet" type="text/css" href="/statics/css/yumPage.css" />
+<link rel="stylesheet" type="text/css" href="/com/icomoon/style.css" />
+</head>
+<body>
+<header class="header">
+	<a href="javascript:history.back();"><i class="icon-arrow-back"></i></a>
+	<h2>我的现货</h2>
+	<a href="index.php"><i class="icon-home"></i></a>
+</header>
+<div>共有4条现货发布记录</div>
+<!-- <section>
+	<form class="searchBox">
+		<div class="searchBox-wrap"><input type="tel" placeholder="车皮号/手机号" /></div>
+		<div class="searchBox-label">搜索</div>
+		<a href="buyPush.html" class="icon-bullhorn"> 发布</a>
+	</form>
+	<ul class="selectBanner clearfix w-1-3">
+		<li>
+			<select>
+				<option>区域</option>
+				<option></option>
+				<option></option>
+			</select>
+			<i class="icon-caret-down"></i>
+		</li>
+		<li>
+			<select>
+				<option>货种</option>
+				<option></option>
+				<option></option>
+			</select>
+			<i class="icon-caret-down"></i>
+		</li>
+		<li>
+			<select>
+				<option>材种</option>
+				<option></option>
+				<option></option>
+			</select>
+			<i class="icon-caret-down"></i>
+		</li>
+	</ul>
+</section> -->
+<dl class="panel-body">
+	<dt>标题:111<span class="alter-delete">删除记录</span></dt>
+	<dd><a href="buyInfo.html">
+		<ul class="panel-col-3 clearfix">
+			<li>货种:</li>
+			<li>材种:</li>
+			<li>价格:</li>
+			<li class="panel-row-2">目标口岸:</li>
+			<li class="panel-row-2">时间:</li>
+		</ul>
+	</a></dd>
+	<dt>标题:222<span class="alter-delete">删除记录</span></dt>
+	<dd><a href="buyInfo.html">
+		<ul class="panel-col-3 clearfix">
+			<li>货种:</li>
+			<li>材种:</li>
+			<li>价格:</li>
+			<li class="panel-row-2">目标口岸:</li>
+			<li class="panel-row-2">时间:</li>
+		</ul>
+	</a></dd>
+	<dt>标题:333<span class="alter-delete">删除记录</span></dt>
+	<dd><a href="buyInfo.html">
+		<ul class="panel-col-3 clearfix">
+			<li>货种:</li>
+			<li>材种:</li>
+			<li>价格:</li>
+			<li class="panel-row-2">目标口岸:</li>
+			<li class="panel-row-2">时间:</li>
+		</ul>
+	</a></dd>
+	<dt>标题:444<span class="alter-delete">删除记录</span></dt>
+	<dd><a href="buyInfo.html">
+		<ul class="panel-col-3 clearfix">
+			<li>货种:</li>
+			<li>材种:</li>
+			<li>价格:</li>
+			<li class="panel-row-2">目标口岸:</li>
+			<li class="panel-row-2">时间:</li>
+		</ul>
+	</a></dd>
+</dl>
+<div class="fixedBottom alter" id="alter">编辑</div>
+</body>
+<script src="http://lib.sinaapp.com/js/jquery/1.8.3/jquery.min.js"></script>
+<script type="text/javascript">
+$(function(){
+	$('#alter').toggle(function(){
+		$(this).text('完成').css('background-color','green');
+		$('.alter-delete').show();
+	},
+	function(){
+		$(this).text('编辑').css('background-color','red');
+		$('.alter-delete').hide();
+	});
+	$('.alter-delete').on('click',function(){
+		$(this).parent().next().remove();
+		$(this).parent().remove();
+	})
+})
+</script>
+</html>

@@ -1,0 +1,847 @@
+<?php
+//发送验证信息2015-06-30
+function sendvalidmessage($phone){
+	$code = rand(100000,999999);
+    $data ="尊敬的用户！您在木材人的验证码为：" . $code .",验证码的有效期为：10分钟";
+	$post_data = array();
+    $post_data['account'] = iconv('GB2312', 'GB2312',"jywy123");
+    $post_data['pswd'] = iconv('GB2312', 'GB2312',"13934544931Blb");
+    $post_data['mobile'] =$phone;
+    $post_data['msg']=mb_convert_encoding($data,'UTF-8', 'auto');
+	$post_data['needstatus']='true';
+    $url='http://222.73.117.158/msg/HttpBatchSendSM?'; 
+    $o="";
+	foreach ($post_data as $k=>$v)
+	{
+	   $o.= $k."=".urlencode($v)."&";
+	}
+	$post_data=substr($o,0,-1);
+	 
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_POST, 1);
+	curl_setopt($ch, CURLOPT_HEADER, 0);
+	curl_setopt($ch, CURLOPT_URL,$url);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+	curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);//用于屏蔽界面输出
+    $result = curl_exec($ch);
+	error_log(date('Y-m-d H:i:s') .'SMSHis:'.$phone.'  Result:'.$result."\n",3,$_SERVER['DOCUMENT_ROOT']."/log/smssend.log");
+    return $code;
+
+}
+  
+//从数据库中查询信息6.6.15 ljm
+	function get_mydata($sqlstr)
+   {
+	   $conn=db_connect();
+	   $sql =$sqlstr;
+	   $result=@$conn->query($sql);
+	   if(!$result) {
+        return false;
+       }
+      $num_from =@$result->num_rows;
+      if($num_from ==0) {
+        return false;
+      }
+      $result= db_result_to_array($result);
+      return $result; 
+   }
+
+	//企业图片路径6.6.14
+   function get_mycompanypicpath($companyid)
+   {
+	   $conn=db_connect();
+	   $sql ="select picid,companypic from t_companypic where companyid = ".$companyid;
+	   $result=@$conn->query($sql);
+	   if(!$result) {
+        return false;
+       }
+      $num_from =@$result->num_rows;
+      if($num_from ==0) {
+        return false;
+      }
+      $result= db_result_to_array($result);
+      return $result; 
+   }
+   
+   	//我的企业信息6.6.14
+   function get_mycompany($userid)
+   {
+	   $conn=db_connect();
+	   $sql ="select companyid,companyname,publishtime from t_company where userid = ".$userid." order by publishtime desc ";
+	   $result=@$conn->query($sql);
+	   if(!$result) {
+        return false;
+       }
+      $num_from =@$result->num_rows;
+      if($num_from ==0) {
+        return false;
+      }
+      $result= db_result_to_array($result);
+      return $result; 
+   }
+
+   //获取我的求购列表
+   function get_mybuy($userid)
+   {
+	   $conn=db_connect();
+	   $sql ="select buyid,stuffname,kindname,case  when productlen is null then '' when productlen = 0 then '' else concat(CONVERT(productlen,char(4)),'米') end as productlen,"
+	   ." viewnum,buyid,case buystatus when 1 then '求购' else '已下架' end as buystatus," 
+       ."case  when TO_DAYS((updatetime)) >= TO_DAYS(CURDATE()) then substring(updatetime,12,5) else substring(updatetime,6,5) end  as updatetime1, "	
+       ."case when timber ='0' then '' else timber end as timber,"
+	   ." case when  diameterlen ='0' then '' else concat(diameterlen,'φ') end as diameterlen,"
+       ."wide,thinckness  "	
+	   ."from t_buy b,t_stuff s,t_kind k where b.kindid = k.kindid "
+	   ." and s.stuffid = b.stuffid and userid = ".$userid." order by updatetime desc ";
+	   
+	  // echo $sql;
+	  // return $sql;
+	   $result=@$conn->query($sql);
+	   if(!$result) {
+        return false;
+       }
+      $num_from =@$result->num_rows;
+      if($num_from ==0) {
+        return false;
+      }
+      $result= db_result_to_array($result);
+      return $result; 
+   }
+  //根据productid获取散货详细信息
+    function get_dumpdetail($cdkey){
+		 $conn =db_connect();
+	//更新次数
+	    $query ="update t_product set viewnum = viewnum +1 where cdkey = '".$cdkey."'";
+	    $result=@$conn->query($query);
+		//
+   //查询详细信息
+	$query= "select  carnum,portname,(select kindname from t_kind where kindid = p.kindid) as kindname,"
+       ."phone as contactphone,"
+       ."username as contact,"
+	   ."CASE diameterlen WHEN '0' THEN  '' ELSE concat(diameterlen,'φ') END as diameterlen,"
+       ."CASE productlen WHEN '0' THEN  '' ELSE concat(productlen,'米') END as productlen,"
+       ."CASE wide WHEN '0' THEN  '' ELSE wide END as wide,"
+       ."CASE thinckness WHEN '0' THEN  '' ELSE thinckness END as thinckness,"
+	    ."CASE widerange WHEN '0' THEN  '' ELSE widerange END as widerange,"
+       ."CASE thincknessrange WHEN '0' THEN  '' ELSE thincknessrange END as thincknessrange,"
+       ."CASE tolerance WHEN '-99' THEN  '' ELSE tolerance END as tolerance,"
+       ."CASE refnum WHEN '0' THEN  '' ELSE refnum END as refnum,"
+       ."CASE refwight WHEN '0' THEN  '' ELSE refwight END as refwight,"
+	   ."CASE refcapacity WHEN '0' THEN  '' ELSE refcapacity END as refcapacity,"
+       ."CASE dry WHEN '0' THEN  '' ELSE dry END as dry,"
+       ."CASE newold WHEN '0' THEN  '' ELSE newold END as newold,"
+       ."CASE knob WHEN '0' THEN  '' ELSE knob END as knob,"
+       ."CASE blue WHEN '0' THEN  '' ELSE blue END as blue,"
+       ."CASE worm WHEN '0' THEN  '' ELSE worm END as worm,"
+       ."CASE decay WHEN '0' THEN  '' ELSE decay END as decay,"
+		."CASE slash WHEN '0' THEN  '' ELSE slash END as slash,"
+		."CASE black WHEN '0' THEN  '' ELSE black END as black,"
+		."CASE climb WHEN '0' THEN  '' ELSE climb END as climb,"
+		."CASE oil WHEN '0' THEN  '' ELSE oil END as oil,"
+		."CASE p.spotpositionid WHEN '0' THEN  '' ELSE p.spotpositionid END as position,"
+		."CASE device WHEN '0' THEN  '' ELSE device END as device,"
+		."CASE ring WHEN '0' THEN  '' ELSE ring END as ring,"
+		."CASE timber WHEN '0' THEN  '' ELSE timber END as timber,"
+		."CASE timbertype WHEN '0' THEN  '' ELSE timbertype END as timbertype,"
+		."CASE content WHEN '0' THEN  '' ELSE content END as content,"
+		."(select stuffname from t_stuff where stuffid = p.stuffid) as stuffname,username,"
+		."(select fromname from t_from where fromid = p.fromid) as fromname,spotpositionid ,"
+		."substring(updatetime,6,11) as updatetime,dumpposition,viewnum "
+		."from t_product p,t_user u,t_port r "
+		." where p.userid = u.userid and r.portid= p.portid   and  cdkey ='".$cdkey."'";	 
+	$result=@$conn->query($query);
+	
+    if(!$result) {
+        return false;
+    }
+    $num_from =@$result->num_rows;
+    if($num_from ==0) {
+        return false;
+    }
+    $result= db_result_to_array($result);
+    return $result; 
+ }
+ //根据companyid获取公司的详细信息
+   function get_companydetail($companyid) {
+	   $conn =db_connect();
+	 $query ="select companyname,product,contact,phone,contactphone,email,address,website,keyword,content  from t_company "
+	      ." where companyid =".$companyid;
+	$result = @$conn->query($query);
+    if (!$result) {
+        return false;
+    }
+    $num_row = @$result->num_rows;
+    if ($num_row == 0) {
+        return false;
+    }
+    $result = db_result_to_array($result);
+    return $result;   
+   }
+//根据companyid获取公司图片数据
+   function get_companypic($companyid){
+	   $conn =db_connect();
+	$query ="select companypic  from t_companypic "
+	      ." where companyid =".$companyid;
+	$result = @$conn->query($query);
+    if (!$result) {
+        return false;
+    }
+    $num_row = @$result->num_rows;
+    if ($num_row == 0) {
+        return false;
+    }
+    $result = db_result_to_array($result);
+    return $result;     
+   }
+//智能找货获取数据
+
+  function get_datafromadvance($portid,$kindid,$stuffid,$productlen,
+    $wide,$thinckness,$diameterlen,$timber,$publishtime){
+		
+	$noconnect ="<p>对不起，没有查找到您要查找的内容！</p>";
+    $filtervalue="";
+	$query="";
+    //判断条件	
+    if($portid != 0){
+		$filtervalue =$filtervalue . " and p.portid =".$portid;
+	}
+	if($kindid !=0){
+		$filtervalue =$filtervalue ." and p.kindid =".$kindid;
+	}
+	if($stuffid !=0){
+	    $filtervalue =$filtervalue ." and p.stuffid =".$stuffid;
+	}
+	if($productlen !=0){
+	    $filtervalue =$filtervalue ." and p.productlen =".$productlen;
+	}
+	//依据是否是原木来增加条件
+	if($kindid ==1){//原木
+		if($diameterlen !=0) {
+		    $filtervalue =$filtervalue ." and p.diameterlen =".$diameterlen;
+		}
+		if($timber !=="0") {
+		    $filtervalue =$filtervalue ." and p.timber ='".$timber."'";
+		}
+	} else if( $kindid >1) {//其他类
+		if (($wide !=0)) {
+		    $filtervalue =$filtervalue ." and (( p.wide =".$wide." ) or ( p.thinckness = " .$wide. "))";
+		}
+		if(($thinckness !=0)){
+			 $filtervalue =$filtervalue ." and (( p.wide =".$thinckness.") or ( p.thinckness =" .$thinckness."))";
+		}
+	}	
+	if($publishtime !=0) {//更新时间
+		$filtervalue =$filtervalue ." and updatetime >= date_sub(now(), interval '".$publishtime."' day)";
+	}
+	$conn =db_connect();
+/* 
+    $query = "select cdkey,right(rtrim(carnum),4) as carnum, "
+     ." timber ,productlen,wide,thinckness,diameterlen,"
+     ."v.position as dumpposition,widerange,thincknessrange,"
+    ."(select kindname from t_kind where kindid = p.kindid) as kindname, "
+     ."  (select stuffname from t_stuff where stuffid = p.stuffid)  as stuffname "
+	. " from t_product p,t_port r,t_user u,v_statuspos v "
+	 */
+	$query="select cdkey,right(rtrim(carnum),4) as carnum, "
+     ." timber,wide,thinckness,diameterlen,goodtype,"
+	 ."CASE  WHEN  productlen =0 THEN  '' when productlen >cast(productlen as SIGNED) then concat(cast(productlen as char),'米')  ELSE  concat( cast(cast(productlen as SIGNED) as char) ,'米') END as productlen,"
+     ." dumpposition,widerange,thincknessrange,"
+    ."ifnull((select kindname from t_kind where kindid = p.kindid),'') as kindname, "
+    ."ifnull((select stuffname from t_stuff where stuffid = p.stuffid),'') as stuffname, "
+	."(select position from v_statuspos where positionid=p.dumppositionid) as goodposition,"
+	."case refcapacity when '0' then '' else concat(refcapacity,'m³') end as refcapacity "
+     ." from t_product p ,t_user u where p.userid=u.userid ";
+	if (strlen(trim($filtervalue))>0){
+		$query =$query. $filtervalue;
+	}	
+    $query = $query ." order by updatetime desc	";
+	//echo $query;
+	//return;
+	$result = $conn->query($query);
+    if ((!$result) ||($result->num_rows ==0))
+	{
+		//echo "<meta http-equiv='Content-Type'' content='text/html; charset=utf-8'>";
+       // echo  $noconnect;
+		return $result;
+    }
+    $result = db_result_to_array($result);
+	return $result;
+	
+  }
+
+//根据手机号或者车皮号获取数据
+ function get_datafromnum($inputnumber,$portid) {
+	$conn =db_connect();
+	$query="select cdkey,right(rtrim(carnum),4) as carnum, "
+     ." timber,wide,thinckness,diameterlen,goodtype,"
+	 ."CASE  WHEN  productlen =0 THEN  '' when productlen >cast(productlen as SIGNED) then concat(cast(productlen as char),'米')  ELSE  concat( cast(cast(productlen as SIGNED) as char) ,'米') END as productlen,"
+     ." dumpposition,widerange,thincknessrange,"
+    ."ifnull((select kindname from t_kind where kindid = p.kindid),'') as kindname, "
+    ."ifnull((select stuffname from t_stuff where stuffid = p.stuffid),'') as stuffname, "
+	."(select position from v_statuspos where positionid=p.dumppositionid) as goodposition"
+     ." from t_product p ,t_user u where "
+	."  p.userid =u.userid and p.portid=".$portid
+     ." and  ((p.carnum like '%".$inputnumber."%') or(p.contactphone like '%".$inputnumber."%')) order by updatetime desc ";
+	
+	$result = @$conn->query($query);
+    if (!$result) {
+        return false;
+    }
+    $num_row = @$result->num_rows;
+    if ($num_row == 0) {
+        return false;
+    }
+    $result = db_result_to_array($result);
+    return $result;  
+ }
+//获取最新的30条数据用于首页显示
+function get_newarray($portid){
+	$conn =db_connect();
+	$query ="select  cdkey,productid,right(rtrim(carnum),4) as carnum,"
+	."ifnull((select kindname from t_kind k where k.kindid = p.kindid),'') as kindname,"
+	."case  when TO_DAYS((updatetime)) >= TO_DAYS(CURDATE()) then substring(updatetime,12,5) else substring(updatetime,6,5) end  as updatetime1, "
+	."case when  productlen >cast(productlen as SIGNED) then productlen else cast(cast(productlen as SIGNED) as char)  end as productlen,wide,thinckness,timber,diameterlen,"
+	." case refcapacity when '0' then '' else concat(refcapacity,'m³') end as refcapacity,"
+    ."ifnull((select stuffname from t_stuff where stuffid = p.stuffid),'') as stuffname,widerange,thincknessrange,goodtype "
+	." from t_product p ,t_user u where p.userid=u.userid and  p.portid=".$portid." order by updatetime desc limit 0,30";
+	
+	$result = @$conn->query($query);
+    if (!$result) {
+        return false;
+    }
+    $num_row = @$result->num_rows;
+    if ($num_row == 0) {
+        return false;
+    }
+    $result = db_result_to_array($result);
+   return $result;  
+}
+
+//________________________________
+//获取口岸信息
+function get_portarray() {
+	$conn = db_connect();
+    $query = "select portid, portName from t_port";
+    $result = @$conn->query($query);
+    if (!$result) {
+        return false;
+    }
+    $num_cats = @$result->num_rows;
+    if ($num_cats == 0) {
+        return false;
+    }
+    $result = db_result_to_array($result);
+   return $result;
+}
+//获取材种信息
+function get_stuffarray() {
+    $conn = db_connect();
+    $query ="select stuffid,stuffname from t_stuff";
+    $result=@$conn->query($query);
+    if(!$result) {
+        return false;
+    }
+    $num_stuff =@$result->num_rows;
+    if($num_stuff ==0) {
+        return false;
+    }
+    $result = db_result_to_array($result);
+    return $result;
+}
+//获取货种信息
+function get_kindarray(){//
+    $conn = db_connect();
+    $query="select kindid,kindname from t_kind";
+    $result=@$conn->query($query);
+    if(!$result) {
+        return false;
+    }
+    $num_kind =@$result->num_rows;
+    if($num_kind ==0) {
+        return false;
+    }
+    $result= db_result_to_array($result);
+    return $result;
+}
+//获取材质信息
+ function get_timberarray() { 
+    $conn = db_connect();
+	if (!$conn) {
+		return false;
+	}else {
+		
+	
+    $query="select timberid,timbername from t_timber";
+    $result=@$conn->query($query);
+    if(!$result) {
+        return false;
+    }
+    $num_timber =@$result->num_rows;
+    if($num_timber ==0) {
+        return false;
+    }
+    $result= db_result_to_array($result);
+    return $result;
+	} 
+ }
+ //获取材类信息
+ function get_timbertype(){
+	$conn = db_connect();
+    $query="select timbertypeid,timbertypename from t_timbertype";
+    $result=@$conn->query($query);
+    if(!$result) {
+        return false;
+    }
+    $num_timbertype =@$result->num_rows;
+    if($num_timbertype ==0) {
+        return false;
+    }
+    $result= db_result_to_array($result);
+    return $result;
+ }
+ //获取节巴信息
+ function get_knob(){
+	$conn = db_connect();
+    $query="select knobid,knobname from t_knob";
+    $result=@$conn->query($query);
+    if(!$result) {
+        return false;
+    }
+    $num_knob =@$result->num_rows;
+    if($num_knob ==0) {
+        return false;
+    }
+    $result= db_result_to_array($result);
+    return $result;
+ }
+ //获取爬皮信息
+ function get_climb(){
+	 $conn = db_connect();
+    $query="select climbid,climbname from t_climb";
+    $result=@$conn->query($query);
+    if(!$result) {
+        return false;
+    }
+    $num_climb =@$result->num_rows;
+    if($num_climb ==0) {
+        return false;
+    }
+    $result= db_result_to_array($result);
+    return $result;
+ }
+ //获取取材位置信息
+ function get_position(){
+	$conn = db_connect();
+    $query="select positionid,positionname from t_position";
+    $result=@$conn->query($query);
+    if(!$result) {
+        return false;
+    }
+    $num_position =@$result->num_rows;
+    if($num_position ==0) {
+        return false;
+    }
+    $result= db_result_to_array($result);
+    return $result;
+ }
+ //获取加工设备
+ function get_device(){
+	 $conn = db_connect();
+    $query="select deviceid,devicename from t_device";
+    $result=@$conn->query($query);
+    if(!$result) {
+        return false;
+    }
+    $num_device =@$result->num_rows;
+    if($num_device ==0) {
+        return false;
+    }
+    $result= db_result_to_array($result);
+    return $result;
+ }
+ //获取产地 信息
+ function get_from(){
+	$conn = db_connect();
+    $query="select fromid,fromname from t_from";
+    $result=@$conn->query($query);
+    if(!$result) {
+        return false;
+    }
+    $num_from =@$result->num_rows;
+    if($num_from ==0) {
+        return false;
+    }
+    $result= db_result_to_array($result);
+    return $result; 
+ }
+ //获取货场信息
+ function get_dump($portid) {
+	$conn = db_connect();
+    $query="select dumpid,dumpname from t_dump where portid =".$portid;
+    $result=@$conn->query($query);
+    if(!$result) {
+        return false;
+    }
+    $num_from =@$result->num_rows;
+    if($num_from ==0) {
+        return false;
+    }
+    $result= db_result_to_array($result);
+    return $result; 
+ }
+ //获取装卸线信息
+ function get_pack($dumpid) {
+	 $conn = db_connect();
+    $query="select packid,packname from t_pack where dumpid =".$dumpid;
+    $result=@$conn->query($query);
+    if(!$result) {
+        return false;
+    }
+    $num_from =@$result->num_rows;
+    if($num_from ==0) {
+        return false;
+    }
+    $result= db_result_to_array($result);
+    return $result; 
+ }
+ //根据buyid获取求购信息
+     function get_buydetail($buyid){
+		$conn = db_connect();
+		//更新次数
+	    $query ="update t_buy set viewnum = viewnum +1 where buyid = ".$buyid;;
+	    $result=@$conn->query($query);
+		//
+		$query="select username,phone,portname,content,publishtime,kindname,stuffname,price,"
+		."productlen,timber,wide,thinckness,refnum,refwight,refcapacity,viewnum,diameterlen "
+        ." from t_buy b,t_user u,t_kind k,t_port r,t_stuff s where b.portid = r.portid "
+		." and u.userid = b.userid and k.kindid = b.kindid and s.stuffid = b.stuffid and  buyid = ".$buyid;
+		
+		
+		$result=@$conn->query($query);
+		if(!$result) {
+			return false;
+		}
+		$num_from =@$result->num_rows;
+		if($num_from ==0) {
+			return false;
+		}
+		$result= db_result_to_array($result);
+		return $result; 
+	}
+ //根据saleid 获取销售信息
+    function get_saledetail($saleid){
+		$conn = db_connect();
+		$query="select saleid, carnum ,username,".
+	    " kindname,stuffname,phone,portname,updatetime,title,content,price ".
+        " from t_sale p,t_kind k,t_stuff s,t_port r,t_user u ".
+        " where p.userid = u.userid and p.kindid = k.kindid and ".
+		" p.stuffid = s.stuffid and p.portid =r.portid and saleid =".$saleid;
+		
+		
+		$result=@$conn->query($query);
+		if(!$result) {
+			return false;
+		}
+		$num_from =@$result->num_rows;
+		if($num_from ==0) {
+			return false;
+		}
+		$result= db_result_to_array($result);
+		return $result; 
+	}
+ //根据productid获取产品详细信息
+ function get_detail($cdkey,$userid){
+	$conn = db_connect();
+
+    //更新次数
+	$query ="update t_product set viewnum = viewnum +1 where cdkey ='".$cdkey."'";
+	//$result=@$conn->query($query);
+	//查询详细信息
+	$query= "select  carnum,portname,(select kindname from t_kind where kindid = p.kindid) as kindname,"
+       ."CASE contactphone WHEN '0' THEN  '' ELSE contactphone END as contactphone,"
+       ."CASE contact WHEN '0' THEN  '' ELSE contact END as contact,"
+       ."CASE productlen WHEN '0' THEN  '' ELSE productlen END as productlen,"
+	   ."CASE diameterlen WHEN '0' THEN  '' ELSE concat(diameterlen,'φ') END as diameterlen,"
+       ."CASE wide WHEN '0' THEN  '' ELSE wide END as wide,"
+       ."CASE thinckness WHEN '0' THEN  '' ELSE thinckness END as thinckness,"
+	   ."widerange,thincknessrange,"
+       ."CASE  WHEN  tolerance =-99  THEN  '' when tolerance > 0 then concat('+',tolerance)  ELSE tolerance END as tolerance,"
+       ."CASE refnum WHEN '0' THEN  '' ELSE refnum END as refnum,"
+       ."CASE refwight WHEN '0' THEN  '' ELSE refwight END as refwight,"
+	   ."CASE refcapacity WHEN '0' THEN  '' ELSE refcapacity END as refcapacity,"
+       ."CASE dry WHEN '0' THEN  '' ELSE dry END as dry,"
+       ."CASE newold WHEN '0' THEN  '' ELSE newold END as newold,"
+       ."CASE knob WHEN '0' THEN  '' ELSE knob END as knob,"
+       ."CASE blue WHEN '0' THEN  '' ELSE blue END as blue,"
+       ."CASE worm WHEN '0' THEN  '' ELSE worm END as worm,"
+       ."CASE decay WHEN '0' THEN  '' ELSE decay END as decay,"
+		."CASE slash WHEN '0' THEN  '' ELSE slash END as slash,"
+		."CASE black WHEN '0' THEN  '' ELSE black END as black,"
+		."CASE climb WHEN '0' THEN  '' ELSE climb END as climb,"
+		."CASE oil WHEN '0' THEN  '' ELSE oil END as oil,"
+		."CASE p.spotpositionid WHEN '0' THEN  '' ELSE p.spotpositionid END as position,"
+		."CASE device WHEN '0' THEN  '' ELSE device END as device,"
+		."CASE ring WHEN '0' THEN  '' ELSE ring END as ring,"
+		."CASE timber WHEN '0' THEN  '' ELSE timber END as timber,"
+		."CASE timbertype WHEN '0' THEN  '' ELSE timbertype END as timbertype,"
+		."CASE content WHEN '0' THEN  '' ELSE content END as content,"
+		."(IFNULL((select  collectid from t_collect where  cdkey =p.cdkey and userid=".$userid."),0)) as collectid ,"
+		."(select stuffname from t_stuff where stuffid = p.stuffid) as stuffname,username,"
+		."(select fromname from t_from where fromid = p.fromid) as fromname,spotpositionid ,"
+		."substring(updatetime,6,11) as updatetime,v.position as dumpposition,salestatusname,viewnum "
+		."from t_product p,t_user u,t_port r,v_statuspos v "
+		." where p.userid = u.userid and r.portid= p.portid and p.spotpositionid = v.positionid  and  cdkey ='".$cdkey."'";	
+   // return $query;		
+   $query="call mcr.p_spotdetail(".$userid.",'".$cdkey."');";  //2015.06.25 ljm
+   $result=@$conn->query($query);
+   
+    if(!$result) {
+        return false;
+    }
+    $num_from =@$result->num_rows;
+    if($num_from ==0) {
+        return false;
+    }
+    $result= db_result_to_array($result);
+    return $result; 
+ }
+ //根据产品ID获取图片信息
+ function get_productpic($cdkey){
+	$conn = db_connect();
+    $query="select productpic from t_productpic  where  cdkey ='".$cdkey."'";
+		
+		
+    $result=@$conn->query($query);
+    if(!$result) {
+        return false;
+    }
+    $num_from =@$result->num_rows;
+    if($num_from ==0) {
+        return false;
+    }
+    $result= db_result_to_array($result);
+    return $result; 
+ }
+ 
+ //**********首页获取产品信息列表*****
+ function get_productlist() {
+	$conn = db_connect();
+     $query = "select productid,carnum,kindname,stuffname,phone,portname,updatetime,productlen,diameterlen,wide,thinckness   "
+           ." from t_product p,t_kind k,t_stuff s,t_port r,t_user u "
+          ." where p.userid = u.userid and p.kindid = k.kindid and "
+		  ." p.stuffid = s.stuffid and p.portid =r.portid order by updatetime desc limit 0,20";
+		
+		
+    $result=$conn->query($query);
+    if(!$result) {
+        return false;
+    }
+    $num_from =@$result->num_rows;
+    if($num_from ==0) {
+        return false;
+    }
+    $result= db_result_to_array($result);
+    return $result;  
+ }
+ //
+//__________________________________________
+function get_kind(&$row){
+    $conn = db_connect();
+    $query="select kindid,kindname from t_kind";
+    $result=@$conn->query($query);
+    if(!$result) {
+        return false;
+    }
+    $num_kind =@$result->num_rows;
+    if($num_kind ==0) {
+        return false;
+    }
+   // $result= db_result_to_array($result);
+    $row =$num_kind;
+    return $result;
+
+}
+
+ function get_stuff(&$row) {
+    //query database for a list of stuff
+    $conn = db_connect();
+    $query ="select stuffid,stuffname from t_stuff";
+    $result=@$conn->query($query);
+    if(!$result) {
+        return false;
+    }
+    $num_stuff =@$result->num_rows;
+    if($num_stuff ==0) {
+        return false;
+    }
+	$row=$num_stuff;
+   // $result = db_result_to_array($result);
+    return $result;
+}
+
+function get_port(&$row) {
+    // query database for a list of port
+    $conn = db_connect();
+
+    $query = "select portid, portName from t_port";
+    $result = @$conn->query($query);
+    if (!$result) {
+        return false;
+    }
+    $num_cats = @$result->num_rows;
+    if ($num_cats == 0) {
+        return false;
+    }
+   // $result = db_result_to_array($result);
+   $row =$num_cats;
+   return $result;
+}
+
+function select_filter($areavalue,$kindvalue,$stuffvalue) {
+	$conn = db_connect();
+	$filtervalue="";
+
+	if($areavalue != 0){
+		$areafilter =" and p.portid =".$areavalue;
+		$filtervalue =$areafilter;
+	}
+	if($kindvalue !=0){
+		$kindfilter =" and p.kindid =".$kindvalue;
+		if (strlen(($filtervalue))>0){
+			$filtervalue =$filtervalue.$kindfilter;
+		}
+		else {
+		 $filtervalue =$kindfilter;	
+		}
+	
+	}
+	if($stuffvalue !=0){
+		$stufffilter =" and p.stuffid =".$stuffvalue;
+		if (strlen(($filtervalue))>0){
+			$filtervalue =$filtervalue.$stufffilter;
+		}
+		else {
+			$filtervalue =$stufffilter;
+		}
+		
+	}
+    $query = "select carnum,kindname,stuffname,phone,portname,updatetime,productlen,goodstatusid   "
+           ."from t_product p,t_kind k,t_stuff s,t_port r,t_user u "
+          ." where p.userid = u.userid and p.kindid = k.kindid and p.stuffid = s.stuffid and p.portid =r.portid";
+		
+	if (strlen(trim($filtervalue))>0){
+		$query =$query . $filtervalue;
+	}
+	
+    $result = @$conn->query($query);
+    if (!$result) {
+        return false;
+    }
+    $num_cats = @$result->num_rows;
+    if ($num_cats == 0) {
+        return false;
+    }
+    $result = db_result_to_array($result);
+    return $result;
+}
+
+//_______________________________________________________
+/*
+function get_categories() {
+   // query database for a list of categories
+   $conn = db_connect();
+   $query = "select catid, catname from categories";
+   $result = @$conn->query($query);
+   if (!$result) {
+     return false;
+   }
+   $num_cats = @$result->num_rows;
+   if ($num_cats == 0) {
+      return false;
+   }
+   $result = db_result_to_array($result);
+   return $result;
+}
+
+function get_category_name($catid) {
+   // query database for the name for a category id
+   $conn = db_connect();
+   $query = "select catname from categories
+             where catid = '".$catid."'";
+   $result = @$conn->query($query);
+   if (!$result) {
+     return false;
+   }
+   $num_cats = @$result->num_rows;
+   if ($num_cats == 0) {
+      return false;
+   }
+   $row = $result->fetch_object();
+   return $row->catname;
+}
+
+
+function get_books($catid) {
+   // query database for the books in a category
+   if ((!$catid) || ($catid == '')) {
+     return false;
+   }
+
+   $conn = db_connect();
+   $query = "select * from books where catid = '".$catid."'";
+   $result = @$conn->query($query);
+   if (!$result) {
+     return false;
+   }
+   $num_books = @$result->num_rows;
+   if ($num_books == 0) {
+      return false;
+   }
+   $result = db_result_to_array($result);
+   return $result;
+}
+
+function get_book_details($isbn) {
+  // query database for all details for a particular book
+  if ((!$isbn) || ($isbn=='')) {
+     return false;
+  }
+  $conn = db_connect();
+  $query = "select * from books where isbn='".$isbn."'";
+  $result = @$conn->query($query);
+  if (!$result) {
+     return false;
+  }
+  $result = @$result->fetch_assoc();
+  return $result;
+}
+
+function calculate_price($cart) {
+  // sum total price for all items in shopping cart
+  $price = 0.0;
+  if(is_array($cart)) {
+    $conn = db_connect();
+    foreach($cart as $isbn => $qty) {
+      $query = "select price from books where isbn='".$isbn."'";
+      $result = $conn->query($query);
+      if ($result) {
+        $item = $result->fetch_object();
+        $item_price = $item->price;
+        $price +=$item_price*$qty;
+      }
+    }
+  }
+  return $price;
+}
+
+function calculate_items($cart) {
+  // sum total items in shopping cart
+  $items = 0;
+  if(is_array($cart))   {
+    foreach($cart as $isbn => $qty) {
+      $items += $qty;
+    }
+  }
+  return $items;
+}
+*/
+?>

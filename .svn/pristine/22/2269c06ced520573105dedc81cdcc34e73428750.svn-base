@@ -1,0 +1,100 @@
+/**
+ * @authors Yumlee (543265835@qq.com)
+ * @date    2015-05-03 11:29:09
+ * @version $ rightForm 1.0 $
+ */
+var	rePhoneNum = /^1[3|4|5|7|8]\d{9}/i,//手机号的正则表达式
+	reUserName = /[^\w\u4e00-\u9fa5]/g,//用户名的正则表达式
+
+// **********
+	register = document.getElementById('register'),
+	phoneInput = document.getElementById('phoneNum'),//获取输入手机号的表单
+	pwd = document.getElementById('pwd'),//获取输入密码的表单
+	signIn_submit = document.getElementById('signIn_submit'),//获取登录页面提交按钮
+	phoneNum_icon = document.getElementById('phoneNum_icon'),//获取手机号码后面图标
+	pwd_icon = document.getElementById('pwd_icon'),//获取密码后面图标
+	userName = document.getElementById('userName'),
+	userName_icon = document.getElementById('userName_icon'),
+	pwd2 = document.getElementById('pwd2'),
+	pwd2_icon = document.getElementById('pwd2_icon');
+	portselect = document.getElementById('portselect');
+	validmessage = document.getElementById('validmessage');
+//验证函数
+phoneInput.onblur=function() {
+	if (rePhoneNum.test(this.value)) {
+		// pwd.focus();
+		phoneNum_icon.style.color = "#60af00";
+	} else{
+		alert("请输入正确的手机号码！");
+		phoneNum_icon.style.color = "black";
+		return false;
+	};
+}
+pwd.onblur=function() {
+	if (this.value.length >= 6 && this.value.length <=12) {
+		pwd_icon.style.color = "#60af00";
+	} else{
+		alert("请输入6-12位的密码！");
+		pwd.focus();
+		pwd_icon.style.color = "black";
+		return false;
+	};
+}
+userName.onblur=function () {
+	if (reUserName.test(this.value)) {
+		alert("请输入合法用户名");
+		userName_icon.style.color = "black";
+		return false;
+	} else if(this.value == ""){
+		alert("请输入用户名");
+		userName_icon.style.color = "black";
+		return false;
+	} else if (this.value.length > 6) {
+		alert("用户名不能超过6个字符！");
+		userName_icon.style.color = "black";
+		return false;
+	} else{
+		userName_icon.style.color = "#60af00";
+	};
+}
+pwd2.onblur=function(){
+	if (this.value == pwd.value) {
+		pwd2_icon.style.color = "#60af00";
+	} else{
+		alert("请输入相同的密码！");
+		pwd2_icon.style.color = "black";
+		return false;
+	};
+}
+register.onclick=function(){
+	if(userName.value == ""){
+		alert("请输入用户名");
+		return false;
+	} else if (!rePhoneNum.test(phoneInput.value)) {
+		alert("请输入正确的手机号码！");
+		return false;
+	} else if (pwd.value.length < 6 || pwd.value.length > 12) {
+		alert("请输入6-12位的密码!");
+		return false;
+	} else if (reUserName.test(userName.value)) {
+		alert("请输入合法用户名");
+		return false;
+	} else if (userName.value.length > 6) {
+		alert("用户名不能超过6个字符！");
+		return false;
+	} else if (!(pwd2.value == pwd.value)) {
+		alert("请输入相同的密码！");
+		return false;
+	} else if(portselect.value == 0){
+		alert("请选择关注口岸！");
+		return false;
+	}
+	else if(validmessage.value == ""){
+		alert("请输入验证码！");
+		return false;
+	} 
+	else if(validmessage.value.length != 6){
+		alert("请输入合法的验证码！");
+		return false;
+	};
+}

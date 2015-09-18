@@ -1,0 +1,83 @@
+<?php
+session_start();
+include_once('system/model/db_fns.php');
+error_reporting(0);
+
+$user_id=$_SESSION['userid'];
+$oldpassword=$_POST['oldpassword'];//密码
+$newpassword=$_POST['newpassword'];
+$newspassword=$_POST['newspassword'];
+
+if($oldpassword==$newpassword){
+	header("Content-Type:text/html;charset=utf-8");
+						echo "<script>alert('新旧密码不能一致，请重新输入！');history.back();</script>";
+						exit;
+	}
+if($newpassword !=$newspassword){
+	header("Content-Type:text/html;charset=utf-8");
+						echo "<script>alert('新密码不一致，请重新输入！');history.back();</script>";
+						exit;
+	}
+	
+	
+
+	
+        $lc_password=md5($oldpassword);
+		$conn = db_connect();
+		$sql="SELECT * FROM t_user where  password='".$lc_password."' and  userid=".$user_id;
+		$result=$conn->query($sql);
+		if($result)
+		{
+			$password=md5($newpassword);//加密
+			$sql="update t_user set password ='".$password."' where userid=".$user_id;
+			$result=$conn->query($sql);
+			if($result){
+				header("Content-Type:text/html;charset=utf-8");
+				echo "<script>alert('修改成功！');location.href='../user.php';</script>";
+			}
+			else{
+						header("Content-Type:text/html;charset=utf-8");
+						echo "<script>alert('修改失败！');history.back();</script>";
+					}
+		}
+		else{
+						header("Content-Type:text/html;charset=utf-8");
+						echo "<script>alert('原密码错识，修改失败！');history.back();</script>";
+			}
+		
+		
+		
+			
+		
+
+
+/*
+$pwd = $_POST['pwd'];
+$pwd1 = $_POST['pwd1'];
+$pwd2 = $_POST['pwd2'];
+
+$sql = "select * from `admin` where password='".md5($pwd)."' and userid='".$_SESSION['userid']."'";
+
+if (mysqli_num_rows(mysqli_query($conn,$sql))) {
+if ($pwd1==$pwd2) {
+$sql="update `admin` set password='".md5($pwd2)."' where userid='".$_SESSION['userid']."'";
+if (mysqli_query($conn,$sql)) { 
+
+header("Content-Type:text/html;charset=utf-8");
+echo "<script>alert('恭喜，密码修改成功！');history.back();</script>";
+}
+}
+else {
+header("Content-Type:text/html;charset=utf-8");
+echo "<script>alert('两次输入的新密码不同，请重新输入!');history.back();</script>";
+
+}
+}
+else {
+header("Content-Type:text/html;charset=utf-8");
+echo "<script>alert('旧密码不正确，请重新输入!');history.back();</script>";
+
+}
+*/
+?>
+	

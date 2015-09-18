@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<?php
+	session_start();
+	$portid=$_SESSION['portid'];
+	include_once("../system/model/db_fns.php");
+	include_once('../system/model/wood.php');
+	$wood= new wood($portid);
+	$wood->realrelease();
+?>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+<title>统计图</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+
+<link rel="stylesheet" type="text/css" href="../statics/css/yumleeM.css" />
+<link rel="stylesheet" type="text/css" href="../statics/css/mcr.css" />
+<link rel="stylesheet" type="text/css" href="../com/icomoon/style.css" />
+<link rel="stylesheet" type="text/css" href="../css/manage.css" />
+</head>
+<body>
+<header class="header fixed">
+	<div><a href="javascript:history.back();"><i class="icon-arrow-back"></i></a></div>
+	<h1>统计图</h1>
+	<div><a href="../index.php"><i class="icon-home"></i></a></div>
+</header>
+<section>
+	<form class="selectWrapper">
+		<ul class="flex ">
+			<li>
+				<select name ="kindselect" id="kindselect">
+					<option value = 0>选货种</option>
+					<?php
+						$kind_array = $wood->kind; //货种 lja
+						foreach($kind_array as $row){
+							echo "<option value =".$row["kindid"].">".$row["kindname"]."</option>";
+						}
+					?>
+				</select>
+			</li>
+			<li>
+				<select name ="stuffselect" id="stuffselect" >
+					<option value = 0>选树种</option>
+					<?php
+						$stuff_array =$wood->stuff ;  //树种
+						if (!is_array($stuff_array)){
+							echo "<p>No categories currently available</p>";
+							return;
+						}
+						foreach ($stuff_array as $row)
+						{
+							$stuffid = $row['stuffid'];
+							$stuffname = $row['stuffname'];
+							echo "<option value =".$stuffid.">".$stuffname."</option>";
+						}
+					?>
+				</select>
+			</li>
+			<li>
+				<select id="productlen" name="producelen">
+					<option value="0">选长度</option>
+					<?php
+						$len_array = $wood->length;
+						foreach($len_array as $row){
+							echo "<option value = ".$row["lenid"].">".$row["lenname"]."</option>";
+						}
+					?>
+				</select>
+			</li>
+		</ul>
+		<ul>
+			<li>起始日期：<input type="date" id="date_s"></li>
+			<li>截止日期：<input type="date" id="date_e"></li>
+			<li><input type="button" class="button sousuo" id="submitBtn" value="搜索"></li>
+		</ul>
+	</form>
+</section>
+
+<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+
+</body>
+<script src="http://libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="../js/highcharts.js"></script>
+<script src="../js/exporting.js"></script>
+<script type="text/javascript">
+    $(function () {
+    	var chart;  
+		var mydata=[]; 
+		var date1=[]; 
+
+    	$("#submitBtn").click(function(){
+    		var kindselect = $("#kindselect").val();
+    		var stuffselect = $("#stuffselect").val();
+    		var productlen = $("#productlen").val();
+    		var date_s = $("#date_s").val();
+    		var date_e = $("#date_e").val();
+    		$('#container').empty();
+    		$.ajax({
+    			url:"chart_bgo.php",
+    			type:"POST",
+    			data:"kindid=" + kindselect + "&stuffid=" + stuffselect + "&productlen=" + productlen + "&date_s=" + date_s + "&date_e=" + date_e,
+    			dataType:"json",
+    			success:function(json){
+    				var obj=eval(json);  
+				    for (var i=0; i<obj.length; i++){  
+				        mydata.push([  
+				            obj[i].categories,  
+				            parseFloat(obj[i].datavalue)  
+				        ]);
+
+				        date1.push(obj[i].categories); 
+
+				    };  
+
+				    
+
+				    $('#container').highcharts({
+				         title: {
+			                text: '木材人统计图',
+			                x: -20 //center
+			            },
+			            xAxis: {
+			                title:{
+			                    text:'日期'
+			                },
+			                //categories: ['8.10', '8.11', '8.12', '8.13', '8.14','8.15','8.16','8.17','8.18','8.19','8.20','8.21','8.21','8.21','8.21','8.21','8.21','8.21','8.21']
+			                categories: date1
+			            },
+			            yAxis: {
+			                title: {
+			                    text: '数量'
+			                },
+			                plotLines: [{
+			                    value: 0,
+			                    width: 1,
+			                    color: '#808080'
+			                }]
+			            },
+			            legend: {
+			                layout: 'vertical',
+			                align: 'right',
+			                verticalAlign: 'middle',
+			                borderWidth: 0
+			            },
+			            series: [{
+			                name: '结果',
+			                //data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
+			                data: mydata  
+			            }]
+				    });  
+    			},//success
+    			error:function(){
+    				alert('error!')
+    			}
+    		});  //ajax
+   		});
+    });     
+</script>
+</html>

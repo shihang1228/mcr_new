@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+<title>智能找货列表</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<link rel="stylesheet" type="text/css" href="/statics/css/yumleeM.css" />
+<link rel="stylesheet" type="text/css" href="/statics/css/mcr.css" />
+<link rel="stylesheet" type="text/css" href="/com/icomoon/style.css" />
+</head>
+<?php
+    include_once('mcr_sc_fns.php');
+	session_start();
+?>
+<body>
+<?php
+	include('public.html');
+?>
+<header class="header">
+	<div><a href="javascript:history.back();"><i class="icon-arrow-back"></i></a></div>
+	<h1>智能找货查询列表</h1>
+	<div><a href="index.php"><i class="icon-home"></i></a></div>
+</header>
+
+<input type="hidden" value="<?php echo $_SESSION['portid']; ?>" id="portid"/>
+<input type="hidden" value="<?php echo $_POST['kindselect']; ?>" id="kindselect"/>
+<input type="hidden" value="<?php echo $_POST['stuffselect']; ?>" id="stuffselect"/>
+<input type="hidden" value="<?php echo $_POST['productlen']; ?>" id="productlen"/>
+<input type="hidden" value="<?php echo $_POST['wide']; ?>" id="wide"/>
+<input type="hidden" value="<?php echo $_POST['thinckness']; ?>" id="thinckness"/>
+<input type="hidden" value="<?php echo $_POST['diameterlen']; ?>" id="diameterlen"/>
+<input type="hidden" value="<?php echo $_POST['timber']; ?>" id="timber"/>
+<input type="hidden" value="<?php echo $_POST['publishtime']; ?>" id="publishtime"/>
+
+<dl class="panel" id="panel">
+	<dt><h2>查询列表</h2></dt>
+	<dd id="goodslist" class="borTop">
+	</dd>
+	<p class='no_result' id="no-result">没有查询到您所要的内容</p>
+</dl>
+</body>
+<script src="http://libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/statics/js/config.js"></script>
+<script src="js/search2.js"></script>
+<script>
+kindselect();
+scrollToFixed(35);
+</script>
+</html>

@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<title>管理员权限</title>
+<link rel="stylesheet" type="text/css" href="statics/css/yumleeM.css" />
+<link rel="stylesheet" type="text/css" href="statics/css/mcr.css" />
+<link rel="stylesheet" type="text/css" href="com/icomoon/style.css" />
+</head>
+<body>
+<?php
+   session_start();
+   if(isset($_SESSION['user']) ){			//用户或管理员登录后才可以发表留言
+?>
+<header class="header">
+	<div class="header_home"><a href="user.php"><i class="icon-arrow-back"></i></a></div>
+	<h1>管理员权限</h1>
+	<div class="header_home"><a href="index.php"><i class="icon-home"></i></a></div>
+</header>
+<article class="user">
+	<!-- <div class="user-header">
+		<a class="flex" href="user_tx.php">
+			<div><img src="/statics/images/swiper2.jpg" alt="" /></div>
+			<div><div>木材人</div><div>13934544931</div></div>
+		</a>
+		<i class="icon-angle-right"></i>
+	</div> -->
+	<ul class="list solidBottom iconList">
+		<li><a href="manage/spotmanage.php"><i class="icon-road"></i>现货管理<i class="icon-angle-right"></i></a></li>
+		<li><a href="manage/dumpmanage.php"><i class="icon-now-widgets"></i>散货管理<i class="icon-angle-right"></i></a></li>
+		<li><a href="manage/buymanage.php"><i class="icon-bag"></i>求购管理<i class="icon-angle-right"></i></a></li>
+		<li><a href="manage/companymanage.php"><i class="icon-office"></i>企业管理<i class="icon-angle-right"></i></a></li>
+	</ul>
+	<ul class="list solidBottom iconList">
+		<li><a href="manage/usermanage.php"><i class="icon-user"></i>用户管理<i class="icon-angle-right"></i></a></li>
+		<li><a href="manage/complainmanage.php"><i class="icon-warning"></i>投诉管理<i class="icon-angle-right"></i></a></li>
+	</ul>
+	<ul class="list solidBottom iconList">
+		<li><a href="manage/positionmanage.php"><i class="icon-compass2"></i>位置设置<i class="icon-angle-right"></i></a></li>
+		<li><a href="manage/scoremanage.php"><i class="icon-database"></i>积分设置<i class="icon-angle-right"></i></a></li>
+		<li><a href="manage/getuserlist.php"><i class="icon-database"></i>获取用户<i class="icon-angle-right"></i></a></li>
+		<li><a href="manage/imphistory.php"><i class="icon-database"></i>导入记录<i class="icon-angle-right"></i></a></li>
+		<li><a href="manage/chart.php"><i class="icon-database"></i>统计图<i class="icon-angle-right"></i></a></li>
+	</ul>
+</article>
+<?php
+}else{
+  echo "<script>window.location.href='signIn.php?type=1';</script>";
+  }
+ ?>
+</body>
+</html>
